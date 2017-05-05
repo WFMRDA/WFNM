@@ -16,6 +16,7 @@ $options = [
     'assetUrl' => $this->params['assetUrl'],
     'language' => Yii::$app->language,
     'mediaUrl' => Yii::getAlias('@media'),
+    'legendHelpToggle' => Yii::$app->systemData->legendHelpToggle,
 ];
 $this->registerJs(
     "var yiiOptions = ".\yii\helpers\Json::htmlEncode($options).";",

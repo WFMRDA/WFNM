@@ -9,7 +9,7 @@ use yii\web\AssetBundle;
  */
 class ArcGisAsset extends AssetBundle
 {
-    // public $sourcePath = '@frontend/assets/dist';
+    public $sourcePath = '@frontend/assets/dist';
     public $css = [
         // '//js.arcgis.com/4.1/esri/css/main.css',
         '//js.arcgis.com/4.3/esri/css/main.css',
@@ -17,8 +17,8 @@ class ArcGisAsset extends AssetBundle
     public $js = [
         // '//js.arcgis.com/4.1/',
         '//js.arcgis.com/4.3/',
-        '//assets.wildfiresnearme.wfmrda.com/js/jTouch.js',
-        '//assets.wildfiresnearme.wfmrda.com/js/map.js',
+        YII_ENV_DEV ? 'js/jTouch.js' :'//assets.wildfiresnearme.wfmrda.com/js/jTouch.js',
+        YII_ENV_DEV ? 'js/map.js' :'//assets.wildfiresnearme.wfmrda.com/js/map.js',
     ];
     public $depends = [
         'frontend\assets\AppAsset',

@@ -67,9 +67,18 @@ $this->title = Yii::$app->name;
 			<?=WfnmHelpers::a('<i class="fa fa-question-circle-o"></i> Layers',null,['id'=>'legendToggle','class'=>'btn btn-sm btn-info'])?>
 		</div>
 		<div id='zoomDiv'></div>
-		<div id='legendDiv' class='active'></div>
+		<div id='legendDiv' class='<?=Yii::$app->systemData->legendHelpToggle?>'></div>
 		<div id='locateDiv'></div>
 	</div>
+	<div id='menu-toggle' class="checkboxOne" <?=Yii::$app->systemData->toggleBtn?>>
+			<input type="checkbox" value="1" id="checkboxOneInput" name="" />
+			<label for="checkboxOneInput">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"> </span>
+				<span class="icon-bar"> </span>
+				<span class="icon-bar"> </span>
+			</label>
+		</div>
 	<div id="legend-bar">
 		<div id = "legend-bar-container">
 			<div id ='mapLegend' class='col-xs-12'>
@@ -89,96 +98,88 @@ $this->title = Yii::$app->name;
 				<?php ActiveForm::end(); ?>
 				<!-- END DISPLAY FORM -->
 			</div>
-			<?=PyroMenu::widget([
-				'options'=>[
-					'id'=> 'map-btn-container',
-				],
-				'encodeLabels'=> false,
-				'items' => [
-					[
-						'label' => WfnmHelpers::img ('@media/maplayers_btn.png', $options = ['class'=>'sidebar-fa-ms-png center '] ) ,
-						'url' => null,
-						'options'=>[
-							// 'id'=>'layers',
-							'rel'=>'layers',
-							'class'=> 'desaturate'
+				<?=PyroMenu::widget([
+					'options'=>[
+						'id'=> 'map-btn-container',
+					],
+					'encodeLabels'=> false,
+					'items' => [
+						[
+							'label' => WfnmHelpers::img ('@media/maplayers_btn.png', $options = ['class'=>'sidebar-fa-ms-png center '] ) ,
+							'url' => null,
+							'options'=>[
+								// 'id'=>'layers',
+								'rel'=>'layers',
+								'class'=> 'desaturate'
+							],
+							'linkOptions'=>[
+								'class'=> 'layers-btn'
+							],
 						],
-						'linkOptions'=>[
-							'class'=> 'layers-btn'
+						[
+							'label' => WfnmHelpers::img ('@media/my_fires_btn.png', $options = ['class'=>'sidebar-fa-ms-png center '] ) ,
+							'url' => ['/map-rest/my-fires'],
+							'options'=>[
+								// 'id'=>'layers',
+								'rel'=>'layers',
+								'class'=> 'desaturate'
+							],
+							'linkOptions'=>[
+								'class'=> 'legend-btn'
+							],
+						],
+						[
+							'label' => WfnmHelpers::img ('@media/my_locations_btn.png', $options = ['class'=>'sidebar-fa-ms-png center '] ) ,
+							'url' => ['/map-rest/my-locations'],
+							'options'=>[
+								// 'id'=>'myLocations',
+								'rel'=>'layers',
+								'class'=> 'desaturate'
+							],
+							'linkOptions'=>[
+								'class'=> 'legend-btn'
+							],
+						],
+						[
+							'label' => WfnmHelpers::img ('@media/sitrep_btn.png', $options = ['class'=>'sidebar-fa-ms-png center '] ),
+							'url' => ['map-rest/sit-rep'],
+							'options'=>[
+								// 'id'=>'layers',
+								'rel'=>'layers',
+								'class'=> 'desaturate'
+							],
+							'linkOptions'=>[
+								'class'=> 'legend-btn'
+							],
+						],
+						[
+							'label' => WfnmHelpers::img ('@media/alerts_btn.png', $options = ['class'=>'sidebar-fa-ms-png center '] ) ,
+							'url' =>  ['map-rest/alerts'],
+							'options'=>[
+								// 'id'=>'layers',
+								'rel'=>'layers',
+								'class'=> 'desaturate'
+							],
+							'linkOptions'=>[
+								'class'=> 'legend-btn'
+							],
+						],
+						[
+							'label' => WfnmHelpers::img ('@media/wfnm_btn.png', $options = ['class'=>'sidebar-fa-ms-png center '] )  ,
+							'url' =>  ['map-rest/fires-near-me'],
+							'options'=>[
+								'rel'=>'layers',
+								'class'=> 'desaturate'
+							],
+							'linkOptions'=>[
+								'id'=>'firesnearme',
+								'class'=> 'wfnm-btn'
+							],
 						],
 					],
-					[
-						'label' => WfnmHelpers::img ('@media/my_fires_btn.png', $options = ['class'=>'sidebar-fa-ms-png center '] ) ,
-						'url' => ['/map-rest/my-fires'],
-						'options'=>[
-							// 'id'=>'layers',
-							'rel'=>'layers',
-							'class'=> 'desaturate'
-						],
-						'linkOptions'=>[
-							'class'=> 'legend-btn'
-						],
-					],
-					[
-						'label' => WfnmHelpers::img ('@media/my_locations_btn.png', $options = ['class'=>'sidebar-fa-ms-png center '] ) ,
-						'url' => ['/map-rest/my-locations'],
-						'options'=>[
-							// 'id'=>'myLocations',
-							'rel'=>'layers',
-							'class'=> 'desaturate'
-						],
-						'linkOptions'=>[
-							'class'=> 'legend-btn'
-						],
-					],
-					[
-						'label' => WfnmHelpers::img ('@media/sitrep_btn.png', $options = ['class'=>'sidebar-fa-ms-png center '] ),
-						'url' => ['map-rest/sit-rep'],
-						'options'=>[
-							// 'id'=>'layers',
-							'rel'=>'layers',
-							'class'=> 'desaturate'
-						],
-						'linkOptions'=>[
-							'class'=> 'legend-btn'
-						],
-					],
-					[
-						'label' => WfnmHelpers::img ('@media/alerts_btn.png', $options = ['class'=>'sidebar-fa-ms-png center '] ) ,
-						'url' =>  ['map-rest/alerts'],
-						'options'=>[
-							// 'id'=>'layers',
-							'rel'=>'layers',
-							'class'=> 'desaturate'
-						],
-						'linkOptions'=>[
-							'class'=> 'legend-btn'
-						],
-					],
-					[
-						'label' => WfnmHelpers::img ('@media/wfnm_btn.png', $options = ['class'=>'sidebar-fa-ms-png center '] )  ,
-						'url' =>  ['map-rest/fires-near-me'],
-						'options'=>[
-							'rel'=>'layers',
-							'class'=> 'desaturate'
-						],
-						'linkOptions'=>[
-							'id'=>'firesnearme',
-							'class'=> 'wfnm-btn'
-						],
-					],
-				],
-			])?>
+				])?>
 		</div>
-		<div id='menu-toggle' class="checkboxOne" <?=Yii::$app->systemData->toggleBtn?>>
-			<input type="checkbox" value="1" id="checkboxOneInput" name="" />
-			<label for="checkboxOneInput">
-				<span class="sr-only">Toggle navigation</span>
-				<span class="icon-bar"> </span>
-				<span class="icon-bar"> </span>
-				<span class="icon-bar"> </span>
-			</label>
-		</div>
+		
 	</div>
 	<div id='info-panel-container'>
 		<button type="button" class="close" id='closePanel' data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>

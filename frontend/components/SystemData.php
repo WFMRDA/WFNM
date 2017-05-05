@@ -84,6 +84,11 @@ class SystemData extends Component{
         return $this->_userMessages;
     }
 
+    public function getLegendHelpToggle(){
+        $style = $this->getSetting('legendHelpToggle');
+        return ($style == null)?'active' : $style;
+    }
+
     public function getToggleBtn(){
         $style = $this->getSetting('toggleBtn');
         return ($style == null)?'' : 'style="'.$style.'"' ;

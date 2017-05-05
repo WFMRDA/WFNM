@@ -70,6 +70,7 @@ class UserSettings extends \yii\db\ActiveRecord
     protected $settings = [
         'toggleBtn' => 10,
         'mapLayers' => 20,
+        'legendHelpToggle' => 30,
     ];
 
     public function getSettingId($key){
@@ -102,6 +103,9 @@ class UserSettings extends \yii\db\ActiveRecord
                     break;
                 case $key == 'mapLayers':
                     $data = $this->processMapLayers($val);
+                    break;
+                case $key == 'legendHelpToggle':
+                    $data = $val;
                     break;
             }
             //See if User has setting

@@ -47,14 +47,11 @@ return [
         'assetManager' => [
             'bundles' => [
                 'yii\bootstrap\BootstrapAsset' => [
-                    // 'sourcePath' => '@frontend/assets/dist',
-                    // 'css' => ['css/bootstrap.css'],
-                    'css'=>['//assets.wildfiresnearme.wfmrda.com/css/bootstrap.css'],
+                    'sourcePath' => '@frontend/assets/dist',
+                    'css'=>[
+                        YII_ENV_DEV ? 'css/bootstrap.css' : '//assets.wildfiresnearme.wfmrda.com/css/bootstrap.css'
+                    ],
                 ],
-                 /*'yii\bootstrap\BootstrapPluginAsset' => [
-                    'sourcePath' => '@frontend/assets/packages/Bootstrap',   // do not use file from our server
-                    'js' => ['js/bootstrap.js'],
-                 ],*/
             ],
         ],
         'view' => [

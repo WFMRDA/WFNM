@@ -204,18 +204,17 @@ require(
                 }),
                 label:"ACTIVE"
             },
-            {
+            /*{
                 value: "F",
                 symbol: new PictureMarkerSymbol({
                     url: yiiOptions.mediaUrl+"/map_out_fire.png",
                 }),
                 label:"OUT"
-            }
+            }*/
         ],
         visualVariables: [
             {
                 type: "size",
-                // expression: "view.scale",
                 field: "acres",
                 valueUnit: "unknown",
                 stops: [
@@ -336,22 +335,30 @@ require(
         layersArray.push(wfnmLayer);
         map.addMany(layersArray);
         // map.addMany([geoMac,wfnmLayer]);
-        return wfnmLayer;
+        // return wfnmLayer;
+        // return layersArray;
     }
     /******************************************************************
     * Add layer to layerInfos in the legend
     ******************************************************************/
-    function createLegend(layer) {
+    function createLegend() {
+
         if (legend) {
             legend.layerInfos = layerInfos;
         } else {
             legend = new Legend({
                 view: view,
-                layerInfos : layerInfos
+                layerInfos : layerInfos,
+                visible:yiiOptions.legendHelpToggle == 'active' ? true : false,
             },"legendDiv");
         }
         // view.ui.add(legend);
-        jQuery.addLegend();
+        // if(yiiOptions.legendHelpToggle == 'active'){
+        //     jQuery.addLegend();
+        // }else{
+        //     jQuery.removeLegend();
+        // }
+        // jQuery.removeLegend();
     }
 
     function getFeatureInfo(response){
@@ -443,6 +450,7 @@ require(
         })
         .then(addUserMarker);
     }
+
     jQuery._closePanel = function(){
         view.graphics.remove(fireMarker);
 
@@ -455,12 +463,34 @@ require(
             duration:1000,
         });
     }
+
     jQuery.removeLegend = function(){
-        view.ui.remove(legend);
+        legend.visible = false;
+        // view.ui.remove(legend);
     }
+
     jQuery.addLegend = function(){
-        view.ui.add(legend);
+        legend.visible = true;
+        // view.ui.add(legend);
     }
+
+    jQuery._toggleLegendHelp = function(){
+        var $target = $('#legendDiv');
+        if($target.hasClass('active')){
+            // console.log('Going invisible');
+            $target.removeClass('active');
+            $target.addClass('in-active');
+            jQuery.removeLegend();
+            wfnm.saveSettings({type:'legendHelpToggle',val:'in-active'});
+        }else{
+            // console.log('Going visible');
+            $target.addClass('active');
+            $target.removeClass('in-active');
+            wfnm.saveSettings({type:'legendHelpToggle',val:'active'});
+            jQuery.addLegend();
+        }
+    }
+
     jQuery.reloadMap = function(){
         console.log('Map Reloaded');
         map.removeAll();
@@ -482,15 +512,29 @@ require(
     function errback(error) {
         console.error("Chaining Error=> ", error);
     }
-
 });
 
 
 $(window).on('load', function(){
     // console.log('window loaded');
-    if(!$("#menu-toggle").visible()){
+    //Check to see if toggle is offscreen or Mobile Device
+    var width = window.innerWidth  || document.documentElement.clientWidth  || document.body.clientWidth;
+    console.log(width);
+        // $("#menu-toggle").removeAttr("style");
+    if( !$("#menu-toggle").visible() || width <= 768){
         console.log('Toggle offscreen');
         $("#menu-toggle").removeAttr("style");
+    }
+
+    if(width > 768){
+        $( "#menu-toggle" ).draggable({
+            stop: function() {
+                var el = $(this).attr('style');
+                var data = {type:'toggleBtn',val:el};
+                wfnm.saveSettings(data);
+                // console.log(data);
+            }
+        });
     }
 });
 
@@ -500,21 +544,6 @@ $(document).ready(function() {
     // console.log('map.js');
         /*Binding Actions*/
     $(".dropdown-toggle").dropdown();
-    //Check to see if toggle is offscreen
-    /*if(!$("#menu-toggle").visible()){
-        console.log('Toggle offscreen');
-        $("#menu-toggle").removeAttr("style");
-    }*/
-
-
-    $( "#menu-toggle" ).draggable({
-        stop: function() {
-            var el = $(this).attr('style');
-            var data = {type:'toggleBtn',val:el};
-            wfnm.saveSettings(data);
-            // console.log(data);
-        }
-    });
 
     $('body').on('beforeSubmit', 'form#mapLayerForm', function () {
         var form = $(this);
@@ -555,15 +584,10 @@ $(document).ready(function() {
     });
     $('#default-map-container').on('click','#legendToogle',function(e){
         e.preventDefault();
-        console.log('layers-Div-btn');
-        if($('#legendDiv').hasClass('active')){
-            console.log('visible');
-            jQuery.removeLegend();
-        }else{
-            console.log('not visible');
-            jQuery.addLegend();
-        }
+        jQuery._toggleLegendHelp();
     });
+
+    
 
     $('#default-map-container').on('click','.wfnm-btn',function(e){
         e.preventDefault();

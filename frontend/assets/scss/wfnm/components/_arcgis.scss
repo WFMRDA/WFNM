@@ -1,4 +1,4 @@
-// @import "../settings.scss";
+@import "_settings.scss";
 /* Large devices (large desktops, 1200px and up) */
 @media (min-width: $screen-lg-min) {
 
@@ -282,67 +282,25 @@
         position: absolute;
         padding: 1%;
         max-width: 150px;
-        &.active{
-            right: 0%;
-            top: -webkit-calc(5% + #{$navbar-height});
-            top:    -moz-calc(5% + #{$navbar-height});
-            top:         calc(5% + #{$navbar-height});
-        }
-    }
-    @media (max-width: $screen-xs-max) {
-        #legend-bar{
-            width: 100%;
-        }
-        #legendToogle,#locateDiv{
-            top: 45px;
-        }
-        #zoomDiv{
-            bottom: 70px;
-            z-index: 10;
-        }
+        right: 0%;
+        overflow: hidden;
+        top: -webkit-calc(5% + #{$navbar-height});
+        top:    -moz-calc(5% + #{$navbar-height});
+        top:         calc(5% + #{$navbar-height});
     }
     #legend-bar{
         position: absolute;
-        // display: flex;
-        // flex-wrap: wrap;
         left: 5%;
-        bottom: -webkit-calc(5% + #{$footerHeight});
-        bottom:    -moz-calc(5% + #{$footerHeight});
-        bottom:         calc(5% + #{$footerHeight});
-        // z-index: 1;
-        .checkboxOne {
-            input[type=checkbox] {
-                visibility: hidden;
-            }
-            width: 40px;
-            height: 40px;
-            margin:0 0 0 0;
-            padding: 0;
-            z-index: 1;
-            label {
-                width: 40px;
-                height: 40px;
-                background: #555;
-                position: absolute;
-                border-radius: 50%;
-                transition: all .15s ease;
-                cursor: pointer;
-                padding: 5px 0 0 16px;
-                .icon-bar{
-                    background-color: white;
-                    display: block;
-                    width: 8px;
-                    height: 8px;
-                    border-radius: 50%;
-                    margin-bottom: 3px;
-                }
-            }
-            input[type=checkbox]:checked + label {
-                -ms-transform: rotate(90deg); /* IE 9 */
-                -webkit-transform: rotate(90deg); /* Safari */
-                transform: rotate(90deg);
-            }
-        }
+        bottom: -webkit-calc(1% + #{$footerHeight});
+        bottom:    -moz-calc(1% + #{$footerHeight});
+        bottom:         calc(1% + #{$footerHeight});
+        right: 0;
+        right: -webkit-calc(6% + 32px);
+        right:    -moz-calc(6% + 32px);
+        right:         calc(6% + 32px);
+        z-index: 1;
+        
+
         #legend-bar-container{
             #mapLegend{
                 display: none;
@@ -350,49 +308,53 @@
                 background: white;
                 padding: 1%;
             }
-            @media (max-width: $screen-xs-max) {
-                #mapLegend{
-                    display: none;
-                    width: 100%;
-                }
-                #map-btn-container{
-                    width: 90px;
-                }
-            }
             ul{
-                // float: left;
                 display: none;
                 list-style-type: none;
                 margin: 0 0 5px 0;
                 border-radius: 5px;
                 background-color: #555;
-                padding: 3% 0 3% 0;
-                // padding: 1%;
-                // white-space: nowrap;
+                padding: 1% 0 1% 0;
                 li {
                     display: inline-block;
                     cursor: pointer;
                     margin-left: 10px;
-                    @media (max-width: $screen-xs-max) {
-                        display: block;
-                    }
-                    // margin: 0 2% 0 2%;
                 }
 
             }
             &.active{
                 #mapLegend{
                     &.animated {
-                        display: block;
+                        display: inline-block;
                     }
                 }
                 ul{
                     &.animated {
-                        display: block;
+                        display: inline-block;
                     }
                 }
             }
         }
+    }
+    @media (max-width: $screen-xs-max) {
+        #legend-bar{
+            position: absolute;
+            left: 3%;
+            // bottom: 0;
+        }
+        #legendToogle,#locateDiv{
+            top: 45px;
+        }
+        #zoomDiv{
+            // bottom: 70px;
+            z-index: 10;
+        }
+        /* #menu-toggle{
+            position: 
+            relative; 
+            left: 283px; 
+            top: -156px;
+        } */
     }
     /*.map-cover{
         position: fixed;
@@ -412,4 +374,52 @@
         color: white;
         opacity: 0.8;
     }*/
+}
+#menu-toggle{
+    position: fixed; 
+    right : 5%; 
+    bottom: -webkit-calc(75px + #{$footerHeight} * 2);
+    bottom:    -moz-calc(75px + #{$footerHeight} * 2);
+    bottom:         calc(75px + #{$footerHeight} * 2);
+    &.checkboxOne {
+        input[type=checkbox] {
+            visibility: hidden;
+        }
+        width: 40px;
+        height: 40px;
+        margin:0 0 0 0;
+        padding: 0;
+        z-index: 1;
+        label {
+            width: 40px;
+            height: 40px;
+            background: #555;
+            position: absolute;
+            border-radius: 50%;
+            transition: all .15s ease;
+            cursor: pointer;
+            padding: 5px 0 0 16px;
+            .icon-bar{
+                background-color: white;
+                display: block;
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                margin-bottom: 3px;
+            }
+        }
+        input[type=checkbox]:checked + label {
+            -ms-transform: rotate(90deg); /* IE 9 */
+            -webkit-transform: rotate(90deg); /* Safari */
+            transform: rotate(90deg);
+        }
+    }
+}
+@media (max-width: $screen-xs-max) {
+    /* #menu-toggle{
+        position: 
+        relative; 
+        left: 283px; 
+        top: -156px;
+    } */
 }
