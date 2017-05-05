@@ -4,6 +4,13 @@
 /* @var $content string */
 use yii\widgets\Breadcrumbs;
 use common\widgets\Alert;
+use yii\helpers\Url;
+use yii\web\View;
+use frontend\assets\AppAsset;
+
+$appAsset = AppAsset::register($this);
+$this->params['assetUrl'] = $appAsset->baseUrl;
+
 $options = [
     'appName' => Yii::$app->name,
     'baseUrl' => Yii::$app->request->baseUrl,

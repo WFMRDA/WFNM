@@ -4,11 +4,7 @@
 /* @var $content string */
 
 use yii\helpers\Html;
-use frontend\assets\AppAsset;
 use yii\helpers\Url;
-use yii\web\View;
-$appAsset = AppAsset::register($this);
-$this->params['assetUrl'] = $appAsset->baseUrl;
 ?>
 
 <head>
