@@ -9,20 +9,6 @@ use yii\helpers\Url;
 use yii\web\View;
 $appAsset = AppAsset::register($this);
 $this->params['assetUrl'] = $appAsset->baseUrl;
-$options = [
-    'appName' => Yii::$app->name,
-    'baseUrl' => Yii::$app->request->baseUrl,
-    'homeUrl' => Url::base(true),
-    'assetUrl' => $this->params['assetUrl'],
-    'language' => Yii::$app->language,
-    'mediaUrl' => Yii::getAlias('@media'),
-    'legendHelpToggle' => Yii::$app->systemData->legendHelpToggle,
-];
-$this->registerJs(
-    "var yiiOptions = ".\yii\helpers\Json::htmlEncode($options).";",
-    View::POS_HEAD,
-    'yiiOptions'
-);
 ?>
 
 <head>

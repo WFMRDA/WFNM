@@ -4,6 +4,19 @@
 /* @var $content string */
 use yii\widgets\Breadcrumbs;
 use common\widgets\Alert;
+$options = [
+    'appName' => Yii::$app->name,
+    'baseUrl' => Yii::$app->request->baseUrl,
+    'homeUrl' => Url::base(true),
+    'assetUrl' => $this->params['assetUrl'],
+    'language' => Yii::$app->language,
+    'mediaUrl' => Yii::getAlias('@media'),
+];
+$this->registerJs(
+    "var yiiOptions = ".\yii\helpers\Json::htmlEncode($options).";",
+    View::POS_HEAD,
+    'yiiOptions'
+);
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
