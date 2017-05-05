@@ -1,0 +1,415 @@
+// @import "../settings.scss";
+/* Large devices (large desktops, 1200px and up) */
+@media (min-width: $screen-lg-min) {
+
+}
+@media (min-width: $screen-md-min) and (max-width: $screen-md-max) {
+
+}
+
+
+/* Medium devices (desktops, 992px and up) */
+@media (min-width: $screen-md-min) {
+
+}
+@media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
+
+}
+
+/* Small devices (tablets, 768px and up) */
+@media (min-width: $screen-sm-min) {
+
+}
+@media (max-width: $screen-xs-max) {
+
+}
+
+/* Extra small devices (phones, less than 768px) */
+/* No media query since this is the default in Bootstrap */
+
+#default-map-container{
+    height: 100%;
+    overflow: hidden;
+    #map {
+        /* for the animation */
+        transition: width 0.3s ease;
+        position: relative;
+        float: left;
+        height: 100%;
+        width: 100%;
+    }
+    #info-panel-container{
+        // @include scrollbars(0, grey);
+        /* for the animation */
+        transition: margin 0.3s ease;
+        position: relative;;
+        margin-right: -1000000px;
+        float: left;
+        height: 100%;
+        overflow-x: hidden;
+        overflow-y:scroll;
+        z-index: 2;
+        background: white;
+        div.dataTables_wrapper div.dataTables_filter{
+            text-align: left;
+        }
+        #closePanel{
+            opacity: 1;
+            background-color: white;
+            position: fixed;
+            cursor: pointer;
+            z-index: 10;
+            height: auto;
+            width: 42px;
+            font-size: xx-large;
+            &:hover{
+                opacity: 0.2;
+            }
+        }
+        #info-panel{
+            padding-bottom: 20%;
+            padding-top: 25px;
+            // input[type='search']{
+            //     width: 100%;
+            // }
+            .mylocation-list-selection{
+                cursor: pointer;
+            }
+            #myLocationsTable-Container{
+                &.editable{
+                    .myLocationsEdit{
+                        display: none;
+                    }
+                    .myLocationsCancelEdit{
+                        display: block;
+                    }
+                }
+                .myLocationsEdit{
+                    display: block;
+                }
+                .myLocationsCancelEdit{
+                    display: none;
+                }
+            }
+            .fire-table,.myLocations-table{
+                tr{
+                    cursor: pointer;
+                }
+            }
+            #sit-report{
+                /*
+                 * Filter
+                 */
+                .dataTables_filter,.dataTables_paginate,.dataTables_length {
+                    float: none;
+                    margin: 0 auto;
+                    text-align: center;
+                }
+                .header-title{
+                    text-align: center;
+                }
+                .overview{
+                    margin-bottom: 3%;
+                    padding-bottom: 3%;
+                    border-bottom: 1px solid black;
+                    .pl-level-report-box{
+                        width: 155px;
+                        position: absolute;
+                        top: 40%;
+                        transform: translateY(-50%);
+                        float: left;
+                        text-align: center;
+                        .pl-level-num{
+                            font-family: 'Rockwell Extra Bold', 'Rockwell Bold', monospace;
+                            font-family: Lato, Helvetica, Arial, sans-serif;
+                            font-size: 75px;
+                            font-style: normal;
+                            font-variant: normal;
+                            font-weight: 500;
+                            line-height: 26.4px;
+                            margin-top: 25px;
+                            margin-bottom: 25px;
+                        }
+                        .pl-level-title{
+                            font-family: 'Rockwell Extra Bold', 'Rockwell Bold', monospace;
+                            font-family: Lato, Helvetica, Arial, sans-serif;
+                            font-size: 24px;
+                            font-style: normal;
+                            font-variant: small-caps;
+                            font-weight: 400;
+                            line-height: 26.4px;
+                        }
+                    }
+                    .pl-level-data-box{
+                        border-left: white;
+                        border-left-style: solid;
+                        border-left-width: .2em;
+                        width: 60%;
+                        min-height: 125px;
+                        float: right;
+                        .panel-box-title{
+                            text-transform: uppercase;
+                            .panel-box-text{
+                                font-weight: bold;
+                                padding-left: 1%;
+                            }
+                        }
+                    }
+                    .sit-btn {
+                        width: 90%;
+                        border-radius: 20px;
+                        background-color: transparent;
+                        border-color: #34495e;
+                        border-width: 5px;
+                        color: #34495e;
+                        /* margin-right: auto; */
+                        /* margin-left: auto; */
+                        &:hover{
+                            background-color: #e7e7e7;
+                            border-color: #adadad;
+                        }
+                    }
+                }
+                .fireinfo-table{
+
+                }
+            }
+            #myFireContainer{
+                .loc-png {
+                    height: 20px;
+                }
+                #vulcan-monitoring-div{
+                    .open>.dropdown-menu {
+                        display: block;
+                        position: absolute;
+                        right: 0;
+                        left: 0;
+                    }
+                    #vulcan-dropdown{
+                        cursor: pointer;
+                    }
+                }
+            }
+        }
+    }
+    &.panel-open {
+        /* Small devices (tablets, 768px and up) */
+        // @media (min-width: $screen-sm-min) {
+            #map{
+                width: 0%;
+            }
+            #info-panel-container{
+                width:100%;
+                display: block;
+            }
+        // }
+        /* Medium devices (desktops, 992px and up) */
+        @media (min-width: $screen-md-min) {
+            #map{
+                width: 66.66666667%;
+            }
+            #info-panel-container{
+                width: 33.33333333%;
+                display: block;
+            }
+        }
+        /* Large devices (large desktops, 1200px and up) */
+        @media (min-width: $screen-lg-min) {
+            #map{
+                width: 66.66666667%;
+            }
+            #info-panel-container{
+                width: 33.33333333%;
+                display: block;
+            }
+        }
+    }
+    #zoomDiv{
+        position: absolute;
+        right: 5%;
+        bottom: -webkit-calc(5% + #{$footerHeight});
+        bottom:    -moz-calc(5% + #{$footerHeight});
+        bottom:         calc(5% + #{$footerHeight});
+        background: transparent;
+       .esri-widget-button,
+       .esri-button {
+            border-radius: 50%;
+            background-color: grey;
+            color: white;
+            &:last-child {
+               margin-top: 10px;
+            }
+            &:focus{
+                outline: none;
+            }
+        }
+    }
+    #fire-search-form-container{
+        position: absolute;
+        top:1%;
+        .tt-menu{
+            max-height: 150px;
+            overflow-y: auto;
+            background: white;
+            width: 100%;
+
+        }
+        #firesearch-form{
+
+        }
+    }
+    #locateDiv{
+        position: absolute;
+        left: 3%;
+        top:1%;
+        bottom: -webkit-calc(5% + #{$footerHeight});
+        bottom:    -moz-calc(5% + #{$footerHeight});
+        bottom:         calc(5% + #{$footerHeight});
+        // background: transparent;
+    }
+    #legendToogle{
+        // background: blue;
+        position: absolute;
+        right: 1%;
+        top:1%;
+        visibility: visible;
+        // cursor: pointer;
+        // top: -webkit-calc(1% + #{$navbar-height});
+        // top:    -moz-calc(1% + #{$navbar-height});
+        // top:         calc(1% + #{$navbar-height});
+    }
+    #legendDiv{
+        position: absolute;
+        padding: 1%;
+        max-width: 150px;
+        &.active{
+            right: 0%;
+            top: -webkit-calc(5% + #{$navbar-height});
+            top:    -moz-calc(5% + #{$navbar-height});
+            top:         calc(5% + #{$navbar-height});
+        }
+    }
+    @media (max-width: $screen-xs-max) {
+        #legend-bar{
+            width: 100%;
+        }
+        #legendToogle,#locateDiv{
+            top: 45px;
+        }
+        #zoomDiv{
+            bottom: 70px;
+            z-index: 10;
+        }
+    }
+    #legend-bar{
+        position: absolute;
+        // display: flex;
+        // flex-wrap: wrap;
+        left: 5%;
+        bottom: -webkit-calc(5% + #{$footerHeight});
+        bottom:    -moz-calc(5% + #{$footerHeight});
+        bottom:         calc(5% + #{$footerHeight});
+        // z-index: 1;
+        .checkboxOne {
+            input[type=checkbox] {
+                visibility: hidden;
+            }
+            width: 40px;
+            height: 40px;
+            margin:0 0 0 0;
+            padding: 0;
+            z-index: 1;
+            label {
+                width: 40px;
+                height: 40px;
+                background: #555;
+                position: absolute;
+                border-radius: 50%;
+                transition: all .15s ease;
+                cursor: pointer;
+                padding: 5px 0 0 16px;
+                .icon-bar{
+                    background-color: white;
+                    display: block;
+                    width: 8px;
+                    height: 8px;
+                    border-radius: 50%;
+                    margin-bottom: 3px;
+                }
+            }
+            input[type=checkbox]:checked + label {
+                -ms-transform: rotate(90deg); /* IE 9 */
+                -webkit-transform: rotate(90deg); /* Safari */
+                transform: rotate(90deg);
+            }
+        }
+        #legend-bar-container{
+            #mapLegend{
+                display: none;
+                z-index:10;
+                background: white;
+                padding: 1%;
+            }
+            @media (max-width: $screen-xs-max) {
+                #mapLegend{
+                    display: none;
+                    width: 100%;
+                }
+                #map-btn-container{
+                    width: 90px;
+                }
+            }
+            ul{
+                // float: left;
+                display: none;
+                list-style-type: none;
+                margin: 0 0 5px 0;
+                border-radius: 5px;
+                background-color: #555;
+                padding: 3% 0 3% 0;
+                // padding: 1%;
+                // white-space: nowrap;
+                li {
+                    display: inline-block;
+                    cursor: pointer;
+                    margin-left: 10px;
+                    @media (max-width: $screen-xs-max) {
+                        display: block;
+                    }
+                    // margin: 0 2% 0 2%;
+                }
+
+            }
+            &.active{
+                #mapLegend{
+                    &.animated {
+                        display: block;
+                    }
+                }
+                ul{
+                    &.animated {
+                        display: block;
+                    }
+                }
+            }
+        }
+    }
+    /*.map-cover{
+        position: fixed;
+        z-index: 1040;
+        top: $navbar-height + 10;
+        left: 15px;
+    }*/
+    /*#infoDiv {
+        position: fixed;
+        bottom: $footerHeight;
+        right: 0;
+        max-height: 80%;
+        max-width: 300px;
+        background-color: black;
+        padding: 8px;
+        border-top-left-radius: 5px;
+        color: white;
+        opacity: 0.8;
+    }*/
+}

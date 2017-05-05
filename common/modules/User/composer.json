@@ -1,0 +1,58 @@
+{
+    "name": "ptech/yii2-user",
+    "description": "Flexible user registration and authentication module for Yii2",
+    "keywords": ["yii2", "yii2-user", "user management", "ptech"],
+    "type": "yii2-extension",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Reginald Goolsby",
+            "email": "rjgoolsby@pyrotechsolutions.com",
+            "homepage": "http://www.pyrotechsolutions.com"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "vcs","url": "https://bitbucket.org/Rjgoolsby/yii2-redactor"
+        },
+        {
+            "type": "vcs","url": "https://bitbucket.org/Rjgoolsby/yii2-mailchimp-v3"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "yiisoft/yii2": "~2.0",
+        "yiisoft/yii2-swiftmailer": "~2.0",
+        "yiisoft/yii2-authclient": "~2.0",
+        "yiisoft/yii2-jui": "~2.0",
+        "yiisoft/yii2-bootstrap": "~2.0",
+        "kartik-v/yii2-password": "*",
+        "kartik-v/yii2-grid": "@dev",
+        "kartik-v/yii2-widgets": "*",
+        "yiidoc/yii2-redactor": "@dev",
+        "ptech/yii2-mailchimp-v3": "dev-master"
+
+    },
+    "require-dev": {
+        "yiisoft/yii2-codeception": "~2.0",
+        "codeception/specify": "*",
+        "codeception/verify": "*",
+        "codeception/aspect-mock": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "ptech\\user\\": ""
+        }
+    },
+    "extra": {
+        "bootstrap": "ptech\\user\\Bootstrap",
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        },
+        "asset-installer-paths": {
+            "npm-asset-library": "vendor/npm",
+            "bower-asset-library": "vendor/bower"
+        }
+    }
+}
+

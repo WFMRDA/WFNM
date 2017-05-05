@@ -1,0 +1,414 @@
+@import "_settings.scss";
+html,
+body {
+    height: 100%;
+}
+/* ----------------------------------------------------
+   created with http://www.codeandweb.com/texturepacker
+   ----------------------------------------------------
+   $TexturePacker:SmartUpdate:66173d82c7b66fb3f3cc8d852aca2483:c75a76e7812a51bb6fa41d6e9e8934c9:ddfe47117c2b10aafeace62e64dee7af$
+   ----------------------------------------------------
+
+   usage: <span class="{-spritename-} sprite"></span>
+
+   replace {-spritename-} with the sprite you like to use
+
+*/
+.form-rounded {
+    border-radius: 1rem !important;
+}
+.link-dark{
+    color: black;
+
+}
+.table-fire-logo{
+    max-height: 50px;
+}
+.inline{
+    display: inline!important;
+}
+#pl-levels-btn-container{
+    padding: 0;
+    margin: 0;
+    p{
+        padding: 0;
+        margin: 0;
+    }
+}
+.pl-sprite{
+    display:inline-block;
+    margin-top: 5px;
+    overflow:hidden;
+    background-repeat:
+    no-repeat;
+    background-image:url(//media.wildfiresnearme.wfmrda.com/img/plbars.png);
+    &.pl1 {width:59px; height:40px; background-position: -2px -2px}
+    &.pl2 {width:59px; height:40px; background-position: -2px -44px}
+    &.pl3 {width:59px; height:40px; background-position: -2px -86px}
+    &.pl4 {width:59px; height:40px; background-position: -2px -128px}
+    &.pl5 {width:59px; height:40px; background-position: -2px -170px}
+}
+.wrap , .main-wrap {
+    min-height: 100%;
+    margin: 0 auto (-$footerHeight);
+    padding: 0;
+}
+.main-wrap{
+    padding: 0 0 $footerHeight;
+}
+
+.wrap > .container-fluid,
+.wrap > .container,
+.main-wrap > .container-fluid,
+.main-wrap > .container  {
+    padding: $navbar-height 0 0 0;
+    height: 100%;
+}
+
+.footer-logo-img{
+    position: absolute;
+    bottom: 0;
+    left: 5px;
+    max-height: $footerHeight;
+    width: auto;
+    // margin-top: -20px;
+}
+
+
+.footer {
+    height: $footerHeight;
+    background-color: #f5f5f5;
+    border-top: 1px solid #ddd;
+    // padding-top: 20px;
+    .footer-logo-img{
+        position: relative;;
+        max-height: $footerHeight;
+        width: auto;
+        // margin-top: -20px;
+    }
+}
+
+.jumbotron {
+    text-align: center;
+    background-color: transparent;
+}
+
+.jumbotron .btn {
+    font-size: 21px;
+    padding: 14px 24px;
+}
+
+.not-set {
+    color: #c55;
+    font-style: italic;
+}
+
+/* add sorting icons to gridview sort links */
+a.asc:after, a.desc:after {
+    position: relative;
+    top: 1px;
+    display: inline-block;
+    font-family: 'Glyphicons Halflings';
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1;
+    padding-left: 5px;
+}
+
+a.asc:after {
+    content: "\e151";
+}
+
+a.desc:after {
+    content: "\e152";
+}
+
+.sort-numerical a.asc:after {
+    content: "\e153";
+}
+
+.sort-numerical a.desc:after {
+    content: "\e154";
+}
+
+.sort-ordinal a.asc:after {
+    content: "\e155";
+}
+
+.sort-ordinal a.desc:after {
+    content: "\e156";
+}
+
+.grid-view td {
+    // white-space: nowrap;
+}
+
+.grid-view .filters input,
+.grid-view .filters select {
+    min-width: 50px;
+}
+
+.hint-block {
+    display: block;
+    margin-top: 5px;
+    color: #999;
+}
+
+.error-summary {
+    color: #a94442;
+    background: #fdf7f7;
+    border-left: 3px solid #eed3d7;
+    padding: 10px 20px;
+    margin: 0 0 15px 0;
+}
+
+/* align the logout "link" (button in form) of the navbar */
+.nav li > form > button.logout {
+    padding: 15px;
+    border: none;
+}
+
+@media(max-width:767px) {
+    .nav li > form > button.logout {
+        display:block;
+        text-align: left;
+        width: 100%;
+        padding: 10px 15px;
+    }
+}
+
+.nav > li > form > button.logout:focus,
+.nav > li > form > button.logout:hover {
+    text-decoration: none;
+}
+
+.nav > li > form > button.logout:focus {
+    outline: none;
+}
+.col-centered {
+    float: none !important;
+    margin: 0 auto !important;
+}
+.vertical-alignment-helper {
+    display:table;
+    height: 100%;
+    width: 100%;
+    pointer-events:none; /* This makes sure that we can still click outside of the modal to close it */
+}
+.vertical-align-center {
+    /* To center vertically */
+    display: table-cell;
+    vertical-align: middle;
+    pointer-events:none;
+}
+.modal-content {
+    /* Bootstrap sets the size of the modal in the modal-dialog class, we need to inherit it */
+    width:inherit;
+    height:inherit;
+    /* To center horizontally */
+    margin: 0 auto;
+    pointer-events: all;
+}
+.btn-margin{
+    margin-top: 1%;
+}
+
+.user-menu .user-image {
+    float: left;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    margin-right: 10px;
+    margin-top: -2px;
+}
+.user-menu > .dropdown-menu > li.user-header > img {
+    z-index: 5;
+    height: 90px;
+    width: 90px;
+    border: 3px solid;
+    border-color: transparent;
+    border-color: rgba(255, 255, 255, 0.2);
+}
+.user-menu-dropdown.dropdown-menu {
+    padding: 3%;
+     min-width: 165px;
+}
+.user-menu-dropdown.dropdown-menu .user-footer{
+    padding: 0;
+}
+.user-menu-dropdown.dropdown-menu .user-footer div{
+    padding: 0;
+}
+.smaller-font {
+    font-size: smaller;
+}
+
+$dropdownWidth:500px;
+
+#top-notifications-li {
+    .label-as-badge {
+        border-radius: 50%;
+        position: absolute;
+        top: 4px;
+        font-size: 12px;
+        left: 0;
+        z-index: 1;
+    }
+    #notifications-dropdown-menu{
+        width: $dropdownWidth;
+        padding: 0;
+        .panel{
+            margin-bottom: 0;
+            .panel-body{
+                padding:5px;
+                max-height: 200px;
+                overflow-y: scroll;
+                .menu{
+                    padding: 0;
+                    #notifications-div{
+                        li{
+                            padding: 8px 0px 8px 0px;
+                            border-top: 1px solid black;
+                            cursor: pointer;
+                            &:last-child {
+                                border-bottom: 1px solid black;
+                            }
+                            &.unread{
+                                // background-color: #76c4e0;
+                                &:hover{
+                                    background-color: #fff;
+                                }
+                            }
+                            p{
+                                color: black;
+                                padding: 0;
+                                margin: 0;
+                                height: 100%;
+                                // &.notifications{
+                                // }
+                            }
+                        }
+                    }
+                }
+            }
+            .panel-footer{
+                a{
+                    cursor: pointer;
+                        &:hover{
+                            color: red;
+                            text-decoration: underline;
+                        }
+                }
+            }
+        }
+    }
+}
+
+
+
+.unread {
+    background-color: lightblue;
+}
+.text-yellow{
+    color: yellow;
+}
+.text-green{
+    color: green;
+}
+.text-red{
+    color: red;
+}
+.text-orange{
+    color: orange;
+}
+.footer-cp {
+    position: relative;
+    // position: fixed;
+    // bottom: 0;
+    // width: 100%;
+    height: $footerHeight;
+    .footer-copyrights {
+        text-align: center;
+        background-color: #1c1c1e;
+        height: 100%;
+        p {
+            margin: 1% 0 1% 0;
+            color: #b5b5b4;
+            font-size: 16px;
+        }
+    }
+    .ptech-logo{
+        height: 50px;
+        vertical-align: middle;
+    }
+}
+.sidebar-fa-ms-png{
+    height: 75px;
+}
+.ui-dialog-titlebar-close {
+  background: url("http://code.jquery.com/ui/1.10.3/themes/smoothness/images/ui-icons_888888_256x240.png") repeat scroll -93px -128px rgba(0, 0, 0, 0);
+  border: medium none;
+}
+.ui-dialog-titlebar-close:hover {
+  background: url("http://code.jquery.com/ui/1.10.3/themes/smoothness/images/ui-icons_222222_256x240.png") repeat scroll -93px -128px rgba(0, 0, 0, 0);
+}
+.ui-dialog-buttonset{
+    float: none !important;
+    >button:last-child{
+        float:right !important;
+    }
+}
+.navbar-brand{
+    padding: 0!important;
+    .logo-img{
+        max-height: $navbar-height;
+    }
+
+}
+
+#notifications-panel-div{
+    li{
+        list-style: none;
+        padding: 8px 0px 8px 0px;
+        border-top: 1px solid black;
+        cursor: pointer;
+        &:last-child {
+            border-bottom: 1px solid black;
+        }
+        &.unread{
+            // background-color: #76c4e0;
+            &:hover{
+                background-color: #fff;
+            }
+        }
+        p{
+            color: black;
+            padding: 0;
+            margin: 0;
+            height: 100%;
+            // &.notifications{
+            // }
+        }
+    }
+}
+hr {
+  -moz-border-bottom-colors: none;
+  -moz-border-image: none;
+  -moz-border-left-colors: none;
+  -moz-border-right-colors: none;
+  -moz-border-top-colors: none;
+  border-color: #EEEEEE -moz-use-text-color #FFFFFF;
+  border-style: solid none;
+  border-width: 1px 0;
+  margin: 18px 0;
+}
+#profile-settings-dropdown{
+    padding: 0;
+}
+.dropdown-avatar{
+    border-radius: 50%;
+}
+.navbar-avatar{
+    border-radius: 50%;
+    max-height: $navbar-height;
+}
