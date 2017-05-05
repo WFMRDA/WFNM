@@ -59,7 +59,7 @@ class System extends Model{
         $failed = 0;
         foreach ($models as $userID => $messageModel) {
             foreach ($messageModel as $key => $message) {
-                if($message->type ==  Messages::UPDATES ){
+                if($message->type ==  Messages::UPDATES || $message->type ==  Messages::FINAL_MESSAGE){
                     $updates[] = WfnmHelpers::getUpdatesLine($message);
                 }elseif ($message->type == Messages::ALERTS ) {
                     $alerts[] = WfnmHelpers::getAlertsLine($message);
@@ -229,7 +229,22 @@ class System extends Model{
 
         }else{
             //Fire is no long in WFNM
-            $this->storeExpiredFireMonitoringAlert($fire);
+            $finalRecordExists = Messages::find()
+            ->andWhere([
+                'and',
+                [
+                    'type'      =>  Messages::FINAL_MESSAGE,
+                    'user_id'   =>  $fire->user_id,
+                    'irwinID'   =>  $fire['irwinID'
+                    ]
+                ]
+            ])
+            ->orderBy(['created_at' => SORT_DESC])
+            ->limit(1)
+            ->one();
+            if($finalRecordExists == null){
+                $this->storeExpiredFireMonitoringAlert($fire);
+            }
         }
     }
 
@@ -240,7 +255,7 @@ class System extends Model{
         $message = Yii::createObject([
             'class'=> Messages::className(),
             'user_id' => $fire->user_id,
-            'type' => Messages::UPDATES,
+            'type' => Messages::FINAL_MESSAGE,
             'subject' => $subject,
             'email' => $fire->user->email,
             'body' => $body,

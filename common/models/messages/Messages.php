@@ -28,6 +28,7 @@ class Messages extends \yii\db\ActiveRecord
 {
     const ALERTS = 10;
     const UPDATES  = 20;
+    const FINAL_MESSAGE  = 30;
     /**
      * @inheritdoc
      */
