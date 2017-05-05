@@ -44,7 +44,7 @@ class WebHookController extends Controller
             echo 'Protecting Now... StandBy'. PHP_EOL;
             $system = new System();
             $alertResponse = $system->findNewAlerts();
-            $emailResponse = $system->sendNewEmails();
+            // $emailResponse = $system->sendNewEmails();
             echo VarDumper::dumpAsString(ArrayHelper::merge($alertResponse,$emailResponse),10,false) . PHP_EOL;
             $time = microtime(true) - $_SERVER["REQUEST_TIME_FLOAT"];
             echo "Total Execution Time: {$time}". PHP_EOL;
