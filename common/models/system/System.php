@@ -19,6 +19,7 @@ use common\modules\User\helpers\Html2Text;
 use yii\data\ActiveDataProvider;
 
 class System extends Model{
+    public $alertDistance = 25;
     protected $_monitoringKeys = [
         ['key'=> 'incidentName','label'=>'Incident Name'],
         ['key'=> 'fireCause', 'label'=>'Fire Cause'],
@@ -66,7 +67,7 @@ class System extends Model{
                     $alerts[] = WfnmHelpers::getAlertsLine($message);
                 }
             }
-            $user = User::findOne($userID);
+           /* $user = User::findOne($userID);
             $html = $this->buildEmail($user,$updates,$alerts);
             $html2text = new Html2Text($html);
             $textHtml = $html2text->getText();
@@ -75,9 +76,9 @@ class System extends Model{
                 ->setTo($user->email)
                 ->setSubject($user->fullName.' You Have New Information In WIldfires Near Me')
                 ->setTextBody($textHtml)
-                ->setHtmlBody($html);
+                ->setHtmlBody($html);*/
 
-                try {
+                /*try {
                     if($message->send()){
                         $sent++;
                         Messages::updateAll(['sent_at' => time()], 'user_id = '.$userID);
@@ -96,7 +97,7 @@ class System extends Model{
                         $count = $row->send_tries++;
                         $row->updateAttributes(['send_tries'=>$count]);
                     }
-                }
+                }*/
         }
         return ['sent'=>$sent,'failed'=>$failed];
     }
@@ -405,7 +406,7 @@ class System extends Model{
         $fireDb = $this->fireDb;
         foreach ($fireDb as $key => $fire) {
             $distance = GPS::distance($location->latitude, $location->longitude, $fire['pooLatitude'], $fire['pooLongitude']);
-            if($distance <= 50){
+            if($distance <= $this->alertDistance){
                 //User need to be alerted of new fire
                 //Let's make sure they haven't been alerted already First
                 $this->storeFireAlert($location,$fire,$distance);
