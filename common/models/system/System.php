@@ -53,37 +53,52 @@ class System extends Model{
 
 
     public function sendNewEmails(){
+        // Messages::updateAll(['sent_at' => null]);
+        // return [];
         $models = $this->buildEmailUserArray();
+        // Yii::trace(count($models),'dev');
         $messages = [];
-        $alerts = [];
-        $updates = [];
         $sent = 0;
         $failed = 0;
-        foreach ($models as $userID => $messageModel) {
-            foreach ($messageModel as $key => $message) {
-                if($message->type ==  Messages::UPDATES || $message->type ==  Messages::FINAL_MESSAGE){
-                    $updates[] = WfnmHelpers::getUpdatesLine($message);
-                }elseif ($message->type == Messages::ALERTS ) {
-                    $alerts[] = WfnmHelpers::getAlertsLine($message);
+        foreach ($models as $userID) {
+            $alerts = [];
+            $updates = [];
+            $query = Messages::find()
+                ->joinWith(['user','profile'])
+                ->andWhere([
+                    'and',
+                    ['messages.user_id' => $userID],
+                    ['messages.sent_at' => NULL],
+                    ['messages.seen_at' => NULL],
+                    ['>=', 'messages.created_at', Yii::$app->formatter->asTimestamp('-24 hours')]
+                ])
+                ->orderBy(['created_at' => SORT_DESC])
+                ->all();
+            if(!empty($query)){
+                foreach ($query as $key => $message) {
+                    if($message->type ==  Messages::UPDATES || $message->type ==  Messages::FINAL_MESSAGE){
+                        $updates[] = WfnmHelpers::getUpdatesLine($message);
+                    }elseif ($message->type == Messages::ALERTS ) {
+                        $alerts[] = WfnmHelpers::getAlertsLine($message);
+                    }
                 }
-            }
-           /* $user = User::findOne($userID);
-            $html = $this->buildEmail($user,$updates,$alerts);
-            $html2text = new Html2Text($html);
-            $textHtml = $html2text->getText();
-            $message = Yii::$app->mailer->compose()
-                ->setFrom(Yii::$app->params['adminEmail'])
-                ->setTo($user->email)
-                ->setSubject($user->fullName.' You Have New Information In WIldfires Near Me')
-                ->setTextBody($textHtml)
-                ->setHtmlBody($html);*/
+                $user = $query[0]->user;
+                $html = $this->buildEmail($user,$updates,$alerts);
+                $html2text = new Html2Text($html);
+                $textHtml = $html2text->getText();
+                $message = Yii::$app->mailer->compose()
+                    ->setFrom(Yii::$app->params['adminEmail'])
+                    ->setTo($user->email)
+                    ->setSubject($user->fullName.' You Have New Information In WIldfires Near Me')
+                    ->setTextBody($textHtml)
+                    ->setHtmlBody($html);
 
-                /*try {
+            
+                try {
                     if($message->send()){
                         $sent++;
                         Messages::updateAll(['sent_at' => time()], 'user_id = '.$userID);
                     }else{
-
                         $failed++;
                         $userMessages = Messages::find()->andWhere(['user_id'=>$userID])->all();
                         foreach ($userMessages as $row) {
@@ -97,7 +112,8 @@ class System extends Model{
                         $count = $row->send_tries++;
                         $row->updateAttributes(['send_tries'=>$count]);
                     }
-                }*/
+                }
+            }
         }
         return ['sent'=>$sent,'failed'=>$failed];
     }
@@ -116,13 +132,40 @@ class System extends Model{
     }
 
     protected function buildEmailUserArray(){
-        $models = $this->getEmailList();
-        $mArray =[];
-        foreach ($models as $key => $model) {
-            $mArray[$model->user_id][] = $model;
-        }
-        return $mArray;
+        // $models = $this->getEmailList();
+        $models = Messages::find()
+            ->select(['messages.user_id'])
+            ->joinWith(['user','profile'])
+            ->andWhere([
+                'and',
+                ['user.status' => User::STATUS_ACTIVE],
+                ['>=', 'profile.email_prefs', Profile::ALERTS_EMAILS_ONLY],
+                ['messages.sent_at' => NULL],
+                ['messages.seen_at' => NULL],
+                ['>=', 'messages.created_at', Yii::$app->formatter->asTimestamp('-24 hours')]
+            ])
+            ->distinct()
+            ->asArray()
+            ->column();
+        return $models;
+           /* $count = Messages::find()
+            ->select(['messages.user_id'])
+            ->joinWith(['user','profile'])
+            ->andWhere([
+                'and',
+                ['user.status' => User::STATUS_ACTIVE],
+                ['>=', 'profile.email_prefs', Profile::ALERTS_EMAILS_ONLY],
+                ['messages.sent_at' => NULL],
+                ['messages.seen_at' => NULL],
+                ['>=', 'messages.created_at', Yii::$app->formatter->asTimestamp('-24 hours')]
+            ])
+            ->asArray()
+            ->all();
+            $c = array_unique(ArrayHelper::getColumn($count,'user_id'));
+
+        return ['column'=>count($models),'count'=>count($c)];*/
     }
+    
     public function setEmailList(){
         $this->_emailList = Messages::find()
         ->joinWith(['user','profile'])
