@@ -20,8 +20,8 @@ return [
     'components' => [
         'urlManager' => [
             'class' => 'yii\web\UrlManager',
-            'baseUrl' => 'http://'.Ptech_HOST,
-            'hostInfo' => 'http://'.Ptech_HOST,
+            'baseUrl' => Ptech_HOST,
+            'hostInfo' => Ptech_HOST,
             'enablePrettyUrl' => true,
             'showScriptName' => false,
         ],
