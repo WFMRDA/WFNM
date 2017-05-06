@@ -66,7 +66,7 @@ return [
         'class' => \yii\filters\AccessControl::className(),//AccessControl::className(),
         'rules' => [
            [
-               'actions' => ['login', 'error','request-password-reset','resend-confirmation','update-password','confirm','signup','captcha','process-updates'],
+               'actions' => ['count','login', 'error','request-password-reset','resend-confirmation','update-password','confirm','signup','captcha','process-updates'],
                'allow' => true,
            ],
            [

@@ -11,6 +11,7 @@ use common\models\system\System;
 use yii\helpers\Url;
 use common\models\helpers\WfnmHelpers;
 use yii\helpers\ArrayHelper;
+use common\models\messages\Messages;
 
 
 
@@ -31,6 +32,22 @@ class WebHookController extends Controller
         ];
     }
 
+
+    public function actionCount($key){
+
+        if($key == Yii::$app->params['webhook-key']){
+            $c = Messages::find()
+                ->andWhere([
+                    'and',
+                    ['messages.sent_at' => NULL],
+                    ['>=', 'messages.created_at', Yii::$app->formatter->asTimestamp('-24 hours')]
+                ])
+                ->count();
+            echo $c;
+        }
+        // Yii::trace($c,'dev');
+
+    }
     /**
      * Lists all MyFires models.
      * @return mixed
