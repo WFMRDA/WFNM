@@ -17,7 +17,7 @@ $this->registerJs("jQuery.fn.DataTable.ext.pager.numbers_length = 4;");
 		<div class='col-xs-12 overview'>
 			<div class="pl-level-report-box">
 				<p class="pl-level-num"> <?=Yii::$app->systemData->getPlLevel()?></p>
-				<p class="pl-level-title">Prepardness Level </p>
+				<p class="pl-level-title">P<span class="hidden-xs hidden-sm">reparedness</span> L<span class="hidden-xs">evel</span> </p>
 			</div>
 			<div class="pl-level-data-box">
 				<p class='panel-box-title'>new large incidents<span class="panel-box-text "> <?=ArrayHelper::getValue($sitReport,'NLI.val','')?> </span> </p>
