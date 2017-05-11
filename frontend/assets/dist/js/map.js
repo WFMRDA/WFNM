@@ -66,22 +66,25 @@ require(
     var zoom = new Zoom({
         view: view
     }, "zoomDiv");
-    /*var locateBtn = new Locate({
-        view: view
-    });*/
-    var track = new Track({
+    var track = new Locate({
         view: view,
         graphic: new Graphic({
             symbol: userMarkerSymbol,  // Overwrites the default symbol used for the
             // graphic placed at the location of the user when found
         })
     },"locateDiv");
+/*    var track = new Track({
+        view: view,
+        graphic: new Graphic({
+            symbol: userMarkerSymbol,  // Overwrites the default symbol used for the
+            // graphic placed at the location of the user when found
+        })
+    },"locateDiv");*/
     // Add the locate widget to the top left corner of the view
     // view.ui.add(locateBtn,"top-left");
-    view.ui.add(track);
+    // view.ui.add(track);
     view.ui.add(zoom);
     view.then(function() {
-        track.start();
         // console.log('in view Then');
         getWfnmGeoJsonData()
         .then(createWfnmGraphics)
@@ -287,7 +290,7 @@ require(
             if(jQuery.inArray( "GeoMac" , addtlLayers ) != -1 ){
                 // console.log('GeoMac Clause');
                 geoMac = new FeatureLayer({
-                    url: "http://wildfire.cr.usgs.gov/arcgis/rest/services/geomac_perims/MapServer/4",
+                    url: "//wildfire.cr.usgs.gov/arcgis/rest/services/geomac_perims/MapServer/4",
                     outFields: ["*"],
                     popupEnabled: false,
                 });
@@ -587,7 +590,7 @@ $(document).ready(function() {
         jQuery._toggleLegendHelp();
     });
 
-    
+
 
     $('#default-map-container').on('click','.wfnm-btn',function(e){
         e.preventDefault();

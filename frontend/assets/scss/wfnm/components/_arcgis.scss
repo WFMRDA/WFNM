@@ -261,7 +261,7 @@
     #locateDiv{
         position: absolute;
         left: 3%;
-        top:1%;
+        top:45px;
         bottom: -webkit-calc(5% + #{$footerHeight});
         bottom:    -moz-calc(5% + #{$footerHeight});
         bottom:         calc(5% + #{$footerHeight});
@@ -271,7 +271,7 @@
         // background: blue;
         position: absolute;
         right: 1%;
-        top:1%;
+        top:45px;
         visibility: visible;
         // cursor: pointer;
         // top: -webkit-calc(1% + #{$navbar-height});
@@ -299,7 +299,7 @@
         right:    -moz-calc(6% + 32px);
         right:         calc(6% + 32px);
         z-index: 1;
-        
+
 
         #legend-bar-container{
             #mapLegend{
@@ -342,17 +342,17 @@
             left: 3%;
             // bottom: 0;
         }
-        #legendToogle,#locateDiv{
-            top: 45px;
-        }
+        // #legendToogle,#locateDiv{
+        //     top: 45px;
+        // }
         #zoomDiv{
             // bottom: 70px;
             z-index: 10;
         }
         /* #menu-toggle{
-            position: 
-            relative; 
-            left: 283px; 
+            position:
+            relative;
+            left: 283px;
             top: -156px;
         } */
     }
@@ -376,8 +376,8 @@
     }*/
 }
 #menu-toggle{
-    position: fixed; 
-    right : 5%; 
+    position: fixed;
+    right : 5%;
     bottom: -webkit-calc(75px + #{$footerHeight} * 2);
     bottom:    -moz-calc(75px + #{$footerHeight} * 2);
     bottom:         calc(75px + #{$footerHeight} * 2);
@@ -417,9 +417,9 @@
 }
 @media (max-width: $screen-xs-max) {
     /* #menu-toggle{
-        position: 
-        relative; 
-        left: 283px; 
+        position:
+        relative;
+        left: 283px;
         top: -156px;
     } */
 }
