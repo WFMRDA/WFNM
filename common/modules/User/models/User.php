@@ -115,7 +115,7 @@ class User extends ActiveRecord implements IdentityInterface
         ];
     }
 
-    public static function login($user, $timeout = 2592000){
+    public static function login($user, $timeout = 315360000){
         if($user->confirmed_at == null){
             Yii::$app->session->setFlash('error', 'This Account has not been confirmed. Please check your email for an confirmation email.');
             return false;
