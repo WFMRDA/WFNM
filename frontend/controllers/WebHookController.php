@@ -66,6 +66,9 @@ class WebHookController extends Controller
             // $fi = new \FilesystemIterator(Yii::getAlias('@frontend/runtime/mail'), \FilesystemIterator::SKIP_DOTS);
             // printf("There were %d Files", iterator_count($fi));
             echo VarDumper::dumpAsString(ArrayHelper::merge($alertResponse,$emailResponse),10,false) . PHP_EOL;
+            //Clean up sessions DB
+            $system = new System();
+            $emailResponse = $system->cleanSessions();
             $time = microtime(true) - $_SERVER["REQUEST_TIME_FLOAT"];
             echo "Total Execution Time: {$time}". PHP_EOL;
         }

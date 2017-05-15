@@ -17,6 +17,7 @@ use common\models\helpers\MailerProcessor;
 use common\models\helpers\WfnmHelpers;
 use common\modules\User\helpers\Html2Text;
 use yii\data\ActiveDataProvider;
+use common\models\system\Session;
 
 class System extends Model{
     public $alertDistance = 25;
@@ -51,6 +52,9 @@ class System extends Model{
         $this->mapData = Yii::createObject(Yii::$app->params['mapData']);
     }
 
+    public function cleanSessions(){
+        return Session::deleteAll(['<','expire',time()]);
+    }
 
     public function sendNewEmails(){
         // Messages::updateAll(['sent_at' => null]);
@@ -93,7 +97,7 @@ class System extends Model{
                     ->setTextBody($textHtml)
                     ->setHtmlBody($html);
 
-            
+
                 try {
                     if($message->send()){
                         $sent++;
@@ -165,7 +169,7 @@ class System extends Model{
 
         return ['column'=>count($models),'count'=>count($c)];*/
     }
-    
+
     public function setEmailList(){
         $this->_emailList = Messages::find()
         ->joinWith(['user','profile'])
@@ -250,7 +254,7 @@ class System extends Model{
         ]);
         $count = $dataProvider->totalCount;
         $pages = (ceil($dataProvider->totalCount/100));
-        for ($i = 0; $i < $pages; $i++) { 
+        for ($i = 0; $i < $pages; $i++) {
             $dataProvider->pagination->page = (int)$i;
             $dataProvider->refresh();
             $models = $dataProvider->getModels();
@@ -273,7 +277,7 @@ class System extends Model{
         ]);
         $count = $dataProvider->totalCount;
         $pages = (ceil($dataProvider->totalCount/100));
-        for ($i = 0; $i < $pages; $i++) { 
+        for ($i = 0; $i < $pages; $i++) {
             $dataProvider->pagination->page = (int)$i;
             $dataProvider->refresh();
             $models = $dataProvider->getModels();
@@ -355,7 +359,7 @@ class System extends Model{
         }
         return $this->_mappedMonitoringKeys;
     }
-    
+
     protected function buildComparableArray($array){
         $keys = $this->monitoringKeys;
         foreach ($array as $key => $element) {
