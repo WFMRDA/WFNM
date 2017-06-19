@@ -55,7 +55,7 @@ $this->registerJs("jQuery.fn.DataTable.ext.pager.numbers_length = 4;");
 						],
 						'clientOptions'=>[
 		        			"order" => [[ 1, "desc" ]],
-							'stateSave' => true,
+							// 'stateSave' => true,
 							'dom' => '<"row"r <"col-xs-6"f> <"col-xs-6"l> <"col-xs-12"t><"col-xs-12"i> <"col-xs-12"p> >',
 							'pageLength' => 5,
 						],
@@ -76,7 +76,7 @@ $this->registerJs("jQuery.fn.DataTable.ext.pager.numbers_length = 4;");
 						],
 						'clientOptions'=>[
 		        			"order" => [[ 1, "desc" ]],
-							'stateSave' => true,
+							// 'stateSave' => true,
 							'dom' => '<"row"r <"col-xs-6"f> <"col-xs-6"l> <"col-xs-12"t><"col-xs-12"i> <"col-xs-12"p> >',
 							'pageLength' => 5,
 						],
