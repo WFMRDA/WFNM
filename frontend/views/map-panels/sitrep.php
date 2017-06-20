@@ -86,3 +86,4 @@ $this->registerJs("jQuery.fn.DataTable.ext.pager.numbers_length = 4;");
 		</div>
 	</div>
 </div>
+<?=$time?>

@@ -105,6 +105,7 @@ class MapRestController extends Controller
                 'emergingFireDataProvider' => $emergingFireDataProvider,
                 'newFireDataProvider' => $newFireDataProvider,
                 'sitReport'=>$sitReport,
+                'time'=>$mapData->nextRefreshTime,
                 // 'pl'=>$pl,
             ]);
             return ['html'=>$html];
