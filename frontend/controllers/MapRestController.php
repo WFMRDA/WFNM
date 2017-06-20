@@ -104,7 +104,7 @@ class MapRestController extends Controller
             // $d =$mapData->getFireArray();
             $d = $mapData->processFires($mapData->getWfnmData());
             //Array Keys
-            $keys = array_keys($mapData->getFireArray());
+            $keys = array_keys($d);
             $table = [];
             foreach ($keys as $key) {
                 $table[$key] = count($d[$key]); 
@@ -117,7 +117,6 @@ class MapRestController extends Controller
                 'sitReport'=>$sitReport,
                 'time'=>$mapData->nextRefreshTime,
                 'table' => $table,
-                // 'pl'=>$pl,
             ]);
             return ['html'=>$html];
         }

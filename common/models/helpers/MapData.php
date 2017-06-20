@@ -107,14 +107,17 @@ class MapData extends Model{
         return $this->fireArrayCacheKey;
     }
 
-    protected function refreshFireArray(){
+    protected $_fireArray;
+
+    protected function refreshFireArray($firedb){
         $cache = Yii::$app->cache;
         $key  = $this->getFireArrayCacheKey();
-        $firedb = $this->getWfnmData();
         $dataSet = $this->processFires($firedb);
+        $cache->set($key, $dataSet);
+        // Yii::trace($key,'dev');
+        // $firedb = $this->getWfnmData();
         // Yii::trace(VarDumper::dumpAsString($firedb,10),'dev');
-        $cache->set($key, $dataSet,$this->nextRefreshTime);
-        return $dataSet;
+        // return $dataSet;
     }
 
     public function getFireArray($type = null){
@@ -123,8 +126,9 @@ class MapData extends Model{
         $key  = $this->getFireArrayCacheKey();
         // Yii::trace($key,'dev');
         // $cache->delete($key) ;
-        if(!$cache->exists($key) || empty($data  = $cache->get($key))){
-           $data = $this->refreshFireArray();
+        if(!$cache->exists($key) || empty($data = $cache->get($key))){
+           $this->refreshWfnmData();
+           $data = $cache->get($key);
         }
         // Yii::trace(VarDumper::dumpAsString($this->_fireIncidents,10),'dev');
         return ($type !== null) ? ArrayHelper::getValue($data,$type,[]) : $data;
@@ -247,6 +251,7 @@ class MapData extends Model{
             if ($updatesResponse->isOk) {
                 $data =  $updatesResponse->data;
                 $cache->set($key, $data, $this->nextRefreshTime);
+                $this->refreshFireArray($data);
             }else{
                 //Log Error.
                 // $this->errorlog[] = $updatesResponse->data;
