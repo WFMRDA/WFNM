@@ -129,8 +129,8 @@ class MapData extends Model{
         // Yii::trace(VarDumper::dumpAsString($this->_fireIncidents,10),'dev');
         return ($type !== null) ? ArrayHelper::getValue($data,$type,[]) : $data;
     }
-    
-    protected function processFires($array){
+
+    public function processFires($array){
         $incident = $dataSet = [];
         foreach ($array as $key => $incident) {
             if($incident['dailyAcres'] == null){
