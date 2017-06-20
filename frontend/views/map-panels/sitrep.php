@@ -87,6 +87,7 @@ $this->registerJs("jQuery.fn.DataTable.ext.pager.numbers_length = 4;");
 		</div>
 	</div>
 </div>
-<?=$time?><br>
-<?=$emergingFireDataProvider->count?><br><?=$newFireDataProvider->count?><br>
-<?=VarDumper::dumpAsString($table,10) ?>
+<!-- 
+<?php //$time?><br>
+<?php //$emergingFireDataProvider->count?><br><?php //$newFireDataProvider->count?><br>
+<?php //VarDumper::dumpAsString($table,10) ?>-->
