@@ -107,20 +107,6 @@ class MapData extends Model{
         return $this->fireArrayCacheKey;
     }
 
-    protected function setFireArray(){
-        //Check Cache for WFNM GeoJson, If unavailable set Cache and return values
-        $cache = Yii::$app->cache;
-        $key  = $this->getFireArrayCacheKey();
-        // Yii::trace($key,'dev');
-        // $cache->delete($key) ;
-        if(!$cache->exists($key) || empty($data  = $cache->get($key))){
-           $data = $this->refreshFireArray();
-        }
-        // Yii::trace($data,'dev');
-        return $data;
-
-    }
-
     protected function refreshFireArray(){
         $cache = Yii::$app->cache;
         $key  = $this->getFireArrayCacheKey();
@@ -131,6 +117,19 @@ class MapData extends Model{
         return $dataSet;
     }
 
+    public function getFireArray($type = null){
+        //Check Cache for WFNM GeoJson, If unavailable set Cache and return values
+        $cache = Yii::$app->cache;
+        $key  = $this->getFireArrayCacheKey();
+        // Yii::trace($key,'dev');
+        // $cache->delete($key) ;
+        if(!$cache->exists($key) || empty($data  = $cache->get($key))){
+           $data = $this->refreshFireArray();
+        }
+        // Yii::trace(VarDumper::dumpAsString($this->_fireIncidents,10),'dev');
+        return ($type !== null) ? ArrayHelper::getValue($data,$type,[]) : $data;
+    }
+    
     protected function processFires($array){
         $incident = $dataSet = [];
         foreach ($array as $key => $incident) {
@@ -154,19 +153,6 @@ class MapData extends Model{
             }
         }
         return $dataSet;
-    }
-
-    public function getFireArray($type = null){
-        //Check Cache for WFNM GeoJson, If unavailable set Cache and return values
-        $cache = Yii::$app->cache;
-        $key  = $this->getFireArrayCacheKey();
-        // Yii::trace($key,'dev');
-        // $cache->delete($key) ;
-        if(!$cache->exists($key) || empty($data  = $cache->get($key))){
-           $data = $this->setFireArray();
-        }
-        // Yii::trace(VarDumper::dumpAsString($this->_fireIncidents,10),'dev');
-        return ($type !== null) ? ArrayHelper::getValue($data,$type,[]) : $data;
     }
 
     public function setEmergingFires(){
