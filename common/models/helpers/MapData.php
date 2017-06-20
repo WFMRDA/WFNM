@@ -205,8 +205,12 @@ class MapData extends Model{
         }
         // Yii::trace(ArrayHelper::getColumn($this->_emergingFires, 'dailyAcres'),'dev');
         // ArrayHelper::multisort($this->_newFires, ['dailyAcres', 'incidentName'], [SORT_DESC, SORT_ASC]);
-        // Yii::trace(ArrayHelper::getColumn($this->_newFires, 'incidentName'),'dev');
-        // Yii::trace($this->_newFires,'dev');
+        // Yii::trace(ArrayHelper::getColumn($this->_newFires, 'fireClassId'),'dev');
+        // Yii::trace(ArrayHelper::map($this->getFireArray(self::NEW0),'irwinID','fireClassId'),'dev'); //array_keys($this->getFireArray()
+        // Yii::trace(ArrayHelper::map($this->_newFires,'irwinID','fireClassId'),'dev'); //array_keys($this->getFireArray()
+        // Yii::trace($this->getFireInfo('1CB03BD1-5E0A-4EFE-9BAF-F56D3EF5DA9A'),'dev'); //array_keys($this->getFireArray()
+        // Yii::trace($this->getWfnmData(),'dev'); //array_keys($this->getFireArray()
+        
         return new ArrayDataProvider([
             'allModels' => $this->_newFires,
             'pagination' => false,
@@ -232,7 +236,7 @@ class MapData extends Model{
      * @return json WFNM Fire dataset
      */
     public function searchWfnmData($params){
-        Yii::trace($params,'dev');
+        // Yii::trace($params,'dev');
         $dataset = $this->getWfnmData();
         return $dataset;
     }
@@ -255,8 +259,8 @@ class MapData extends Model{
             // Yii::trace(VarDumper::dumpAsString($updatesResponse,10),'dev');
             // Yii::trace(VarDumper::dumpAsString($updatesResponse->data,10),'dev');
             if ($updatesResponse->isOk) {
-                $cache->set($key, $updatesResponse->data,$this->nextRefreshTime);
-                $data = $updatesResponse->data;
+                $data =  $updatesResponse->data;
+                $cache->set($key, $data, $this->nextRefreshTime);
             }else{
                 //Log Error.
                 // $this->errorlog[] = $updatesResponse->data;
