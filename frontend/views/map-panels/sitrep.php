@@ -51,7 +51,7 @@ $this->registerJs("jQuery.fn.DataTable.ext.pager.numbers_length = 4;");
 							'dailyAcres'
 						],
 						'tableOptions'=>[
-							'id'=> 'emergingFiresTable',
+							'id'=> 'emergingFiresTable2',
 						],
 						'clientOptions'=>[
 		        			"order" => [[ 1, "desc" ]],
@@ -72,7 +72,7 @@ $this->registerJs("jQuery.fn.DataTable.ext.pager.numbers_length = 4;");
 							'dailyAcres'
 						],
 						'tableOptions'=>[
-							'id'=> 'newFiresTable',
+							'id'=> 'newFiresTable2',
 						],
 						'clientOptions'=>[
 		        			"order" => [[ 1, "desc" ]],
@@ -87,4 +87,4 @@ $this->registerJs("jQuery.fn.DataTable.ext.pager.numbers_length = 4;");
 	</div>
 </div>
 <?=$time?><br>
-<?=$newFireDataProvider->count?>
+<?=$emergingFireDataProvider->count?><br><?=$newFireDataProvider->count?>
