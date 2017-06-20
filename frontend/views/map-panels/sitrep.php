@@ -3,6 +3,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use common\widgets\MyFiresWidget;
 use yii\helpers\ArrayHelper;
+use yii\helpers\VarDumper;
 $this->title = 'Situation Report';
 // \Yii::trace($sitReport,'dev');
 
@@ -87,4 +88,5 @@ $this->registerJs("jQuery.fn.DataTable.ext.pager.numbers_length = 4;");
 	</div>
 </div>
 <?=$time?><br>
-<?=$emergingFireDataProvider->count?><br><?=$newFireDataProvider->count?>
+<?=$emergingFireDataProvider->count?><br><?=$newFireDataProvider->count?><br>
+<?=VarDumper::dumpAsString($table,10) ?>

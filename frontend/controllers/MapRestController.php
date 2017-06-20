@@ -100,12 +100,21 @@ class MapRestController extends Controller
             $emergingFireDataProvider = $mapData->getEmergingFiresDataProvider();
             $newFireDataProvider = $mapData->getNewFiresDataProvider();
             $sitReport = $mapData->getSitReportInfo();
+            // $table = ArrayHelper::map($mapData->getFireArray(),'incidentName','fireClassId');
+            $d =$mapData->getFireArray();
+            //Array Keys
+            $keys = array_keys($mapData->getFireArray());
+            $table = [];
+            foreach ($keys as $key) {
+                $table[$key] = count($d[$key]); 
+            }
             // $pl = $mapData->getPrepardnessLevel('NIC');
             $html = $this->renderAjax('sitrep', [
                 'emergingFireDataProvider' => $emergingFireDataProvider,
                 'newFireDataProvider' => $newFireDataProvider,
                 'sitReport'=>$sitReport,
                 'time'=>$mapData->nextRefreshTime,
+                'table' => $table,
                 // 'pl'=>$pl,
             ]);
             return ['html'=>$html];
