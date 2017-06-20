@@ -114,7 +114,7 @@ class MapRestController extends Controller
                 'newFireDataProvider' => $newFireDataProvider,
                 'sitReport'=>$sitReport,
                 'time'=>$mapData->nextRefreshTime,
-                'table' => $table,
+                'table' => ArrayHelper::map($mapData->getWfnmData(),'incidentName','fireClassId'),
                 // 'pl'=>$pl,
             ]);
             return ['html'=>$html];
