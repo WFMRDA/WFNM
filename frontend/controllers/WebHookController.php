@@ -48,6 +48,20 @@ class WebHookController extends Controller
         // Yii::trace($c,'dev');
 
     }
+
+    public function actionRefreshSitReport($key){
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        if($key == Yii::$app->params['webhook-key']){
+            echo 'Refreshing SitReport Data... StandBy'. PHP_EOL;
+            $mapData = Yii::createObject(Yii::$app->params['mapData']);
+            $response = $mapData->refreshPrepardnessLevel();
+            echo VarDumper::dumpAsString($response,10,false) . PHP_EOL;
+            $time = microtime(true) - $_SERVER["REQUEST_TIME_FLOAT"];
+            echo "Total Execution Time: {$time}". PHP_EOL;
+        }
+        Yii::$app->response->statusCode = 200;
+    }
+    
     /**
      * Lists all MyFires models.
      * @return mixed
