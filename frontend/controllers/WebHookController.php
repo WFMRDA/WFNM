@@ -56,7 +56,11 @@ class WebHookController extends Controller
             $mapData = Yii::createObject(Yii::$app->params['mapData']);
             $response[] = $mapData->refreshPrepardnessLevel();
             $response[] = $mapData->refreshSitReportInfo();
-            echo VarDumper::dumpAsString($response,10,false) . PHP_EOL;
+            // echo VarDumper::dumpAsString($response,10,false) . PHP_EOL;
+            echo \yii\bootstrap\Alert::widget([
+                'body' => \yii\helpers\VarDumper::dumpAsString($response,10,true),
+                'options' => ['class'=> 'alert-success alert fade in'],
+            ]);
             $time = microtime(true) - $_SERVER["REQUEST_TIME_FLOAT"];
             echo "Total Execution Time: {$time}". PHP_EOL;
         }
