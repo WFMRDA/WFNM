@@ -61,7 +61,13 @@ require(
         ui:{
             // components:  ["attribution", "zoom"],
             components:  [],
+        },
+        contstraints:{
+            rotationEnabled:false
         }
+    });
+    view.on('pointer-up', function(){
+        view.rotation = 0;
     });
     var zoom = new Zoom({
         view: view
