@@ -13,7 +13,7 @@ $menuItems = array();
 
 <?php
     NavBar::begin([
-        'brandLabel' => Html::img('@media/header-logo.png',['class'=>'logo-img']),
+        'brandLabel' => Html::img('@media/header-logo-trans.png',['class'=>'logo-img']),
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [
             'class' => 'navbar navbar-default navbar-fixed-top',

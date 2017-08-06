@@ -18,6 +18,14 @@ $( document ).ready(function() {
         //console.log('clicked Edit Table');
     });
 
+    if($('#terms-of-service').length){
+        $('#terms-of-service').modal('show');
+        $('#terms-of-service').on('hidden.bs.modal', function (e) {
+            wfnm.saveDisclaimerSeen();
+        });
+    }
+
+
 });
 
 window.wfnm = (function ($) {
@@ -64,6 +72,11 @@ window.wfnm = (function ($) {
                     cb();
                 }
             }, "json");
+        },
+        saveDisclaimerSeen: function(){
+            $.post( "/system-rest/store-disclaimer" ,function( data ) {
+                console.log(data);
+            });
         },
         followFire: function(fid){
             $.post( "/map-rest/follow-fire", {fid:fid}, function( data ) {

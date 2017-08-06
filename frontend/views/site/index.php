@@ -25,6 +25,7 @@ $engine = new Bloodhound([
 /* @var $this yii\web\View */
 $this->title = Yii::$app->name;
 ?>
+<?=Yii::$app->systemData->disclaimer?$this->render('_disclaimer'):''?>
 <div id='default-map-container' class="default-map-index">
 	<div id="map" class="baseMap">
 		<div id='fire-search-form-container' class='col-xs-12'>
@@ -179,7 +180,7 @@ $this->title = Yii::$app->name;
 					],
 				])?>
 		</div>
-		
+
 	</div>
 	<div id='info-panel-container'>
 		<button type="button" class="close" id='closePanel' data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>

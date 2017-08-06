@@ -8,6 +8,7 @@ use common\models\myFires\MyFires;
 use common\models\myLocations\MyLocations;
 use common\models\user\UserSettings;
 use common\models\messages\Messages;
+use common\models\popup\PopTable;
 
 class User extends \common\modules\User\models\User
 {
@@ -39,4 +40,12 @@ class User extends \common\modules\User\models\User
     {
         return $this->hasMany(Messages::className(), ['user_id' => 'id']);
     }
+    /**
+      * @return \yii\db\ActiveQuery
+      */
+     public function getPopups()
+     {
+         return $this->hasMany(PopTable::className(), ['user_id' => 'id']);
+     }
+
 }

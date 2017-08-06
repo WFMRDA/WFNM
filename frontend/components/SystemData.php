@@ -15,6 +15,7 @@ use common\models\user\UserSettings;
 use common\models\helpers\WfnmHelpers;
 use common\models\messages\Messages;
 use yii\data\ActiveDataProvider;
+use common\models\popup\PopTable;
 
 class SystemData extends Component{
 
@@ -127,6 +128,35 @@ class SystemData extends Component{
         }
         return $this->_userSettings;
     }
+
+    protected $_disclaimer;
+    public function setDisclaimer(){
+        // $this->_disclaimer = true;
+        // return false;
+        $query =  PopTable::findOne(['user_id'=> Yii::$app->user->identity->id, 'type' => PopTable::DISCLAIMER]);
+        $this->_disclaimer = ($query == null || $query->seen_at < Yii::$app->formatter->asTimestamp('- 1 week'));
+    }
+    public function getDisclaimer(){
+        if($this->_disclaimer == null){
+            $this->setDisclaimer();
+        }
+        return $this->_disclaimer;
+    }
+
+/*    public function setDisclaimer(){
+        $cache = Yii::$app->cache;
+        $key  = $this->userCacheKey.'Disclaimer';
+        $cache->set($key,$query,self::getNextRefreshTime());
+    }
+    public function getDisclaimer(){
+        $cache = Yii::$app->cache;
+        $key  = $this->userCacheKey.'Disclaimer';
+        // $cache->delete($key) ;
+        if(!$cache->exists($key) || empty($data  = $cache->get($key))){
+           $data = $this->refreshUserData();
+        }
+        return $data;
+    }*/
 
     protected function getSetting($key){
         $model = new UserSettings;
