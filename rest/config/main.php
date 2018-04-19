@@ -52,13 +52,6 @@ return [
                 '*' => 'yii\web\JsonParser',
             ]
         ],*/
-    	'jwt' => [
-    		'class' => 'rest\models\jwt\Jwt',
-            'passphrase' => '',
-            'uniqueToken' => 'auth_key',// – Column from User Table will be used as a unique string, could be used to validate a token, but goes against not having a centralized issuer authority.
-            'serverName' => Ptech_HOST,// – A string containing the name or identifier of the issuer application. Can be a domain name and can be used to discard tokens from other applications.
-            'exp' => 315360000,// 10 years
-        ],
         'urlManager' => [
             'enablePrettyUrl' => true,
             'enableStrictParsing' => true,
