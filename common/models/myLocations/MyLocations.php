@@ -51,7 +51,7 @@ class MyLocations extends \yii\db\ActiveRecord
             [['address'], 'string'],
             [['latitude', 'longitude'], 'number'],
             [['place_id'], 'string', 'max' => 255],
-            [['user_id', 'place_id'], 'unique', 'targetAttribute' => ['user_id', 'place_id'], 'message' => 'The combination of User ID and Place ID has already been taken.'],
+            [['user_id', 'place_id'], 'unique', 'targetAttribute' => ['user_id','place_id'], 'message' => 'This user already is monitoring this location..'],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
