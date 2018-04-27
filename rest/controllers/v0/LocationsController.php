@@ -113,7 +113,20 @@ class LocationsController extends Controller
         if ($model->delete() === false) {
             throw new ServerErrorHttpException('Failed to delete the object for unknown reason.');
         }
-        Yii::$app->getResponse()->setStatusCode(204);
+        $query = MyLocations::find();
+        $query->andWhere(['user_id' => Yii::$app->user->identity->id]);
+
+        return Yii::createObject([
+           'class' => ActiveDataProvider::className(),
+           'query' => $query,
+           'pagination' => [
+               'params' => $requestParams,
+           ],
+           'sort' => [
+               'params' => $requestParams,
+           ],
+        ]);
+        // Yii::$app->getResponse()->setStatusCode(204);
     }
 
     /**
