@@ -15,6 +15,7 @@ use common\models\helpers\WfnmHelpers;
 use common\models\myLocations\MyLocationsForm;
 use common\models\myLocations\MyLocations;
 use common\models\messages\Messages;
+use yii\web\ServerErrorHttpException;
 
 
 
@@ -31,8 +32,7 @@ class MapRestController extends Controller
     public function actionFires(){
         if (Yii::$app->request->isPost){
             $mapData = Yii::createObject(Yii::$app->params['mapData']);
-            $addtlLayers = ArrayHelper::getValue(Yii::$app->appSystemData->mapLayers,'addtlLayers');
-            return ['wfnm' => $mapData->getWfnmGeoJsonLayer(),'addtlLayers'=>$addtlLayers];
+            return ['wfnm' => $mapData->getWfnmGeoJsonLayer(),'layers'=>Yii::$app->appSystemData->mapLayers];
         }
     }
 
@@ -40,24 +40,39 @@ class MapRestController extends Controller
         if (Yii::$app->request->isAjax){
             $params = ArrayHelper::merge(Yii::$app->request->queryParams,Yii::$app->request->bodyParams);
             $fireId = ArrayHelper::getValue($params,'fid');
-            $alertId = ArrayHelper::getValue($params,'aid');
-            // Yii::trace($fireId,'dev');
-            // Yii::trace($alertId,'dev');
-            if($alertId != null){
-                $this->checkSeen($alertId);
-                $response['header'] = \common\widgets\NotificationsWidget::widget([
-                    'dataProvider' => Yii::$app->appSystemData->userMessages,
-                ]);
-            }
-
             $query = WfnmHelpers::getFireInfo($fireId);
-            $response['html'] = $this->renderAjax('fireinfo', [
-                'irwin' => $query,
-                'fireId'=>$fireId,
-            ]);
-            $response['coords'] = ['lat'=> $query['pooLatitude'], 'lon'=>$query['pooLongitude']];
-            return $response;
-            // return ['header'=>$header,'html'=>$html,'coords'=>['lat'=> $query['pooLatitude'], 'lon'=>$query['pooLongitude']]];
+            $prepLevel = WfnmHelpers::getPrepLevel($query['gacc']);
+            $isFollowing = WfnmHelpers::isUserFollowing(Yii::$app->user->identity->id,$fireId);
+            // Yii::trace($prepLevel,'dev');
+            // Yii::trace($query['gacc'],'dev');
+            // Yii::trace($query,'dev');
+            return ['fireInfo'=>$query,'localGaccPlLevel'=> $prepLevel,'isFollowing'=>$isFollowing];
+        }
+    }
+
+    public function actionFiresNearMe(){
+        if (Yii::$app->request->isAjax){
+            $params = ArrayHelper::merge(Yii::$app->request->queryParams,Yii::$app->request->bodyParams);
+            $lat = ArrayHelper::getValue($params,'lat');
+            $lng = ArrayHelper::getValue($params,'lng');
+            $address = ArrayHelper::getValue($params,'address');
+            $mapData = Yii::createObject(Yii::$app->params['mapData']);
+            // Yii::trace($params,'dev');
+            if($lng == null || $lat == null){
+                throw new InvalidParamException('Lat Lng Required');
+            }
+            $mapData->userData = [
+                'longitude' => $lng,
+                'latitude' =>  $lat,
+                'distance' => 25,
+            ];
+            $data = $mapData->getFiresNearUserLocation();
+            $prepLevel = WfnmHelpers::getPrepLevel($data['gacc']);
+            return [
+                'fireInfo'=> $data['fireInfo'],
+                'gacc' => $data['gacc'],
+                'localGaccPlLevel'=> $prepLevel
+            ];
         }
     }
 
@@ -79,17 +94,44 @@ class MapRestController extends Controller
         if (Yii::$app->request->isAjax){
             $params = ArrayHelper::merge(Yii::$app->request->queryParams,Yii::$app->request->bodyParams);
             $fireId = ArrayHelper::getValue($params,'fid');
-            $html = WfnmHelpers::unFollowfire($fireId);
-            return ['html'=>$html];
+            $model = $this->getFireFollowModel($fireId);
+            if($model !== null){
+                if(!$model->delete()){
+                    throw new ServerErrorHttpException($model->errors);
+                }
+            }else{
+                throw new ServerErrorHttpException('You are not monitoring this fire');
+            }
+            return ['data'=>$this->findMyFires(), 'status' => WfnmHelpers::isUserFollowing(Yii::$app->user->identity->id,$fireId)];
         }
+    }
+
+    protected function getFireFollowModel($fireId){
+        return MyFires::find()->where(['and',['user_id'=> Yii::$app->user->identity->id,'irwinID'=>$fireId]])->one();
     }
 
     public function actionFollowFire(){
         if (Yii::$app->request->isAjax){
             $params = ArrayHelper::merge(Yii::$app->request->queryParams,Yii::$app->request->bodyParams);
             $fireId = ArrayHelper::getValue($params,'fid');
-            $html = WfnmHelpers::followfire($fireId);
-            return ['html'=>$html];
+            $model = $this->getFireFollowModel($fireId);
+            $mapData = Yii::createObject(Yii::$app->params['mapData']);
+            $query = $mapData->getFireInfo($fireId);
+            if($model == null){
+                $model = Yii::createObject([
+                    'class'=> MyFires::className(),
+                    'user_id'=>Yii::$app->user->identity->id,
+                    'irwinID'=>$fireId,
+                    'name'=> $query['incidentName'],
+                ]);
+                if(!$model->save()){
+                    throw new ServerErrorHttpException($model->errors);
+                }
+            }else{
+                throw new ServerErrorHttpException('You Are Already Monitoring This Fire');
+            }
+
+            return ['data'=>$this->findMyFires(), 'status' => WfnmHelpers::isUserFollowing(Yii::$app->user->identity->id,$fireId)];
         }
     }
 
@@ -97,6 +139,10 @@ class MapRestController extends Controller
         if (Yii::$app->request->isAjax){
             $params = ArrayHelper::merge(Yii::$app->request->queryParams,Yii::$app->request->bodyParams);
             $mapData = Yii::createObject(Yii::$app->params['mapData']);
+            return ['sitreport'=>$mapData->sitReportInfo,'fireDb'=>$mapData->wfnmData];
+
+
+            
             $emergingFireDataProvider = $mapData->getEmergingFiresDataProvider();
             $newFireDataProvider = $mapData->getNewFiresDataProvider();
             $sitReport = $mapData->getSitReportInfo();
@@ -131,21 +177,14 @@ class MapRestController extends Controller
 
     public function actionMyFires(){
         if (Yii::$app->request->isAjax){
-            $params = ArrayHelper::merge(Yii::$app->request->queryParams,Yii::$app->request->bodyParams);
-            $models = $this->findMyFires();
-            // Yii::trace($models,'dev');
-            $html = $this->renderAjax('my-fires', [
-                'models' => $models,
-            ]);
-            return ['html'=>$html];
+            return $this->findMyFires();
         }
     }
 
     public function actionAlerts(){
         if (Yii::$app->request->isAjax){
             $params = ArrayHelper::merge(Yii::$app->request->queryParams,Yii::$app->request->bodyParams);
-            $html = $this->renderAjax('alerts');
-            return ['html'=>$html];
+            return $this->findMyAlerts(ArrayHelper::getValue($params,'offset',0));
         }
     }
 
@@ -158,20 +197,24 @@ class MapRestController extends Controller
      */
     protected function findMyFires()
     {
-        return $model = MyFires::findAll(['user_id'=>Yii::$app->user->identity->id]);
+        $models = MyFires::findAll(['user_id'=>Yii::$app->user->identity->id]);
+        $mapData = Yii::createObject(Yii::$app->params['mapData']);
+        return $mapData->buildFireList($models);
+    }
 
+    protected function findMyAlerts($offset = 0){
+        return  Messages::find()
+            ->andWhere(['user_id' => Yii::$app->user->identity->id])
+            ->orderBy([
+                // 'created_at' => SORT_ASC,
+                'created_at' => SORT_DESC,
+            ])->limit(10)->offset($offset)->asArray()->all();
     }
 
     public function actionMyLocations(){
         if (Yii::$app->request->isAjax){
-            $params = ArrayHelper::merge(Yii::$app->request->queryParams,Yii::$app->request->bodyParams);
-            $model = new MyLocationsForm;
-            $models = $this->findMyFires();
-            $html = $this->renderAjax('my-locations', [
-                'model' => $model,
-                'models' => $this->findMyLocations(),
-            ]);
-            return ['html'=>$html];
+            // $params = ArrayHelper::merge(Yii::$app->request->queryParams,Yii::$app->request->bodyParams);
+            return $this->findMyLocations();
         }
     }
     /**
@@ -202,8 +245,7 @@ class MapRestController extends Controller
             ]);
             $model->load($params,'');
             $model->save();
-            $html = $this->renderAjax('_mylocationstable',['models'=>$this->findMyLocations()]);
-            return ['html'=>$html,'params'=>$params];
+            return $this->findMyLocations();
         }
     }
 
@@ -215,44 +257,10 @@ class MapRestController extends Controller
             if($model !== null){
                 $model->delete();
             }
-            $html = $this->renderAjax('_mylocationstable',['models'=>$this->findMyLocations()]);
-            return ['html'=>$html,'params'=>$params];
-            // return ['html'=>$params];
+            return $this->findMyLocations();
         }
     }
 
-    public function actionFiresNearMe(){
-        if (Yii::$app->request->isAjax){
-            $params = ArrayHelper::merge(Yii::$app->request->queryParams,Yii::$app->request->bodyParams);
-            $coords = ArrayHelper::getValue($params,'coords');
-            $address = ArrayHelper::getValue($params,'coords.address');
-            $mapData = Yii::createObject(Yii::$app->params['mapData']);
-
-            // Yii::trace($params,'dev');
-            if($coords !== null){
-                $mapData->userData = [
-                    'longitude'=> $coords['lng'],
-                    'latitude'=>  $coords['lat'],
-                ];
-                $response['coords'] = ['lat'=> $coords['lat'], 'lon'=>$coords['lng']];
-            }else{
-
-            }
-
-            $models = $mapData->getFiresNearUserLocation();
-
-            //Get User Fire Locations;
-            $html = $this->renderAjax('firesnearme', [
-                'mapData' => $mapData,
-                'models' => $models,
-                'address' => $address,
-                'myLocations' => $this->findMyLocations(),
-            ]);
-            $response['html'] = $html;
-            // Yii::trace($response,'dev');
-            return $response;
-        }
-    }
 
     /**
      * Your controller action to fetch the list

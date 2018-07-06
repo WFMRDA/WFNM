@@ -22,6 +22,16 @@ return [
             'loginUrl' => null,
             'identityCookie' => ['name' => '_identity-rest', 'httpOnly' => true],
         ],
+        'response' => [
+           'class' => 'yii\web\Response',
+            'formatters' => [
+                \yii\web\Response::FORMAT_JSON => [
+                     'class' => 'yii\web\JsonResponseFormatter',
+                     'prettyPrint' => YII_DEBUG, // use "pretty" output in debug mode
+                     'encodeOptions' =>  JSON_NUMERIC_CHECK | JSON_PRESERVE_ZERO_FRACTION,
+                ],
+            ],
+        ],
         'session' => [
             // this is the name of the session cookie used for login on the rest
             'name' => 'advanced-rest',
@@ -62,7 +72,8 @@ return [
                 [
                     'class' => 'yii\rest\UrlRule',
                     'controller' => [
-                        'lc' => 'v0/locations'
+                        'lc' => 'v0/locations',
+                        'fnm' => 'v0/fires-near-me'
                     ],
                     // 'except'=>['delete'],
                     // 'except' => ['update'],

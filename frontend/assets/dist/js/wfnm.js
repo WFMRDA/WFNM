@@ -1,33 +1,3 @@
-$( document ).ready(function() {
-    // //console.log( "ready!" );
-    $(document).on('click','.follow-fire',function(e){
-        e.preventDefault();
-        //console.log('clicked Follow');
-        var fid = $(this).data('id');
-        wfnm.followFire(fid);
-    });
-    $(document).on('click','.unfollow-fire',function(e){
-        e.preventDefault();
-        //console.log('clicked UnFollow');
-        var fid = $(this).data('id');
-        wfnm.unFollowFire(fid);
-    });
-    $(document).on('click','.myLocationsEdit,.myLocationsCancelEdit',function(e){
-        e.preventDefault();
-        $('#myLocationsTable-Container').toggleClass('editable')
-        //console.log('clicked Edit Table');
-    });
-
-    if($('#terms-of-service').length){
-        $('#terms-of-service').modal('show');
-        $('#terms-of-service').on('hidden.bs.modal', function (e) {
-            wfnm.saveDisclaimerSeen();
-        });
-    }
-
-
-});
-
 window.wfnm = (function ($) {
     var panelSelector = '#info-panel';
     var mapContainer = '#default-map-container';
@@ -67,8 +37,8 @@ window.wfnm = (function ($) {
         saveSettings: function(data,cb){
             // //console.log(data);
             $.post( "/system-rest/store-settings", data,function(data){
-                if(data.success && cb != undefined && (typeof cb === "function")){
-                    // //console.log('success');
+                if(cb != undefined && (typeof cb === "function")){
+                    // console.log('success');
                     cb();
                 }
             }, "json");
@@ -158,7 +128,7 @@ window.wfnm = (function ($) {
         },
         init: function () {
             // Call any Init functions here.
-            setSelectors();
+            // setSelectors();
         },
     },
     setLocation = function(){

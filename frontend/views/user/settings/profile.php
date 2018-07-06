@@ -11,7 +11,8 @@
 
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
-use ptech\pyrocms\models\user\Profile;
+use common\models\user\Profile;
+
 
 
 /*
@@ -98,7 +99,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?= $form->field($model, 'bio')->textArea(['rows'=>4])?>
 
                 <?=$form->field($model, 'email_prefs')->label('Email Preferences')->radioList([
-                        Profile::ALL_EMAILS => 'I Wish To Receive System Emails',
+                        Profile::ALL_EMAILS => 'I Only Want Wildfire Alerts And Updates And System Emails',
+                        Profile::ALERTS_EMAILS_ONLY  => 'I Only Want Wildfire Alerts And Updates And NO System Emails',
                         Profile::NO_EMAILS  => 'Do Not Send Me Emails',
                     ])->label('Email Preferences')
                 ?>

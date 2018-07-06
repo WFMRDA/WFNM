@@ -11,15 +11,35 @@ return [
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'controllerNamespace' => 'frontend\controllers',
-    'modules' => [],
+    'modules'=>[
+        'pyrocms' => [
+            'class' => 'ptech\pyrocms\PyroCms',
+            'user'=> [
+                'class' => 'ptech\pyrocms\User',
+                'controllerMap' => [
+                    'settings' => 'frontend\controllers\SettingsController',
+                ],
+            ]
+        ],
+    ],
     'components' => [
         'request' => [
             'csrfParam' => '_csrf-frontend',
         ],
         'user' => [
-            'identityClass' => '\ptech\pyrocms\models\user\User',
+            'identityClass' => '\common\models\user\User',
             'enableAutoLogin' => true,
             'identityCookie' => ['name' => '_identity-frontend', 'httpOnly' => true],
+        ],
+        'response' => [
+           'class' => 'yii\web\Response',
+            'formatters' => [
+                \yii\web\Response::FORMAT_JSON => [
+                     'class' => 'yii\web\JsonResponseFormatter',
+                     'prettyPrint' => YII_DEBUG, // use "pretty" output in debug mode
+                     'encodeOptions' =>  JSON_NUMERIC_CHECK | JSON_PRESERVE_ZERO_FRACTION,
+                ],
+            ],
         ],
         'session' => [
             // this is the name of the session cookie used for login on the frontend
@@ -53,13 +73,13 @@ return [
         'appSystemData' => [
             'class' => 'frontend\components\SystemData',
         ],
-        /*'view' => [
+        'view' => [
             'theme' => [
                 'pathMap' => [
                     '@ptech/pyrocms/views/user' => '@frontend/views/user',
                 ],
             ],
-        ],*/
+        ],
     ],
     /*'as access' => [
         'class' => \yii\filters\AccessControl::className(),//AccessControl::className(),

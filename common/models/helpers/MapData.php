@@ -15,8 +15,19 @@ use yii\httpclient\Client;
 use yii\base\InvalidParamException;
 use yii\helpers\VarDumper;
 use yii\data\ArrayDataProvider;
+use common\models\GACC\Gacclayer;
 
 class MapData extends Model{
+
+    /*********************
+    *   A => NEW
+    *   B => EMERGING
+    *   C => CONTAINED
+    *   D => CONTROLLED
+    *   E => ACTIVE
+    *   F => OUT
+    *********************/
+
     const DEV = 'dev';
     const PROD = 'prod';
     const TEST = 'test';
@@ -26,6 +37,7 @@ class MapData extends Model{
     const CONTAINED = 'contained';
     const ACTIVE = 'active';
     const OUT = 'out';
+    const COMPLEX = 'complex';
 
     public $baseUrl;
     public $username;
@@ -52,6 +64,7 @@ class MapData extends Model{
     public $userData = [
         'longitude'=> null,
         'latitude'=> null,
+        'distance' => 100,
     ];
 
 
@@ -94,117 +107,6 @@ class MapData extends Model{
             $this->setAuthKey();
         }
         return $this->_authKey;
-    }
-    /*********************
-    *   A => NEW
-    *   B => EMERGING
-    *   C => CONTAINED
-    *   D => CONTROLLED
-    *   E => ACTIVE
-    *   F => OUT
-    *********************/
-    protected function getFireArrayCacheKey(){
-        return $this->fireArrayCacheKey;
-    }
-
-    protected $_fireArray;
-
-    protected function refreshFireArray($firedb){
-        $cache = Yii::$app->cache;
-        $key  = $this->getFireArrayCacheKey();
-        $dataSet = $this->processFires($firedb);
-        $cache->set($key, $dataSet);
-        // Yii::trace($key,'dev');
-        // $firedb = $this->getWfnmData();
-        // Yii::trace(VarDumper::dumpAsString($firedb,10),'dev');
-        // return $dataSet;
-    }
-
-    public function getFireArray($type = null){
-        //Check Cache for WFNM GeoJson, If unavailable set Cache and return values
-        $cache = Yii::$app->cache;
-        $key  = $this->getFireArrayCacheKey();
-        // Yii::trace($key,'dev');
-        // $cache->delete($key) ;
-        if(!$cache->exists($key) || empty($data = $cache->get($key))){
-           $this->refreshWfnmData();
-           $data = $cache->get($key);
-        }
-        // Yii::trace(VarDumper::dumpAsString($this->_fireIncidents,10),'dev');
-        return ($type !== null) ? ArrayHelper::getValue($data,$type,[]) : $data;
-    }
-
-    public function processFires($array){
-        $incident = $dataSet = [];
-        foreach ($array as $key => $incident) {
-            if($incident['dailyAcres'] == null){
-                $incident['dailyAcres'] = 0;
-            }else{
-                $incident['dailyAcres'] = (float)$incident['dailyAcres'];
-            }
-            if($incident['fireClassId'] == 'A'){
-                $dataSet[self::NEW0][] = $incident;
-            }elseif($incident['fireClassId'] == 'B'){
-                $dataSet[self::EMERGING][] = $incident;
-            }elseif($incident['fireClassId'] == 'C'){
-                $dataSet[self::CONTAINED][] = $incident;
-            }elseif($incident['fireClassId'] == 'D'){
-                $dataSet[self::CONTROLLED][] =$incident ;
-            }elseif($incident['fireClassId'] == 'E'){
-                $dataSet[self::ACTIVE][] = $incident;
-            }elseif($incident['fireClassId'] == 'F'){
-                $dataSet[self::OUT][] =$incident ;
-            }
-        }
-        return $dataSet;
-    }
-
-    public function setEmergingFires(){
-        $this->_emergingFires = $this->getFireArray(self::EMERGING);
-    }
-
-    /**
-     * Gets WFNM Emerging fire dataset from cache.
-     * @return json WFNM Emerging Fire dataset
-     */
-    public function getEmergingFiresDataProvider(){
-        if(!isset($this->_emergingFires)){
-            $this->setEmergingFires();
-        }
-        // Yii::trace(ArrayHelper::getColumn($this->_emergingFires, 'dailyAcres'),'dev');
-        // ArrayHelper::multisort($this->_emergingFires, ['dailyAcres', 'incidentName'], [SORT_DESC, SORT_ASC]);
-        // Yii::trace(count(ArrayHelper::getColumn($this->_emergingFires, 'incidentName')),'dev');
-        // Yii::trace($this->_emergingFires,'dev');
-        return new ArrayDataProvider([
-            'allModels' => $this->_emergingFires,
-            'pagination' => false,
-        ]);
-    }
-
-    public function setNewFires(){
-        $this->_newFires = $this->getFireArray(self::NEW0);
-    }
-
-    /**
-     * Gets WFNM Emerging fire dataset from cache.
-     * @return json WFNM Emerging Fire dataset
-     */
-    public function getNewFiresDataProvider(){
-        if(!isset($this->_newFires)){
-            $this->setNewFires();
-        }
-        // Yii::trace(ArrayHelper::getColumn($this->_emergingFires, 'dailyAcres'),'dev');
-        // ArrayHelper::multisort($this->_newFires, ['dailyAcres', 'incidentName'], [SORT_DESC, SORT_ASC]);
-        // Yii::trace(ArrayHelper::getColumn($this->_newFires, 'fireClassId'),'dev');
-        // Yii::trace(ArrayHelper::map($this->getFireArray(self::NEW0),'irwinID','fireClassId'),'dev'); //array_keys($this->getFireArray()
-        // Yii::trace(ArrayHelper::map($this->_newFires,'irwinID','fireClassId'),'dev'); //array_keys($this->getFireArray()
-        // Yii::trace($this->getFireInfo('1CB03BD1-5E0A-4EFE-9BAF-F56D3EF5DA9A'),'dev'); //array_keys($this->getFireArray()
-        // Yii::trace($this->getWfnmData(),'dev'); //array_keys($this->getFireArray()
-
-        return new ArrayDataProvider([
-            'allModels' => $this->_newFires,
-            'pagination' => false,
-        ]);
     }
     /**
      * Gets WFNM fire dataset from cache.
@@ -250,8 +152,14 @@ class MapData extends Model{
             // Yii::trace(VarDumper::dumpAsString($updatesResponse->data,10),'dev');
             if ($updatesResponse->isOk) {
                 $data =  $updatesResponse->data;
+                foreach ($data as $key => &$row) {
+                    if($row['incidentTypeCategory'] == 'CX'){
+                        $row['fireClassId'] = 'CX';
+                    }
+                    $row['dailyAcres'] = ($row['dailyAcres'] == null) ? 0 : (float)$row['dailyAcres'];
+                }
                 $cache->set($key, $data, $this->nextRefreshTime);
-                $this->refreshFireArray($data);
+                // $this->refreshFireArray($data);
             }else{
                 //Log Error.
                 // $this->errorlog[] = $updatesResponse->data;
@@ -294,33 +202,18 @@ class MapData extends Model{
      */
     public function getWfnmGeoJsonLayer(){
         $firedb = $this->getWfnmData();
-        $userSettings = Yii::$app->appSystemData->mapLayers;
-        $fireClasses = ArrayHelper::getValue($userSettings,'fireClass');
-        $fireSizes = ArrayHelper::getValue($userSettings,'fireSize');
-        $classesHash = array_flip($fireClasses);
-        $sizesHash = array_flip($fireSizes);
-
-        // Yii::trace ( $userSettings, 'dev' );
-        // Yii::trace ( $classesHash, 'dev' );
-        // Yii::trace ( $sizesHash, 'dev' );
-        // $dataSet = $this->processFires($firedb);
-        // Yii::trace ( $userSettings, 'dev' );
-        // Yii::trace ( $hash, 'dev' );
-        // return '{}';
+        $fireClasses = Yii::$app->appSystemData->fireClasses;
+        $fireSizes = Yii::$app->appSystemData->fireSizes;
         if(!empty($firedb)){
             $json = new GeoJson;
-            // Yii::trace ( $fireSizeArray, 'dev' );
             foreach ($firedb as $key => $row){
                 $acres = ($row['dailyAcres'] == null) ? 0: (float)$row['dailyAcres'];
-                // Yii::trace (isset($hash[$row['fireClassId']]), 'dev' );
-                if(!isset($classesHash[$row['fireClassId']]) || !isset($sizesHash[$this->getFireSizeClass($acres)])){
-                    continue;
-                }
+                $fireSizeClass = $this->getFireSizeClass($acres);
+
                 $options = [
                     'fireType' => $row['fireClassId'],
+                    'fireClass' => $fireSizeClass,
                     'acres' => $acres,
-                    // 'name' => $row['incidentName'],
-                    // 'irwinId' => $row['irwinID'],
                 ];
                 $json->addNode(
                     $row['irwinID'],
@@ -364,6 +257,78 @@ class MapData extends Model{
     }
 
     /**
+     * Returns Irwin Fire Object in Array from Cache.
+     * @param Irwin ID
+     * @return array from Irwin Object
+     */
+    public function buildFireList($models){
+        // Yii::trace($models,'dev');
+        $cache = Yii::$app->cache;
+        $refreshIds = [];
+        $dataSet = [];
+        foreach ($models as $key => $model) {
+            //Check to see if fire is in Cache
+            $fid = $model->irwinID;
+            $key  = $this->getFireInfoKey($fid);
+            // Yii::trace($fid.' => '.$key,'dev');
+            // $cache->delete($key) ;
+            if(!$cache->exists($key) || empty($data  = $cache->get($key))){
+               $refreshIds[] = $fid;
+           }else{
+                $dataSet[] = $data;
+           }
+        }
+        if(!empty($refreshIds)){
+            $dataSet = array_merge($dataSet,$this->refreshFiresInfo($refreshIds));
+        }
+        // Yii::trace($dataSet,'dev');
+        return $dataSet;
+    }
+
+    /**
+     * Refreshes Irwin Fire Object Array In Data Cache and returns it for use.
+     * @see getFireInfo()
+     * @return array from Irwin Object
+     */
+    public function refreshFiresInfo($fids){
+        $data = [];
+        try {
+            $updatesResponse = $this->_client->createRequest()
+                ->setUrl('fire-info')
+                ->setMethod('post')
+                ->addHeaders(['Authorization' => 'Basic '.$this->getAuthKey()])
+                ->setData([
+                    'fid' => $fids,
+                ])
+                ->send();
+            $cache = Yii::$app->cache;
+            // Yii::trace($updatesResponse->data,'dev');
+
+            // Yii::trace(VarDumper::dumpAsString($updatesResponse,10),'dev');
+            // Yii::trace(VarDumper::dumpAsString($updatesResponse->data,10),'dev');
+            if ($updatesResponse->isOk) {
+                foreach ($updatesResponse->data as $index => $model) {
+                    $key  = $this->getFireInfoKey($model['irwinID']);
+                    if($model['incidentTypeCategory'] == 'CX'){
+                        $model['fireClassId'] = 'CX';
+                    }
+                    $cache->set($key, $model, $this->nextRefreshTime);
+                    $data[] = $model;
+                }
+            }else{
+                //Log Error.
+                // $this->errorlog[] = $updatesResponse->data;
+                // $data = [];
+            }
+        }catch (\yii\httpclient\Exception $e) {
+            //Log Error.
+            // $this->errorlog[] = $e->getMessage();
+            // $data = [];
+        }
+        return $data;
+    }
+
+    /**
      * Refreshes Irwin Fire Object Array In Data Cache and returns it for use.
      * @see getFireInfo()
      * @return array from Irwin Object
@@ -383,7 +348,11 @@ class MapData extends Model{
             // Yii::trace(VarDumper::dumpAsString($updatesResponse,10),'dev');
             // Yii::trace(VarDumper::dumpAsString($updatesResponse->data,10),'dev');
             if ($updatesResponse->isOk) {
-                $cache->set($key, $updatesResponse->data,$this->nextRefreshTime);
+                $data = $updatesResponse->data;
+                if($data['incidentTypeCategory'] == 'CX'){
+                    $data['fireClassId'] = 'CX';
+                }
+                $cache->set($key, $data,$this->nextRefreshTime);
                 $data = $updatesResponse->data;
             }else{
                 //Log Error.
@@ -539,6 +508,9 @@ class MapData extends Model{
 
     public function refreshMyLocationsFireInfo(){
         try {
+            if(!isset($this->userData['distance'])){
+                $this->userData['distance'] = 100;
+            }
             $updatesResponse = $this->_client->createRequest()
                 ->setUrl('location-based-fires')
                 ->setMethod('post')
@@ -546,14 +518,20 @@ class MapData extends Model{
                 ->setData([
                     'lat' => $this->userData['latitude'],
                     'lon' => $this->userData['longitude'],
-                    'dist' => 100,
+                    'dist' => $this->userData['distance'],
                 ])
                 ->send();
             $cache = Yii::$app->cache;
             $key  = $this->getMyLocationFireArrayCacheKey();
             if ($updatesResponse->isOk) {
-                // Yii::trace($updatesResponse->data,'dev');
-                $dataSet = $this->processFires($updatesResponse->data);
+                //SELECT * FROM `gacclayer` WHERE ST_Within( ST_GeomFromText('POINT(-84 37.795653)', 1), SHAPE )
+                $gacc =  Gacclayer::find()->select(['gacc_nwcg_ as gacc'])->where('ST_Within( ST_GeomFromText("POINT('.$this->userData['longitude'].' '.$this->userData['latitude'].')", 1), SHAPE )')->asArray()->one();
+                // Yii::trace($gacc->prepare(Yii::$app->db->queryBuilder)->createCommand()->rawSql,'dev');
+                $dataSet = [
+                    'fireInfo'=>  $updatesResponse->data,
+                    'gacc' => $gacc
+                ];
+
                 $cache->set($key, $dataSet,$this->nextRefreshTime);
                 $data = $dataSet;
             }else{
@@ -562,7 +540,6 @@ class MapData extends Model{
             }
         }catch (\yii\httpclient\Exception $e) {
             //Log Error.
-
             // Yii::trace($e->getMessage(),'dev');
             $data = [];
         }

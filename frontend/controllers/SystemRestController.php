@@ -10,6 +10,7 @@ use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
 use common\models\user\UserSettings;
 use common\models\popup\PopTable;
+use yii\web\ServerErrorHttpException;
 
 
 
@@ -23,7 +24,12 @@ class SystemRestController extends Controller
             $params = ArrayHelper::merge(Yii::$app->request->queryParams,Yii::$app->request->bodyParams);
             $model = new UserSettings;
             // Yii::trace($params,'dev');
-            return ['success' => $model->findSettings($params)];
+            // return ['success' => $params];
+            if($model->setSettings($params)){
+                Yii::$app->getResponse()->setStatusCode(204);
+            }else{
+                throw new ServerErrorHttpException('Failure to Save Settings');
+            }
         }
     }
 
@@ -42,9 +48,12 @@ class SystemRestController extends Controller
             }else{
                 $model->seen_at = time();
             }
-            $model->save();
-            // Yii::trace($model->attributes,'dev');
-            return ['success' => $model->attributes];
+
+            if($model->save()){
+                Yii::$app->getResponse()->setStatusCode(204);
+            }else{
+                throw new ServerErrorHttpException('Failure to Save Settings');
+            }
         }
     }
 

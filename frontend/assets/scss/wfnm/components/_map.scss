@@ -1,0 +1,574 @@
+@import "_settings.scss";
+// * { border: 1px solid red; }
+$toolBarHeight: 50px;
+#map{
+    padding: 0;
+    margin: 0;
+    // height: 100%;
+    flex-grow:1;
+    // border: 1px solid red;
+    // width: 100%;
+ }
+#app{
+    display: flex; /* or inline-flex */
+    flex-direction: column;
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    width: 100%;
+    .leaflet-bar-timecontrol{
+        display: none;
+    }
+    .weather-legend{
+        position: absolute;
+        top: 50px;
+        left:50%;
+        z-index: 401;
+
+        left: 50%;
+        transform: translateX(-50%);
+        text-align: center;
+
+    }
+    .loader-container{
+        cursor: wait;
+        position: fixed;
+        height: 100%;
+        width: 100%;
+        background: transparent;
+        z-index: 500;
+        .loader{
+            left: 50%;
+            transform: translate(-50%,-50%);
+            top: 50%;
+            position: fixed;
+            z-index: 402;
+        }
+    }
+    .sizeClass-1{
+        height: 12px;
+        width: 12px;
+    }
+    .sizeClass-2{
+        height: 15px;
+        width: 15px;
+    }
+    .sizeClass-3{
+        height: 18px;
+        width: 18px;
+    }
+    .sizeClass-4{
+        height: 20px;
+        width: 20px;
+    }
+    .sizeClass-5{
+        height: 25px;
+        width: 25px;
+    }
+    @media (min-width: $screen-sm-min) {
+        .legend{
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: white;
+            z-index: 401;
+            max-width: 115px;
+        }
+        #info-ticker{
+            // position: absolute;
+            // top: $navbar-height;
+            width: 100%;
+            z-index: 403;
+            height: 30px;
+            background: white;
+            border: solid black;
+            border-width: 0 0 3px 0;
+            overflow: hidden;
+            white-space: nowrap;
+            div {
+                display: block;
+                // height: 100%;
+                position: absolute;
+                overflow: hidden;
+                animation: marquee 60s linear infinite;
+                &:hover
+                {
+                    -webkit-animation-play-state: paused;
+                    -moz-animation-play-state: paused;
+                    -o-animation-play-state: paused;
+                     animation-play-state: paused;
+                }
+            }
+            span {
+                display: inline;
+            }
+        }
+        .fade-enter-active,
+        .fade-leave-active{
+            transition: opacity .5s;
+        }
+        .fade-enter,
+        .fade-leave-to{
+            opacity: 0;
+        }
+        .fade-enter-to,
+        .fade-leave{
+            opacity: 1;
+        }
+        .slide-in-left-enter-active,
+        .slide-in-left-leave-active,
+        .slide-in-right-enter-active,
+        .slide-in-right-leave-active{
+            -webkit-transition-duration: 600ms;
+            transition-duration: 600ms;
+        }
+
+        .slide-in-left-enter,
+        .slide-in-left-leave-to{
+            -webkit-transition-duration: 600ms;
+            transition-duration: 600ms;
+            transform: translate(-200%);
+            -webkit-transform: translate(-200%);
+        }
+        .slide-in-right-enter,
+        .slide-in-right-leave-to{
+            -webkit-transition-duration: 600ms;
+            transition-duration: 600ms;
+            transform: translate(200%);
+            -webkit-transform: translate(200%);
+        }
+
+        .slide-in-left-enter-to,
+        .slide-in-left-leave,
+        .slide-in-right-enter-to,
+        .slide-in-right-leave{
+            -webkit-transition-duration: 600ms;
+            transition-duration: 600ms;
+            transform: translate(0%);
+            -webkit-transform: translate(0%);
+        }
+
+
+        .shrink-left-enter-active,
+        .shrink-left-leave-active{
+            -webkit-transition: width 600ms; /* For Safari 3.1 to 6.0 */
+            transition: width 600ms;
+            .legendOptions-container{
+                display: none;
+            }
+        }
+        .shrink-left-enter,
+        .shrink-left-leave-to{
+            width: 0 !important;
+        }
+        .shrink-left-enter-to,
+        .shrink-left-leave{
+            width: 500px !important;
+        }
+
+
+        #layersIncidentPane{
+            position: fixed;
+            left: 60px;
+            top: 165px;
+            width: 500px;
+            background: white;
+            z-index: 401;
+            overflow: hidden;
+            height: 230px;
+            .legend-icon{
+                height: 20px;
+            }
+            .size-marker{
+                display: inline-block;
+                border-radius: 50%;
+                background-color: black;
+            }
+            .legendOptions{
+                width: 100%;
+            }
+
+            /* Hide the browser's default checkbox */
+            label input {
+                position: absolute;
+                opacity: 0;
+                cursor: pointer;
+            }
+
+            /* Create a custom checkbox */
+            .checkmark {
+                position: absolute;
+                top: 0;
+                left: 0;
+                height: 15px;
+                width: 15px;
+                background-color: #eee;
+            }
+
+            /* On mouse-over, add a grey background color */
+            label:hover input ~ .checkmark {
+                background-color: #ccc;
+            }
+
+            /* When the checkbox is checked, add a blue background */
+            label input:checked ~ .checkmark {
+                background-color: #2196F3;
+            }
+
+            /* Create the checkmark/indicator (hidden when not checked) */
+            .checkmark:after {
+                content: "";
+                position: absolute;
+                display: none;
+            }
+
+            /* Show the checkmark when checked */
+            label input:checked ~ .checkmark:after {
+                display: block;
+            }
+
+            /* Style the checkmark/indicator */
+            label .checkmark:after {
+                left: 5px;
+                top: 2px;
+                width: 5px;
+                height: 9px;
+                border: solid white;
+                border-width: 0 3px 3px 0;
+                -webkit-transform: rotate(45deg);
+                -ms-transform: rotate(45deg);
+                transform: rotate(45deg);
+            }
+        }
+        #layersPane{
+            position: fixed;
+            left: 10px;
+            top: 165px;
+            // height: 500px;
+            background: lightgrey;
+            z-index: 401;
+            width: 50px;
+            ul{
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                li{
+                    border-style: solid;
+                    border-width: 1px 1px 0px 1px;
+                    width: 100%;
+                    height: 50px;
+                    background: white;
+                    padding: 0;
+                    margin: 0;
+                    &.active{
+                        background: lightgrey;
+                    }
+                    &:last-child {
+                        border: 1px solid;
+                    }
+                    button{
+                        background: transparent;
+                        width: 100%;
+                        height: 100%;
+                        border: none;
+                    }
+                }
+            }
+        }
+        .toolbar-container{
+            position: fixed;
+            bottom: $footerHeight;
+            z-index: 401;
+            left: 50%;
+            transform: translateX(-50%);
+            .basebar{
+                // background: rgba(0,0,0,0.7);
+                position: absolute;
+                bottom: 0;
+                width: 100%;
+                height: 50%;
+                z-index: 402;
+                transform: rotateX(126deg);
+                background: linear-gradient(black, transparent);
+            }
+            .toolbar-overlay{
+                position: relative;
+                z-index: 403;
+                .tooltip-inner{
+                    background-color: rgba(0, 0, 0, 0.9);
+                }
+                .tooltip-arrow{
+                    border-top-color:rgba(0, 0, 0, 0.9);
+                }
+                .toolbar{
+                    padding-left: 5px;
+                    padding-right: 5px;
+                    display: flex;
+                    flex-direction: row;
+                    li{
+                        margin-right: 3px;
+                        margin-left: 3px;
+                        .toolbar-btn{
+                            height: $toolBarHeight;
+                            width: $toolBarHeight;
+                            border-color: transparent;
+                            border-radius: 50px;
+                            &:focus{
+                                outline: none;
+                            }
+                            &.layers{
+                                background-color: #1b5fda;
+                                &.active{
+                                    background-color: darken(#1b5fda, 15%);
+                                }
+                            }
+                            &.myFires{
+                                background-color: #1b5fda;
+                                &.active{
+                                    background-color: darken(#1b5fda, 15%);
+                                }
+                            }
+                            &.myLocations{
+                                background-color: #1b5fda;
+                                &.active{
+                                    background-color: darken(#1b5fda, 15%);
+                                }
+                            }
+                            &.sitRep{
+                                background-color: #1b5fda;
+                                &.active{
+                                    background-color: darken(#1b5fda, 15%);
+                                }
+                            }
+                            &.alerts{
+                                background-color: #1b5fda;
+                                &.active{
+                                    background-color: darken(#1b5fda, 15%);
+                                }
+                            }
+                            &.wfnm{
+                                background-color: #1b5fda;
+                                &.active{
+                                    background-color: darken(#1b5fda, 15%);
+                                }
+                            }
+                            .sidebar-fa-ms-png{
+                                max-width: 100%;
+                                max-height: 100%;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .fireInfo-panel-container,
+        .infoPaneActive{
+            .header-info-block,.header-PL{
+                display: flex;
+                flex-direction: row;
+                margin-bottom: 10px;
+                .info-item{
+                    position: relative;
+                    // height: 55px;
+                    // border: 1px solid black;
+                    flex-grow: 1;
+                    label,h4{
+                        display: block;
+                        padding: 0;
+                        margin: 0;
+                    }
+                    .table-fire-logo{
+                        max-height: 30px;
+                    }
+                    .pl-sprite{
+                        // height: 20px !important;
+                        &.pl1 {width:59px; height: 20px; background-position: -2px -20px}
+                        &.pl2 {width:59px; height: 20px; background-position: -2px -64px}
+                        &.pl3 {width:59px; height: 20px; background-position: -2px -105px}
+                        &.pl4 {width:59px; height: 31px; background-position: -2px -136px}
+                        &.pl5 {width:59px; height: 39px; background-position: -2px -170px}
+                    }
+                    &.toggleFireFollowBtn{
+                        display: flex;
+                        align-items:center;
+                        justify-content:center;
+                    }
+                }
+            }
+        }
+        .fireInfo-panel-container{
+            @include no-scrollBars();
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            right: 0;
+            // top: 80px;
+            height: 100%;
+            z-index: 401;
+            overflow-x: hidden;
+            overflow-y:scroll;
+            background: white;
+            &.tickerLive{
+                top:80px;
+            }
+            .title{
+                text-align: center;
+                text-transform: capitalize;
+                .complexMeta{
+                    font-style: italic;
+                    font-size: 19px;
+                }
+                .complex-link{
+                    cursor: pointer;
+                    color: #4267b2;
+                    &:hover{
+                        text-decoration: underline;
+                        color:#203a5c;
+                    }
+                }
+            }
+            .closePanel{
+                opacity: 1;
+                background-color: white;
+                position: fixed;
+                cursor: pointer;
+                z-index: 10;
+                height: auto;
+                width: 42px;
+                font-size: xx-large;
+                &:hover{
+                    opacity: 0.2;
+                }
+            }
+            .meta-info-block{
+                &.dl-horizontal{
+                    dt{
+                        text-align: left;
+                    }
+                }
+            }
+            .panel-btn-group-justified{
+                margin-bottom: 10px;
+            }
+            .firesnearme,
+            .incident-info,
+            .sitRep{
+                .title{
+                    font-weight: bolder;
+                    text-transform: capitalize;
+                }
+                .panel-body{
+                    margin-bottom: 50px;
+                }
+                .legend-icon{
+                    height: 20px;
+                }
+            }
+            .firesnearme,
+            .complexChildFires,
+            .myFires,
+            .myLocations,
+            .sitRep{
+                .table{
+                    margin-bottom: 0;
+                    .childFireRow{
+                        cursor: pointer;
+                        .table-fire-logo{
+                            height: 25px;
+                            width: 25px;
+                        }
+                    }
+                }
+            }
+            .sitRep{
+                /*
+                 * Filter
+                 */
+                .dataTables_filter,.dataTables_paginate,.dataTables_length {
+                    float: none;
+                    margin: 0 auto;
+                    text-align: center;
+                }
+                .header-title{
+                    text-align: center;
+                }
+                .overview{
+                    margin-bottom: 3%;
+                    padding-bottom: 3%;
+                    border-bottom: 1px solid black;
+                    .pl-level-report-box{
+                        width: 155px;
+                        position: absolute;
+                        top: 40%;
+                        transform: translateY(-50%);
+                        float: left;
+                        text-align: center;
+                        .pl-level-num{
+                            font-family: 'Rockwell Extra Bold', 'Rockwell Bold', monospace;
+                            font-family: Lato, Helvetica, Arial, sans-serif;
+                            font-size: 75px;
+                            font-style: normal;
+                            font-variant: normal;
+                            font-weight: 500;
+                            line-height: 26.4px;
+                            margin-top: 25px;
+                            margin-bottom: 25px;
+                        }
+                        .pl-level-title{
+                            font-family: 'Rockwell Extra Bold', 'Rockwell Bold', monospace;
+                            font-family: Lato, Helvetica, Arial, sans-serif;
+                            font-size: 24px;
+                            font-style: normal;
+                            font-variant: small-caps;
+                            font-weight: 400;
+                            line-height: 26.4px;
+                        }
+                    }
+                    .pl-level-data-box{
+                        border-left: white;
+                        border-left-style: solid;
+                        border-left-width: .2em;
+                        width: 60%;
+                        min-height: 125px;
+                        float: right;
+                        .panel-box-title{
+                            text-transform: uppercase;
+                            .panel-box-text{
+                                font-weight: bold;
+                                padding-left: 1%;
+                            }
+                        }
+                    }
+                    .sit-btn {
+                        width: 90%;
+                        border-radius: 20px;
+                        background-color: transparent;
+                        border-color: #34495e;
+                        border-width: 5px;
+                        color: #34495e;
+                        /* margin-right: auto; */
+                        /* margin-left: auto; */
+                        &:hover{
+                            background-color: #e7e7e7;
+                            border-color: #adadad;
+                        }
+                    }
+                }
+                .fireinfo-table{
+
+                }
+            }
+        }
+    }
+ }
+.jconfirm-title{
+    width: 100%;
+    .locTitle{
+        font-size: 16px;
+    }
+}
+@keyframes marquee {
+   0% {  transform:translateX(0); }
+   100% {  transform:translateX(-100%); }
+}

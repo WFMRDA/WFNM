@@ -18,8 +18,10 @@ $options = [
     'assetUrl' => $this->params['assetUrl'],
     'language' => Yii::$app->language,
     'mediaUrl' => Yii::getAlias('@media'),
-    'legendHelpToggle' => Yii::$app->appSystemData->legendHelpToggle,
+    'plLevel' => Yii::$app->appSystemData->getPlLevel(),
+    'defaultLocation' => Yii::$app->appSystemData->defaultLocation
 ];
+
 $this->registerJs(
     "var yiiOptions = ".\yii\helpers\Json::htmlEncode($options).";",
     View::POS_HEAD,

@@ -17,7 +17,7 @@ $options = [
     'homeUrl' => Url::base(true),
     'assetUrl' => $this->params['assetUrl'],
     'language' => Yii::$app->language,
-    'mediaUrl' => Yii::getAlias('@media'),
+    'mediaUrl' => Yii::getAlias('@media')
 ];
 $this->registerJs(
     "var yiiOptions = ".\yii\helpers\Json::htmlEncode($options).";",

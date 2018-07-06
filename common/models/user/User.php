@@ -16,24 +16,21 @@ class User extends BaseModel
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getMyfires()
+    public function getUserSettings()
     {
-        return $this->hasMany(MyFires::className(), ['user_id' => 'id']);
+        return $this->hasMany(UserSettings::className(), ['user_id' => 'id']);
     }
+
+
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getMylocations()
+    public function getDefaultLocation()
     {
-        return $this->hasMany(MyLocations::className(), ['user_id' => 'id']);
+        return $this->hasOne(DefaultLocation::className(), ['user_id' => 'id']);
     }
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getSettings()
-    {
-        return $this->hasMany(MyLocations::className(), ['user_id' => 'id']);
-    }
+
+
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -41,18 +38,47 @@ class User extends BaseModel
     {
         return $this->hasMany(Messages::className(), ['user_id' => 'id']);
     }
+
     /**
-      * @return \yii\db\ActiveQuery
-      */
-     public function getPopups()
-     {
-         return $this->hasMany(PopTable::className(), ['user_id' => 'id']);
-     }
-     /**
-      * @return \yii\db\ActiveQuery
-      */
-     public function getUserSettings()
-     {
-         return $this->hasMany(UserSettings::className(), ['user_id' => 'id']);
-     }
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMyFires()
+    {
+        return $this->hasMany(MyFires::className(), ['user_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMyLocations()
+    {
+        return $this->hasMany(MyLocations::className(), ['user_id' => 'id']);
+    }
+
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPopTables()
+    {
+        return $this->hasMany(PopTable::className(), ['user_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProfile()
+    {
+        return $this->hasOne(Profile::className(), ['user_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSessions()
+    {
+        return $this->hasMany(Session::className(), ['user_id' => 'id']);
+    }
+
+
 }

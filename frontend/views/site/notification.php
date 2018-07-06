@@ -26,7 +26,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <div role="tabpanel" class="tab-pane active" id="general">
                 <div class='text-center'>
                     <h3>General Info</h3>
-                    <h5 class='inline link-dark'><?=$record['gacc']?></h5> 
+                    <h5 class='inline link-dark'><?=$record['gacc']?></h5>
                     <?=WfnmHelpers::a('<b>P</b><span class="hidden-xs hidden-sm">reparedness </span><b>L</b><span class="hidden-xs">evel</span> <span class=" pl-sprite pl'.WfnmHelpers::getPrepLevel($record['gacc']).'"></span>','https://gacc.nifc.gov/'.strtolower($record['gacc']),['class'=>'link-dark pl-text', 'target'=>'_blank'])?>
                 </div>
                 <?= DetailView::widget([
@@ -75,7 +75,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         ],
                     ],
                 ])?>
-                
+
             </div>
             <div role="tabpanel" class="tab-pane" id="incident">
                 <div class='text-center'>
@@ -138,7 +138,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 ])?>
             </div>
             <div role="tabpanel" class="tab-pane" id="comments">
-                 <div class='col-xs-12'>
+                <div class='col-xs-12'>
                     <h3 class='text-center'>Comments</h3>
                     <div class="fb-comments" data-href="http://www.wildfiresnearme.wfmrda.com/wfnm/index#<?=$record['uniqueFireIdentifier']?>" data-width="100%" data-colorscheme='light' data-numposts="10"></div>
                 </div>

@@ -17,7 +17,7 @@ class AppAsset extends AssetBundle
     ];
     public $js = [
         '//maps.googleapis.com/maps/api/js?key=AIzaSyBGrF8tvV6q8f5pIMS6eKMbPsLAj_IlXxE&libraries=places',
-        YII_ENV_DEV ? 'js/google.js' :'//assets.wildfiresnearme.wfmrda.com/js/google.js',
+        // YII_ENV_DEV ? 'js/google.js' :'//assets.wildfiresnearme.wfmrda.com/js/google.js',
         YII_ENV_DEV ? 'js/wfnm.js' :'//assets.wildfiresnearme.wfmrda.com/js/wfnm.js',
     ];
     public $depends = [

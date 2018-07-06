@@ -2,6 +2,10 @@
 return [
     'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',
     'name'=> 'Wildfires Near Me',
+    // 'aliases' => [
+    //     '@bower' => '@vendor/bower-asset',
+    //     '@npm'   => '@vendor/npm-asset',
+    // ],
     'components' => [
         'reCaptcha' => [
             'name' => 'reCaptcha',
@@ -37,16 +41,6 @@ return [
             'datetimeFormat' => 'php:M-j-Y H:i:s',
             'timeFormat' => 'php:H:i:s',
             'nullDisplay' => '',
-        ],
-        'response' => [
-           'class' => 'yii\web\Response',
-            'formatters' => [
-                \yii\web\Response::FORMAT_JSON => [
-                     'class' => 'yii\web\JsonResponseFormatter',
-                     'prettyPrint' => YII_DEBUG, // use "pretty" output in debug mode
-                     'encodeOptions' =>  JSON_NUMERIC_CHECK | JSON_PRESERVE_ZERO_FRACTION,
-                ],
-            ],
         ],
         'assetManager' => [
             'appendTimestamp' => true,
@@ -132,31 +126,6 @@ return [
                         'yii\web\YiiAsset',
                     ]
                 ],
-            ],
-        ],
-        'eauth' => [
-            'class' => 'nodge\eauth\EAuth',
-            'popup' => true, // Use the popup window instead of redirecting.
-            'cache' => 'cache', // Cache component name or false to disable cache. Defaults to 'cache' on production environments.
-            'cacheExpire' => 0, // Cache lifetime. Defaults to 0 - means unlimited.
-            'services' => [ // You can change the providers and their classes.
-                'google' => [
-                    // register your app here: https://code.google.com/apis/console/
-                    'class' => 'common\modules\User\models\eAuth\GoogleOAuth2Service',
-                    'clientId'     => '',
-                    'clientSecret' => '',
-                    'title' => 'Google',
-                ],
-                'facebook' => [
-                    // register your app here: https://developers.facebook.com/apps/
-                    'class' => 'common\modules\User\models\eAuth\FacebookOAuth2Service',
-                    'clientId'     => '',
-                    'clientSecret' => '',
-                ],
-				'yahoo' => [
-					'class' => 'common\modules\User\models\eAuth\YahooOpenIDService',
-					'realm' => '', // your domain, can be with wildcard to authenticate on subdomains.
-				],
             ],
         ],
         'i18n' => [

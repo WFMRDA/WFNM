@@ -17,6 +17,7 @@ use common\models\messages\Messages;
 use yii\data\ActiveDataProvider;
 use common\models\popup\PopTable;
 use ptech\pyrocms\components\SystemData as BaseModel;
+use common\models\user\DefaultLocation;
 
 class SystemData extends BaseModel{
 
@@ -37,9 +38,12 @@ class SystemData extends BaseModel{
         4 => '10000ac - 99999ac',
         5 => '>= 100000 ac',
     ];
-    protected $defaultAddlMapLayers = [
-        'GeoMac' => 'GeoMac',
+
+    protected $defaultMapLayers = [
+
     ];
+
+
     // protected $defaultFireSizes = [1,2,3,4,5];
 
     public function init()
@@ -55,9 +59,6 @@ class SystemData extends BaseModel{
     }
     public function getFireSizes(){
         return $this->defaultFireSizes;
-    }
-    public function getAddlMapLayers(){
-        return $this->defaultAddlMapLayers;
     }
 
 
@@ -91,9 +92,15 @@ class SystemData extends BaseModel{
         return ($style == null)?'active' : $style;
     }
 
-    public function getToggleBtn(){
-        $style = $this->getSetting('toggleBtn');
-        return ($style == null)?'' : 'style="'.$style.'"' ;
+    protected $_defaultLoc;
+    protected function setDefaultLoaction(){
+        $this->_defaultLoc = DefaultLocation::find()->where(['user_id' => Yii::$app->user->identity->id])->asArray()->one();
+    }
+    public function getDefaultLocation(){
+        if(!isset($this->_defaultLoc)){
+            $this->setDefaultLoaction();
+        }
+        return $this->_defaultLoc;
     }
 
     public function getMapLayers(){
@@ -103,9 +110,8 @@ class SystemData extends BaseModel{
 
     protected function getDefaultLayers(){
         return  [
-            'fireClass'=>array_keys($this->defaultFireClasses),
-            'fireSize'=>array_keys($this->defaultFireSizes),
-            'addtlLayers'=>array_keys($this->defaultAddlMapLayers),
+            'incidentLayers'=>array_merge(array_keys($this->defaultFireClasses),array_keys($this->defaultFireSizes)),
+            // 'mapLayers'=>array_keys($this->defaultFireSizes),
         ];
     }
 
@@ -117,12 +123,12 @@ class SystemData extends BaseModel{
     protected $_userSettings;
 
     public function setUserSettings(){
-        $this->_userSettings = [];
+        // $this->_userSettings = [];
 
-        /*$this->_userSettings = UserSettings::find()
+        $this->_userSettings = UserSettings::find()
             ->andWhere(['user_id' => Yii::$app->user->identity->id])
             ->indexBy('key')
-            ->all();*/
+            ->all();
     }
 
     public function getUserSettings(){

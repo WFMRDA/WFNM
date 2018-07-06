@@ -32,6 +32,7 @@ $storeVisible = Yii::$app->hasModule('store');
             'items' => [
                 ['label' => 'Profile', 'url' => ['/settings/profile']],
                 ['label' => 'Account', 'url' => ['/settings/account']],
+                ['label' => 'Preferences', 'url' => ['/settings/prefs']],
                 ['label' => 'Networks', 'url' => ['/settings/networks'], 'visible' => $networksVisible],
                 ['label' => 'Orders', 'url' => ['/orders/index'], 'visible' => $storeVisible],
                 // ['label' => 'Payment Info', 'url' => ['/store/payment-info'], 'visible' => $storeVisible],

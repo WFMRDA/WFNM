@@ -68,7 +68,7 @@ class UserSettings extends \yii\db\ActiveRecord
     }
 
     protected $settings = [
-        'toggleBtn' => 10,
+        'toggleBtn' => 10, //Deprecated in V3.0. Keeping around for Legacy Issues.
         'mapLayers' => 20,
         'legendHelpToggle' => 30,
     ];
@@ -77,23 +77,7 @@ class UserSettings extends \yii\db\ActiveRecord
         return (isset($this->settings[$key]))? $this->settings[$key] : null;
     }
 
-    protected function processMapLayers($params){
-
-        // Yii::trace($params,'dev');
-        $data = [];
-        foreach ($params as $key => $value) {
-            if($value['name'] == 'fireSize[]'){
-                $data['fireSize'][] = $value['value'];
-            }else if($value['name'] == 'fireClass[]'){
-                $data['fireClass'][] = $value['value'];
-            }else if($value['name'] == 'addtlLayers[]'){
-                $data['addtlLayers'][] = $value['value'];
-            }
-        }
-        // Yii::trace($data,'dev');
-        return Json::encode($data);
-    }
-    public function findSettings($params){
+    public function setSettings($params){
         $key = $params['type'];
         $val = $params['val'];
         if(isset($this->settings[$key])){
@@ -102,7 +86,7 @@ class UserSettings extends \yii\db\ActiveRecord
                     $data = $val;
                     break;
                 case $key == 'mapLayers':
-                    $data = $this->processMapLayers($val);
+                    $data = Json::encode($val);
                     break;
                 case $key == 'legendHelpToggle':
                     $data = $val;

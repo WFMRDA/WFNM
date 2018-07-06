@@ -8,8 +8,10 @@ use yii\helpers\ArrayHelper;
 use common\models\myFires\MyFires;
 use common\models\system\System;
 
+
 class WfnmHelpers extends YiiHelpers
 {
+
     public static function inString($needle,$haystack){
         return (($needle != null) && (stripos($haystack,$needle) !== FALSE))?true:false;
     }
@@ -31,10 +33,10 @@ class WfnmHelpers extends YiiHelpers
                 break;
              case 'active':
                 $img = self::img('@media/map_active_fire.png',['class'=>'table-fire-logo']);
-                break;  
+                break;
             case 'out':
                 $img = self::img('@media/map_out_fire.png',['class'=>'table-fire-logo']);
-                break;     
+                break;
             default:
                 $img ='';
                 break;
@@ -47,17 +49,17 @@ class WfnmHelpers extends YiiHelpers
         //Get Key
         $library = [
             'NICC' => 'NIC',
-            'AICC' => 'ACC',
-            'EACC' => 'EACC',  
+            'AKCC' => 'ACC',
+            'EACC' => 'EACC',
             'GBCC' => 'GBC',
-            'ONCC' => 'ONCC',  
-            'NRCC' => 'NRC', 
-            'NWCC' => 'NWCC', 
+            'ONCC' => 'ONCC',
+            'NRCC' => 'NRC',
+            'NWCC' => 'NWCC',
             'RMCC' => 'RMC',
             'SACC' => 'SAC',
-            'OSCC' => 'OSCC', 
+            'OSCC' => 'OSCC',
             'SWCC' => 'SWC',
-        ]; 
+        ];
         return $mapData->getPrepardnessLevel(ArrayHelper::getValue($library,$loc));
     }
 
@@ -113,29 +115,8 @@ class WfnmHelpers extends YiiHelpers
         return $html;
     }
 
-    public static function unFollowfire($fireId){
-        $mapData = Yii::createObject(Yii::$app->params['mapData']);
-        $query = $mapData->getFireInfo($fireId);
-        $model = MyFires::find()->where(['and',['user_id'=> Yii::$app->user->identity->id,'irwinID'=>$fireId]])->one();
-        if($model !== null){
-            $model->delete();
-        }
-        return self::getFireMonitoringBtn($query);
-    }
-
-    public static function followfire($fireId){
-        $mapData = Yii::createObject(Yii::$app->params['mapData']);
-        $query = $mapData->getFireInfo($fireId);
-        if (MyFires::find()->where(['and',['user_id'=> Yii::$app->user->identity->id,'irwinID'=>$fireId]])->one() == null){
-            $model = Yii::createObject([
-                'class'=> MyFires::className(),
-                'user_id'=>Yii::$app->user->identity->id,
-                'irwinID'=>$fireId,
-                'name'=> $query['incidentName'],
-            ]);
-            $model->save();
-        }
-        return self::getFireMonitoringBtn($query);
+    public static function isUserFollowing($userId,$fireId){
+        return MyFires::find()->where(['and',['user_id'=> $userId,'irwinID'=>$fireId]])->exists();
     }
 
     public static function validateDate($date, $format = 'Y-m-d H:i:s')
