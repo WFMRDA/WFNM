@@ -403,7 +403,7 @@ $this->title = Yii::$app->name;
 									<tr>
 										<th>Name</th>
 										<th>Status</th>
-										<th>{{ sitReportType }}</th>
+										<th class="text-capitalize">{{splitOnCapitolLetter(sitReportType) }}</th>
 										<th>Last Updated</th>
 									</tr>
 								</thead>

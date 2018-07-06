@@ -1142,6 +1142,12 @@ new Vue({
             });
             this.getUserLocation();
         },
+        splitOnCapitolLetter(string){
+            if(string == undefined || string == null){
+                return '';
+            }
+            return string.split(/(?=[A-Z])/).join(" ");
+        },
         capitalizeFirstLetter(string) {
             if(string == undefined || string == null){
                 return '';
