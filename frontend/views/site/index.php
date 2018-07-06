@@ -90,7 +90,7 @@ $this->title = Yii::$app->name;
 	<transition name="shrink-left">
 		<div id='layersIncidentPane' v-show="showIncidentLayers && activePane == 'layers' && !paneActive">
 			<div class='legendOptions-container container-fluid'>
-				<div id="maplegendform-firesizelist" class="legendOptions col-xs-12 col-sm-6" name="fireSize">
+				<div id="maplegendform-firesizelist" class=" col-xs-12 col-sm-6" name="fireSize">
 					<h3>Fire Size</h3>
 					<div class="checkbox"><label><input type="checkbox" name="fireSize[]" value="1" v-model="activeIncidentLayers"> <div class="checkmark"></div> <div class='size-marker sizeClass-1'></div> < 99ac</label></div>
 					<div class="checkbox"><label><input type="checkbox" name="fireSize[]" value="2" v-model="activeIncidentLayers"> <div class="checkmark"></div> <div class='size-marker sizeClass-2'></div> 100ac - 999ac</label></div>
@@ -98,7 +98,7 @@ $this->title = Yii::$app->name;
 					<div class="checkbox"><label><input type="checkbox" name="fireSize[]" value="4" v-model="activeIncidentLayers"> <div class="checkmark"></div> <div class='size-marker sizeClass-4'></div> 10000ac - 99999ac</label></div>
 					<div class="checkbox"><label><input type="checkbox" name="fireSize[]" value="5" v-model="activeIncidentLayers"> <div class="checkmark"></div> <div class='size-marker sizeClass-5'></div> >= 100000 ac</label></div>
 				</div>
-				<div id="maplegendform-firestatuslist" class="legendOptions col-xs-12 col-sm-6" name="fireClass">
+				<div id="maplegendform-firestatuslist" class=" col-xs-12 col-sm-6" name="fireClass">
 					<h3>Fire Status</h3>
 					<div class="checkbox"><label><input type="checkbox" name="fireClass[]" value="A" v-model="activeIncidentLayers"> <div class="checkmark"></div> <?=Html::img('@media/map_new_fire.png',['class'=>'legend-icon'])?> NEW</label></div>
 					<div class="checkbox"><label><input type="checkbox" name="fireClass[]" value="B" v-model="activeIncidentLayers"> <div class="checkmark"></div> <?=Html::img('@media/map_emerging_fire.png',['class'=>'legend-icon'])?> EMERGING</label></div>
