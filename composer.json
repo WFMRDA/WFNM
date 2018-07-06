@@ -38,8 +38,7 @@
         "doctrine/cache": "^1.6",
         "ptech/yii2-pyrocms": "dev-rewrite",
         "sweelix/yii2-webpack": "^1.2",
-        "lcobucci/jwt": "~3.3",
-        "bower-asset/spinkit": "~1.0"
+        "lcobucci/jwt": "~3.3"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",
