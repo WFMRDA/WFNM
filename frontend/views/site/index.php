@@ -44,7 +44,7 @@ $this->title = Yii::$app->name;
 					<button data-toggle="tooltip" data-placement="top" title="My Locations" @click="activatePane('myLocations')" class='toolbar-btn myLocations' :class="{ active: activePane == 'myLocations' }"><?=Html::img('@web/img/my_locations_btn.png',['class'=>'sidebar-fa-ms-png center'])?></button>
 				</li>
 				<li>
-					<button data-toggle="tooltip" data-placement="top" title="situational Report" @click="activatePane('sitRep')" class='toolbar-btn sitRep' :class="{ active: activePane == 'sitRep' }"><?=Html::img('@web/img/sitrep_btn.png',['class'=>'sidebar-fa-ms-png center'])?></button>
+					<button data-toggle="tooltip" data-placement="top" title="Situational Report" @click="activatePane('sitRep')" class='toolbar-btn sitRep' :class="{ active: activePane == 'sitRep' }"><?=Html::img('@web/img/sitrep_btn.png',['class'=>'sidebar-fa-ms-png center'])?></button>
 				</li>
 				<li>
 					<button data-toggle="tooltip" data-placement="top" title="Alerts" @click="activatePane('alerts')" class='toolbar-btn alerts' :class="{ active: activePane == 'alerts' }"><?=Html::img('@web/img/alerts_btn.png',['class'=>'sidebar-fa-ms-png center'])?></button>
