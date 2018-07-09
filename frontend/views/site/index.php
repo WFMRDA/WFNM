@@ -352,10 +352,10 @@ $this->title = Yii::$app->name;
 
 
 			<!-- SITUATION REPORT -->
-			<div v-show="activePane == 'sitRep'" class='sitRep col-xs-12'>
-				<div class='col-xs-12'>
+			<div v-show="activePane == 'sitRep'" class='sitRep row'>
+				<!-- <div class='col-xs-12'> -->
 					<h3 class='title'>Situational Report</h3>
-					<div class='col-xs-12 overview'>
+					<div class='overview col-xs-12'>
 						<div class="pl-level-report-box">
 							<p class="pl-level-num">{{ plLevel }}</p>
 							<p class="pl-level-title">P<span class="hidden-xs hidden-sm">reparedness</span> L<span class="hidden-xs">evel</span> </p>
@@ -370,9 +370,9 @@ $this->title = Yii::$app->name;
 							<p class="panel-box-title">{{  getValue(sitReport,'IMTS-II.label','') }}<span class="panel-box-text "> {{  getValue(sitReport,'IMTS-II.val','') }}   </span> </p>
 							<p class="panel-box-title">{{  getValue(sitReport,'IAACT.label','') }}<span class="panel-box-text ">{{  getValue(sitReport,'IAACT.val','') }} </span></p>
 						</div>
-						<div class='col-xs-12 text-center'>
-							<a class='btn btn-default sit-btn' href='https://www.nifc.gov/nicc/sitreprt.pdf' target='_blank'>'View Full Sit Report</a>
-						</div>
+					</div>
+					<div class='col-xs-12 text-center report-btn-container'>
+						<a class='btn btn-default sit-btn' href='https://www.nifc.gov/nicc/sitreprt.pdf' target='_blank'>'View Full Sit Report</a>
 					</div>
 					<div class='col-xs-12'>
 						<div class="col-xs-12">
@@ -419,7 +419,7 @@ $this->title = Yii::$app->name;
 							<li v-for="(fire,index) in sitReportData" :key="index">{{ fire.incidentName }} {{ fire[sitReportType] }} {{ sitReportType }}</li>
 						</ul> -->
 					</div>
-				</div>
+				<!-- </div> -->
 			</div>
 
 
@@ -466,7 +466,7 @@ $this->title = Yii::$app->name;
 
 
 			<!-- FIRES NEAR ME -->
-			<div v-show="activePane == 'wfnm'" class='wfnm col-xs-12'>
+			<div v-show="activePane == 'wfnm'" class='wfnm row'>
 				<div class='col-xs-12 text-center'>
 					<h3>Fires Near Me</h3>
 					<div class="row">
@@ -502,51 +502,44 @@ $this->title = Yii::$app->name;
 		                    <button :class="{active: wfnmTab == 'weather'}"  @click="wfnmTab = 'weather'" type="button" class="btn btn-default">Weather Info</button>
 		                </div>
 		            </div>
-					<div class='panel panel-default firesnearme' v-show="wfnmTab == 'index'">
-						<div class="panel-heading text-center">
-							<h3 class="panel-title">General Information</h3>
+					<div class='firesnearme' v-show="wfnmTab == 'index'">
+						<div v-show="!firesNearMe.length" class='col-xs-12 text-center'>
+							We found no incidents near this location
 						</div>
-						<div class='panel-body'>
-							<div class=''>
-								<div v-show="!firesNearMe.length" class='col-xs-12 text-center'>
-									We found no incidents near this location
+						<div v-show="firesNearMe.length" >
+							<div id="wfnmFireClass-firestatuslist" class="legendOptions" name="fireClass">
+								<h3>Fire Status</h3>
+								<div class='col-xs-12 col-sm-6'>
+									<div class="checkbox"><label><input type="checkbox" name="fireClass[]" value="A" v-model="wfnmFilter"> <div class="checkmark"></div> <?=Html::img('@media/map_new_fire.png',['class'=>'legend-icon'])?> NEW</label></div>
+									<div class="checkbox"><label><input type="checkbox" name="fireClass[]" value="B" v-model="wfnmFilter"> <div class="checkmark"></div> <?=Html::img('@media/map_emerging_fire.png',['class'=>'legend-icon'])?> EMERGING</label></div>
+									<div class="checkbox"><label><input type="checkbox" name="fireClass[]" value="E" v-model="wfnmFilter"> <div class="checkmark"></div> <?=Html::img('@media/map_active_fire.png',['class'=>'legend-icon'])?> ACTIVE</label></div>
 								</div>
-								<div class='' v-show="firesNearMe.length" >
-									<div id="wfnmFireClass-firestatuslist" class="legendOptions" name="fireClass">
-										<h3>Fire Status</h3>
-										<div class='col-xs-12 col-sm-6'>
-											<div class="checkbox"><label><input type="checkbox" name="fireClass[]" value="A" v-model="wfnmFilter"> <div class="checkmark"></div> <?=Html::img('@media/map_new_fire.png',['class'=>'legend-icon'])?> NEW</label></div>
-											<div class="checkbox"><label><input type="checkbox" name="fireClass[]" value="B" v-model="wfnmFilter"> <div class="checkmark"></div> <?=Html::img('@media/map_emerging_fire.png',['class'=>'legend-icon'])?> EMERGING</label></div>
-											<div class="checkbox"><label><input type="checkbox" name="fireClass[]" value="E" v-model="wfnmFilter"> <div class="checkmark"></div> <?=Html::img('@media/map_active_fire.png',['class'=>'legend-icon'])?> ACTIVE</label></div>
-										</div>
-										<div class='col-xs-12 col-sm-6'>
-											<div class="checkbox"><label><input type="checkbox" name="fireClass[]" value="C" v-model="wfnmFilter"> <div class="checkmark"></div> <?=Html::img('@media/map_contained_fire.png',['class'=>'legend-icon'])?> CONTAINED</label></div>
-											<div class="checkbox"><label><input type="checkbox" name="fireClass[]" value="D" v-model="wfnmFilter"> <div class="checkmark"></div> <?=Html::img('@media/map_controlled_fire.png',['class'=>'legend-icon'])?> CONTROLLED</label></div>
-											<div class="checkbox"><label><input type="checkbox" name="fireClass[]" value="CX" v-model="wfnmFilter"> <div class="checkmark"></div> <?=Html::img('@media/map_complex.png',['class'=>'legend-icon'])?> COMPLEXES</label></div>
-										</div>
-									</div>
-									<table id='firesnearmeTable' class="table table-hover table-condensed ">
-										<thead>
-											<tr>
-												<th>Name</th>
-												<th>Distance</th>
-												<th>Status</th>
-												<th>Type</th>
-												<th>Acres</th>
-												<th>Last Updated</th>
-											</tr>
-										</thead>
-									  	<tr class='childFireRow' v-for="fire in firesNearMe">
-											<td @click="getFireInfo(fire,'WF')"><b>{{ fire.incidentName }}</b></td>
-											<td @click="getFireInfo(fire,'WF')">{{ precisionRound(fire.distance,1) }}</td>
-											<td @click="getFireInfo(fire,'WF')"><img class="table-fire-logo" :src="getFireIcon(fire.fireClassId)" alt=""> {{ fire.fireClass }} </td>
-											<td >{{ fire.fireClassId }}</td>
-											<td @click="getFireInfo(fire,'WF')">{{  formatAcres(fire.dailyAcres) }}</td>
-											<td @click="getFireInfo(fire,'WF')">{{ formatDateTime(fire.modifiedOnDateTime) }}</td>
+								<div class='col-xs-12 col-sm-6'>
+									<div class="checkbox"><label><input type="checkbox" name="fireClass[]" value="C" v-model="wfnmFilter"> <div class="checkmark"></div> <?=Html::img('@media/map_contained_fire.png',['class'=>'legend-icon'])?> CONTAINED</label></div>
+									<div class="checkbox"><label><input type="checkbox" name="fireClass[]" value="D" v-model="wfnmFilter"> <div class="checkmark"></div> <?=Html::img('@media/map_controlled_fire.png',['class'=>'legend-icon'])?> CONTROLLED</label></div>
+									<div class="checkbox"><label><input type="checkbox" name="fireClass[]" value="CX" v-model="wfnmFilter"> <div class="checkmark"></div> <?=Html::img('@media/map_complex.png',['class'=>'legend-icon'])?> COMPLEXES</label></div>
+								</div>
+							</div>
+								<table id='firesnearmeTable' class="table table-hover table-condensed ">
+									<thead>
+										<tr>
+											<th>Name</th>
+											<th>Di<span>stance</span></th>
+											<th>Stat<span>us</span></th>
+											<th>Type</th>
+											<th>Ac<span>res</span></th>
+											<th><span>Last</span> Updated</th>
 										</tr>
-									</table>
-								</div>
-						  	</div>
+									</thead>
+								  	<tr class='childFireRow' v-for="fire in firesNearMe">
+										<td @click="getFireInfo(fire,'WF')"><b>{{ fire.incidentName }}</b></td>
+										<td @click="getFireInfo(fire,'WF')">{{ precisionRound(fire.distance,1) }}</td>
+										<td @click="getFireInfo(fire,'WF')"><img class="table-fire-logo" :src="getFireIcon(fire.fireClassId)" alt=""> {{ fire.fireClass }} </td>
+										<td >{{ fire.fireClassId }}</td>
+										<td @click="getFireInfo(fire,'WF')">{{  formatAcres(fire.dailyAcres) }}</td>
+										<td @click="getFireInfo(fire,'WF')">{{ formatDateTime(fire.modifiedOnDateTime) }}</td>
+									</tr>
+								</table>
 						</div>
 					</div>
 					<div class='panel panel-default' v-show="wfnmTab == 'weather'">

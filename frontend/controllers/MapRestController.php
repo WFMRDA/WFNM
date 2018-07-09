@@ -67,6 +67,7 @@ class MapRestController extends Controller
                 'distance' => 25,
             ];
             $data = $mapData->getFiresNearUserLocation();
+            // Yii::trace($data,'dev');
             $prepLevel = WfnmHelpers::getPrepLevel($data['gacc']);
             return [
                 'fireInfo'=> $data['fireInfo'],
@@ -142,7 +143,7 @@ class MapRestController extends Controller
             return ['sitreport'=>$mapData->sitReportInfo,'fireDb'=>$mapData->wfnmData];
 
 
-            
+
             $emergingFireDataProvider = $mapData->getEmergingFiresDataProvider();
             $newFireDataProvider = $mapData->getNewFiresDataProvider();
             $sitReport = $mapData->getSitReportInfo();
