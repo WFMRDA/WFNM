@@ -146,20 +146,22 @@ $this->title = Yii::$app->name;
 						</a>
 					</div>
 				</div>
-				<div class="btn-group btn-group-justified panel-btn-group-justified" role="group">
-					<div class="btn-group" role="group">
-	                    <button :class="{active: activeFireInfoTab == 'index'}"  @click="activeFireInfoTab = 'index'" type="button" class="btn btn-default">General Info</button>
-	                </div>
-	                <div class="btn-group" role="group">
-	                    <button :class="{active: activeFireInfoTab == 'info'}"  @click="activeFireInfoTab = 'info'" type="button" class="btn btn-default">Incident Info</button>
-	                </div>
-	                <div  v-show="fireInfo.incidentTypeCategory =='CX'" class="btn-group" role="group">
-	                    <button :class="{active: activeFireInfoTab == 'childFires'}"  @click="activeFireInfoTab = 'childFires'" type="button" class="btn btn-default">Complex Fires</button>
-	                </div>
-	                <div class="btn-group" role="group" >
-	                    <button :class="{active: activeFireInfoTab == 'comments'}"  @click="activeFireInfoTab = 'comments'" type="button" class="btn btn-default">Comments</button>
-	                </div>
-	            </div>
+				<div class='text-center'>
+					<div class="btn-group  " role="group">
+						<!-- <div class="btn-group" role="group"> -->
+		                    <button :class="{active: activeFireInfoTab == 'index'}"  @click="activeFireInfoTab = 'index'" type="button" class="btn btn-default">General Info</button>
+		                <!-- </div> -->
+		                <!-- <div class="btn-group" role="group"> -->
+		                    <button :class="{active: activeFireInfoTab == 'info'}"  @click="activeFireInfoTab = 'info'" type="button" class="btn btn-default">Incident Info</button>
+		                <!-- </div> -->
+		                <!-- <div  v-show="fireInfo.incidentTypeCategory =='CX'" class="btn-group" role="group"> -->
+		                    <button v-show="fireInfo.incidentTypeCategory =='CX'" :class="{active: activeFireInfoTab == 'childFires'}"  @click="activeFireInfoTab = 'childFires'" type="button" class="btn btn-default">Complex Fires</button>
+		                <!-- </div> -->
+		                <!-- <div class="btn-group" role="group" > -->
+		                    <button :class="{active: activeFireInfoTab == 'comments'}"  @click="activeFireInfoTab = 'comments'" type="button" class="btn btn-default">Comments</button>
+		                <!-- </div> -->
+		            </div>
+				</div>
 				<div class='panel panel-default' v-show="activeFireInfoTab == 'index'">
 					<div class="panel-heading text-center">
 					    <h3 class="panel-title">General Information</h3>
