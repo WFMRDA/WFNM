@@ -74,7 +74,11 @@ $this->title = Yii::$app->name;
 		<br>
 		<img src="https://nowcoast.noaa.gov/images/legends/radar.png" alt="legend">
 	</div>
-	<transition name="slide-in-left">
+
+
+
+	<!-- LAYERS PANE -->
+	<transition name="slide-in-left" v-on:after-enter="clearLoading">
 		<div id='layersPane' v-show="activePane == 'layers' && !paneActive">
 			<ul>
 				<li v-for="layer in layers" :key='layer.id' :class="{ active: layer.active }">
@@ -83,8 +87,12 @@ $this->title = Yii::$app->name;
 			</ul>
 		</div>
  	</transition>
+
+
+
+	<!-- INCIDENTS SELECTION PANE -->
 	<transition name="shrink-left">
-		<div id='layersIncidentPane' v-show="showIncidentLayers && activePane == 'layers' && !paneActive">
+		<div id='layersIncidentPane'  v-show="showIncidentLayers && activePane == 'layers' && !paneActive">
 			<div class='legendOptions-container container-fluid'>
 				<div id="maplegendform-firesizelist" class=" col-xs-12 col-sm-6" name="fireSize">
 					<h3>Fire Size</h3>
@@ -107,6 +115,8 @@ $this->title = Yii::$app->name;
 			<!-- <span>Checked names: {{ activeIncidentLayers }}</span> -->
 		</div>
  	</transition>
+
+
 	<transition name="slide-in-right" v-on:after-enter="panMapToCenter" v-on:after-leave="clearFireMarker"  >
 		<div ref="fireInfoPanelContainer" id='fireInfo-pane-container' v-show="showFireInfo" class='fireInfo-panel-container col-xs-12 col-sm-8 col-md-7 col-lg-6' :class="{ tickerLive: ticker.length}">
 			<button type="button" class="close closePanel" aria-label="Close" @click="showFireInfo = false"><span aria-hidden="true">&times;</span></button>
@@ -298,8 +308,12 @@ $this->title = Yii::$app->name;
 			</div>
 		</div>
 	</transition>
-	<transition name="slide-in-right">
-		<div v-show="infoPaneActive"  class='col-xs-12 col-sm-8 col-md-7 col-lg-6 fireInfo-panel-container' :class="{ tickerLive: ticker.length}">
+
+
+
+
+	<transition name="slide-in-right" v-on:after-enter="clearLoading">
+		<div v-show="infoPaneActive" class='col-xs-12 col-sm-8 col-md-7 col-lg-6 fireInfo-panel-container' :class="{ tickerLive: ticker.length}">
 			<button type="button" class="close closePanel" aria-label="Close" @click="activePane = ''"><span aria-hidden="true">&times;</span></button>
 
 

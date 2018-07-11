@@ -756,7 +756,16 @@ new Vue({
             return acres;
         },
         activatePane(str){
-            this.activePane = (this.activePane != str)?str:'';
+            if(this.activePane != str){
+                this.loading = true;
+                this.activePane = str;
+            }else{
+                this.activePane = '';
+            }
+        },
+        clearLoading(){
+            console.log('clear loading');
+            this.loading = false;
         },
         getGaccName(name){
             switch (name) {
@@ -974,6 +983,7 @@ new Vue({
             console.log('close');
             this.map.removeLayer(this.fireMarker);
             this.fireInfo = {};
+            this.loading =false;
         },
         getFireInfo(obj,type){
             var marker = (type == 'CX')?'map_complex':'active_fire';
@@ -1146,7 +1156,7 @@ new Vue({
                 self.radarTime = moment.tz(data.time,tz).format("MM/DD/YYYY HH:mm:z");
                 // console.log(data.time,self.radarTime);
             });
-            // this.getUserLocation();
+            this.getUserLocation();
         },
         splitOnCapitolLetter(string){
             if(string == undefined || string == null){
