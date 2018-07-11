@@ -6,30 +6,26 @@ use common\models\helpers\WfnmHelpers;
 use common\widgets\PyroMenu;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
-use common\widgets\Bloodhound;
-use common\widgets\TypeAhead;
 use yii\helpers\Html;
 
 use frontend\assets\ArcGisAsset;
 ArcGisAsset::register($this);
 
-$engine = new Bloodhound([
-	'name' => 'incidents',
-	'clientOptions' => [
-		'datumTokenizer' => new \yii\web\JsExpression("BasilLena.tokenizers.obj.whitespace('value')"),
-		'queryTokenizer' => new \yii\web\JsExpression("BasilLena.tokenizers.whitespace"),
-		'remote' => [
-			'url' => Url::to(['/map-rest/fire-list']) . '?incident=%QUERY',
-			'wildcard' => '%QUERY',
-			'rateLimitWait' => 500,
-		]
-	]
-]);
 /* @var $this yii\web\View */
 $this->title = Yii::$app->name;
 ?>
 <?php // Yii::$app->appSystemData->disclaimer?$this->render('_disclaimer'):''?>
+
 <div id="app">
+	<!-- Our component-->
+	<typeahead
+	 	v-show="!paneActive"
+		:source="series"
+		placeholder="Search Fire"
+		filter-key="incidentName"
+		:min-length="3"
+	>
+	</typeahead>
 	<div class='loader-container' v-show="loading"><div class="sk-wave loader"><div class="sk-rect sk-rect1"></div><div class="sk-rect sk-rect2"></div><div class="sk-rect sk-rect3"></div><div class="sk-rect sk-rect4"></div><div class="sk-rect sk-rect5"></div></div></div>
 	<div v-show="!paneActive" class='toolbar-container'>
 		<div class='toolbar-overlay'>

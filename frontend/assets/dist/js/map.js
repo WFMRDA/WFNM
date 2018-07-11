@@ -280,65 +280,66 @@ new Vue({
 
         ],
     },
+    created(){
+        $.post(yiiOptions.homeUrl+'/map-rest/my-fires',function( data ) {
+            // console.log('my-fires',data);
+            self.myFires = data;
+        }, "json" );
+        $.post(yiiOptions.homeUrl+'/map-rest/alerts',function( data ) {
+            // console.log('alerts',data);
+        }, "json" );
+        $.post(yiiOptions.homeUrl+'/map-rest/my-locations',function( data ) {
+            // console.log('my-locations',data);
+            self.myLocations = data;
+        }, "json" );
+        $.post(yiiOptions.homeUrl+'/map-rest/sit-rep',function( data ) {
+            // console.log('sit-report',data);
+            self.sitReport = data.sitreport;
+            self.fireDb = data.fireDb;
+        }, "json" );
+    },
     mounted() {
-        self = this;
+        var vm = this;
         this.initMap();
         this.plLevel = yiiOptions.plLevel;
         $.post(yiiOptions.homeUrl+'/map-rest/fires',function( data ) {
+            // console.log(this.layers,vm.layers);
             // console.log(data.layers);
-            self.dataSet = data.wfnm;
-            // console.log(self.dataSet);
-            self.activeIncidentLayers = data.layers.incidentLayers;
+            vm.dataSet = data.wfnm;
+            // console.log(vm.dataSet);
+            vm.activeIncidentLayers = data.layers.incidentLayers;
             var mapLayers = (data.layers.mapLayers == undefined)?[]:data.layers.mapLayers;
             var obj = {};
             var length = mapLayers.length;
             for (var i = 0; i < length; i++) {
                 obj[mapLayers[i]] = 1;
             }
-            var length = self.layers.length;
+            var length = vm.layers.length;
             for (var i = 0; i < length; i++) {
-                var layer = self.layers[i];
+                var layer = vm.layers[i];
                 layer.active = (layer.name in obj);
             }
-            self.initLayers();
-            self.loading = false;
-        }, "json" );
-        $.post(yiiOptions.homeUrl+'/map-rest/my-fires',function( data ) {
-            console.log('my-fires',data);
-            self.myFires = data;
-        }, "json" );
-        $.post(yiiOptions.homeUrl+'/map-rest/alerts',function( data ) {
-            console.log('alerts',data);
-        }, "json" );
-        $.post(yiiOptions.homeUrl+'/map-rest/my-locations',function( data ) {
-            console.log('my-locations',data);
-            self.myLocations = data;
-        }, "json" );
-        $.post(yiiOptions.homeUrl+'/map-rest/sit-rep',function( data ) {
-            console.log('sit-report',data);
-            self.sitReport = data.sitreport;
-            self.fireDb = data.fireDb;
+            vm.initLayers();
+            vm.loading = false;
         }, "json" );
         $('[data-toggle="tooltip"]').tooltip();
-        this.$nextTick(() => {
+        this.$nextTick(function() {
             this.initAutocomplete();
         });
-
-        // $('[data-toggle="tooltip"]').tooltip({trigger: 'manual'}).tooltip('show');
     },
 
 
 
 
 
-
-/*
-<select data-bind="visible: infoView() == 'incidents', options: sortFields, optionsText: 'alias', value: selectedSortField"><option value="">Acres Burned</option><option value="">Cost Per Acre</option><option value="">Discovery Acres</option><option value="">Estimated Cost To Date</option><option value="">Fires - IMSR</option><option value="">Fires - Type 1</option><option value="">Fires - Type 2</option><option value="">Fires_NIMO</option><option value="">Incident Name</option><option value="">Initial Response Acres</option><option value="">Injuries</option><option value="">Name</option><option value="">Other Structures Destroyed</option><option value="">Other Structures Threatened</option><option value="">Percent Contained</option><option value="">Percent Perimeter To Be Contained</option><option value="">ROSS - Dozers</option><option value="">ROSS - Engines</option><option value="">ROSS - Fixed Wing</option><option value="">ROSS - Type 1 Crews</option><option value="">ROSS - Type 1 Helis</option><option value="">ROSS - Type 1 Imts</option><option value="">ROSS - Type 1 Tankers</option><option value="">ROSS - Type 2 Crews</option><option value="">ROSS - Type 2 Helis</option><option value="">ROSS - Type 2 Imts</option><option value="">ROSS - Type 3 Helis</option><option value="">ROSS - Type 3 Tankers</option><option value="">Residences Destroyed</option><option value="">Residences Threatened</option><option value="">Total Incident Personnel</option><option value="">Total Structures Threatened</option></select>
-*/
     computed:{
+        series(){
+            return this.fireDb;
+       },
         //sitReportType
         sitReportData(){
-            self = this;
+            this.loading = true;
+            var vm = this;
             // var newDb = this.clone(this.fireDb);
             var newDb = [];
             var dbL = this.fireDb.length;
@@ -349,9 +350,13 @@ new Vue({
                 }
 
             }
-            return  newDb.sort(function(a, b){
-                return b[self.sitReportType] - a[self.sitReportType];
+            var sorted =  newDb.sort(function(a, b){
+                return b[vm.sitReportType] - a[vm.sitReportType];
             });
+            // console.log(this.fireDb);
+            // console.log(sorted);
+            this.loading = false;
+            return sorted;
         },
         fireHasInfo(){
             return this.fireInfo.projectedIncidentActivity72Plus == null &&
@@ -547,7 +552,7 @@ new Vue({
             return val;
         },
         getGaccUrl(key){
-            console.log(key);
+            // console.log(key);
             return (key == null)? '': 'https://gacc.nifc.gov/'+ key.toLowerCase();
         },
         getPLCSS(level){
@@ -559,7 +564,7 @@ new Vue({
             this.firesNearMeTable.columns(3).search(options,true).draw();
         },
         initAutocomplete(){
-            console.log('called Auto Complete');
+            // console.log('called Auto Complete');
             this.autocomplete = new google.maps.places.Autocomplete((document.getElementById('addressInput')),
             {
                 // types: ['geocode'],
@@ -1012,6 +1017,7 @@ new Vue({
             var fireIcon = L.icon({
                 iconUrl: yiiOptions.mediaUrl+"/"+marker+".png",
                 iconSize: [size, size],
+                iconAnchor: [10, 10], // point of the icon which will correspond to marker's location
             });
 
             // var latLng = L.latLng([lat,lng]);
@@ -1140,7 +1146,7 @@ new Vue({
                 self.radarTime = moment.tz(data.time,tz).format("MM/DD/YYYY HH:mm:z");
                 // console.log(data.time,self.radarTime);
             });
-            this.getUserLocation();
+            // this.getUserLocation();
         },
         splitOnCapitolLetter(string){
             if(string == undefined || string == null){

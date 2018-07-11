@@ -140,39 +140,8 @@ class MapRestController extends Controller
         if (Yii::$app->request->isAjax){
             $params = ArrayHelper::merge(Yii::$app->request->queryParams,Yii::$app->request->bodyParams);
             $mapData = Yii::createObject(Yii::$app->params['mapData']);
+            // Yii::trace($mapData->wfnmData,'dev');
             return ['sitreport'=>$mapData->sitReportInfo,'fireDb'=>$mapData->wfnmData];
-
-
-
-            $emergingFireDataProvider = $mapData->getEmergingFiresDataProvider();
-            $newFireDataProvider = $mapData->getNewFiresDataProvider();
-            $sitReport = $mapData->getSitReportInfo();
-            /*DEBGUGGING LINES LEAVE FOR BACKUP*/
-            /*
-            *
-            *
-                // $table = ArrayHelper::map($mapData->getFireArray(),'incidentName','fireClassId');
-                // $d =$mapData->getFireArray();
-                $d = $mapData->processFires($mapData->getWfnmData());
-                //Array Keys
-                $keys = array_keys($d);
-                $table = [];
-                foreach ($keys as $key) {
-                    $table[$key] = count($d[$key]);
-                }
-                $mapData->processFires($mapData->getWfnmData());
-            *
-            *
-            */
-            // $pl = $mapData->getPrepardnessLevel('NIC');
-            $html = $this->renderAjax('sitrep', [
-                'emergingFireDataProvider' => $emergingFireDataProvider,
-                'newFireDataProvider' => $newFireDataProvider,
-                'sitReport'=>$sitReport,
-                'time'=>$mapData->nextRefreshTime,
-                // 'table' => $table,
-            ]);
-            return ['html'=>$html];
         }
     }
 
@@ -262,28 +231,4 @@ class MapRestController extends Controller
         }
     }
 
-
-    /**
-     * Your controller action to fetch the list
-     */
-    public function actionFireList() {
-        if (Yii::$app->request->isAjax){
-            $params = ArrayHelper::merge(Yii::$app->request->queryParams,Yii::$app->request->bodyParams);
-            $mapData = Yii::createObject(Yii::$app->params['mapData']);
-            $fires = $mapData->searchWfnmData($params);
-            $out = [];
-
-            // Yii::trace($fires,'dev');
-            // $searchModel = new IrwinDbSearch;
-            // $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-            foreach ($fires as $key => $value) {
-                if(!WfnmHelpers::inString(ArrayHelper::getValue($params,'incident'),$value['incidentName'])){
-                    continue;
-                }
-                $out[] = ['value' => $value['incidentName'] . ' Fire, ' . str_replace('US-', '', $value['pooState']),'id' => $value['irwinID'] ];
-            }
-            return $out;
-        }
-    }
 }

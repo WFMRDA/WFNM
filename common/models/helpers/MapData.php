@@ -155,6 +155,7 @@ class MapData extends Model{
                 foreach ($data as $key => &$row) {
                     if($row['incidentTypeCategory'] == 'CX'){
                         $row['fireClassId'] = 'CX';
+                        $row['fireClass'] = 'Complex';
                     }
                     $row['dailyAcres'] = ($row['dailyAcres'] == null) ? 0 : (float)$row['dailyAcres'];
                 }
@@ -351,7 +352,9 @@ class MapData extends Model{
                 $data = $updatesResponse->data;
                 if($data['incidentTypeCategory'] == 'CX'){
                     $data['fireClassId'] = 'CX';
+                    $data['fireClass'] = 'Complex';
                 }
+                // Yii::trace($data,'dev');
                 $cache->set($key, $data,$this->nextRefreshTime);
                 $data = $updatesResponse->data;
             }else{

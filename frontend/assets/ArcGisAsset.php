@@ -29,11 +29,13 @@ class ArcGisAsset extends AssetBundle
         // '//api.tiles.mapbox.com/mapbox.js/plugins/leaflet-omnivore/v0.3.1/leaflet-omnivore.min.js',
         // '//unpkg.com/leaflet-bootstrap-zoom/bin/leaflet-bootstrap-zoom.min.js',
         // 'https://unpkg.com/esri-leaflet@2.1.4/dist/esri-leaflet.js',
+        '//cdnjs.cloudflare.com/ajax/libs/corejs-typeahead/1.2.1/typeahead.bundle.min.js',
+        'js/typeahead.js',
         YII_ENV_DEV ? 'js/jTouch.js' :'//assets.wildfiresnearme.wfmrda.com/js/jTouch.js',
         YII_ENV_DEV ? 'js/map.js' :'//assets.wildfiresnearme.wfmrda.com/js/map.js',
     ];
     public $depends = [
         'frontend\assets\AppAsset',
-        'common\widgets\TypeAheadAsset'
+        // 'common\widgets\TypeAheadAsset'
     ];
 }
