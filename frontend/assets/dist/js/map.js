@@ -564,7 +564,7 @@ new Vue({
             this.firesNearMeTable.columns(3).search(options,true).draw();
         },
         initAutocomplete(){
-            console.log('called Auto Complete');
+            // console.log('called Auto Complete');
             this.autocomplete = new google.maps.places.Autocomplete((document.getElementById('addressInput')),
             {
                 // types: ['geocode'],
@@ -602,12 +602,16 @@ new Vue({
                 this.userLocation = obj;
             }
         },
-        goToLocation(coords){
+        goToLocation(coords,panMap){
+            if(panMap == undefined){
+                panMap = true;
+            }
+            console.log(coords,panMap);
             this.loading = true;
             self = this;
             var lat = coords.lat;
             var lng = coords.lng;
-            // console.log(lat,lng,address);
+            console.log(lat,lng);
             if(this.map.hasLayer(this.locMarker) ){
                 this.map.removeLayer(this.locMarker);
             }
@@ -618,7 +622,7 @@ new Vue({
             });
             this.locMarker = L.marker([lat,lng], {icon: locIcon});
             this.locMarker.addTo(this.map);
-            this.panMapToCenter('loc');
+            this.panMapToCenter('loc',panMap);
             $.post( "map-rest/fires-near-me",coords, function( data ) {
                 console.log(data);
                 if(self.firesNearMeTable !== undefined){
@@ -646,13 +650,18 @@ new Vue({
                     });
                     self.searchWFNMTable();
                 });
-                self.activePane = 'wfnm';
+                if(panMap){
+                    self.activePane = 'wfnm';
+                }
                 self.loading = false;
             }, "json");
             // self.activePane = 'wfnm';
         },
+        placeUserIcon(){
+
+        },
         getUserLocation(){
-            self = this;
+            var vm = this;
             var defaultLoc = yiiOptions.defaultLocation;
             // console.log(defaultLoc);
             if(defaultLoc == undefined){
@@ -670,7 +679,7 @@ new Vue({
                                     address = results[0].formatted_address;
                                     address = address.replace(', USA','');
                                     //console.log(address);
-                                    self.browserLocation = {
+                                    vm.browserLocation = {
                                         address: address,
                                         latitude:pos.coords.latitude,
                                         longitude:pos.coords.longitude,
@@ -678,23 +687,35 @@ new Vue({
                                     };
 
 
-                                    self.userLocation =  self.formatLocation(self.browserLocation);
+                                    // vm.userLocation =  vm.formatLocation(vm.browserLocation);
+
+                                    var coords = {
+                                        address: address,
+                                        lat:pos.coords.latitude,
+                                        lng:pos.coords.longitude,
+                                    }
+                                    vm.goToLocation(coords,false);
                                 }else{
                                     var address = pos.coords.latitude + ', ' +pos.coords.longitude;
-                                    self.browserLocation = {
+                                    vm.browserLocation = {
                                         address: address,
                                         latitude:pos.coords.latitude,
                                         longitude:pos.coords.longitude,
                                         default:true,
                                     };
-
-                                    self.userLocation =  self.formatLocation(self.browserLocation);
+                                    var coords = {
+                                        address: address,
+                                        lat:pos.coords.latitude,
+                                        lng:pos.coords.longitude,
+                                    }
+                                    vm.goToLocation(coords,false);
+                                    // vm.userLocation =  vm.formatLocation(vm.browserLocation);
                                 }
                             });
 
                         },
                         function(err) {
-                            // self.setUserLocation(coords);
+                            // vm.setUserLocation(coords);
                             console.log('User Location No Found Or Enabled');
                             //console.log(err);
                         },
@@ -929,7 +950,7 @@ new Vue({
             });
         },
         setIncidentLayer(){
-            console.log('incident layer');
+            // console.log('incident layer');
             self = this;
             var layer = self.layers[self.incidentLayerId];
             if(self.map.hasLayer(layer.instance) ){
@@ -969,18 +990,25 @@ new Vue({
             // console.log('getMarkerOffset',panelWidth,offset);
             return offset;
         },
-        panMapToCenter(marker){
+        panMapToCenter(marker,panMap){
             if(marker == 'loc'){
                 marker = this.locMarker;
             }else{
                 marker = this.fireMarker;
             }
-            // console.log(marker);
+            if(panMap == undefined){
+                panMap = true;
+            }
+            console.log(marker,panMap);
             self = this;
-            var offset = this.getMarkerOffset();
-            var center = this.map.project(marker.getLatLng(),this.defaultZoomIn);
-            center = new L.point(center.x + offset,center.y);
-            var target = this.map.unproject(center,this.defaultZoomIn);
+            if(panMap){
+                var offset = this.getMarkerOffset();
+                var center = this.map.project(marker.getLatLng(),this.defaultZoomIn);
+                center = new L.point(center.x + offset,center.y);
+                var target = this.map.unproject(center,this.defaultZoomIn);
+            }else{
+                var target = marker.getLatLng();
+            }
             this.map.setView(target, this.defaultZoomIn,{animate:true});
         },
         clearFireMarker(){
@@ -1160,7 +1188,8 @@ new Vue({
                 self.radarTime = moment.tz(data.time,tz).format("MM/DD/YYYY HH:mm:z");
                 // console.log(data.time,self.radarTime);
             });
-            // this.getUserLocation();
+            // this.placeUserIcon();
+            this.getUserLocation();
         },
         splitOnCapitolLetter(string){
             if(string == undefined || string == null){
