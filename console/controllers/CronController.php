@@ -24,6 +24,10 @@ class CronController extends Controller {
             echo "ENV Undetermined";
         }
     }
+    
+    public function actionClearCache(){
+        Yii::$app->cache->flush();
+    }
 
     public function actionTestParams(){
         $this->stdout(VarDumper::dumpAsString(Yii::$app->params['adminEmail'],10,false) . PHP_EOL, Console::FG_GREEN);

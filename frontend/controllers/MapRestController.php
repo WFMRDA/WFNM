@@ -31,8 +31,7 @@ class MapRestController extends Controller
 
     public function actionFires(){
         if (Yii::$app->request->isPost){
-            $mapData = Yii::createObject(Yii::$app->params['mapData']);
-            return ['wfnm' => $mapData->getWfnmGeoJsonLayer(),'layers'=>Yii::$app->appSystemData->mapLayers];
+            return WfnmHelpers::getMapFires();
         }
     }
 
@@ -138,10 +137,7 @@ class MapRestController extends Controller
 
     public function actionSitRep(){
         if (Yii::$app->request->isAjax){
-            $params = ArrayHelper::merge(Yii::$app->request->queryParams,Yii::$app->request->bodyParams);
-            $mapData = Yii::createObject(Yii::$app->params['mapData']);
-            // Yii::trace($mapData->wfnmData,'dev');
-            return ['sitreport'=>$mapData->sitReportInfo,'fireDb'=>$mapData->wfnmData];
+            return WfnmHelpers::getSitReportData();
         }
     }
 
@@ -167,18 +163,11 @@ class MapRestController extends Controller
      */
     protected function findMyFires()
     {
-        $models = MyFires::findAll(['user_id'=>Yii::$app->user->identity->id]);
-        $mapData = Yii::createObject(Yii::$app->params['mapData']);
-        return $mapData->buildFireList($models);
+        return WfnmHelpers::getMyFires();
     }
 
     protected function findMyAlerts($offset = 0){
-        return  Messages::find()
-            ->andWhere(['user_id' => Yii::$app->user->identity->id])
-            ->orderBy([
-                // 'created_at' => SORT_ASC,
-                'created_at' => SORT_DESC,
-            ])->limit(10)->offset($offset)->asArray()->all();
+        return WfnmHelpers::findMyAlerts($offset);
     }
 
     public function actionMyLocations(){
@@ -196,7 +185,7 @@ class MapRestController extends Controller
      */
     protected function findMyLocations()
     {
-        return $model = MyLocations::findAll(['user_id'=>Yii::$app->user->identity->id]);
+        return WfnmHelpers::findMyLocations();
 
     }
     protected function findMyLocation($id)

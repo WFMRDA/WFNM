@@ -446,11 +446,11 @@ $this->title = Yii::$app->name;
 				<div class=''>
 					<div class="col-xs-11 col-md-10 col-centered">
 		                <div class="input-group">
-		                    <input type="text" id="addressInput" class="form-control" name="MyLocationsForm[address]" placeholder="Enter your address" @focus="geolocate()"  aria-required="true" autocomplete="off" >
+							<input type="text" id="addressInput" class="form-control" name="MyLocationsForm[address]" placeholder="Enter your address" @focus="geolocate()"  aria-required="true" autocomplete="off" >
 		                    <span class="input-group-btn">
 		                        <button class="btn btn-default" @click='addLocation()' type="button"><i class="fa fa-plus" aria-hidden="true">Add</i></button>
 		                    </span>
-		                </div><!-- /input-group -->
+		                </div>
 		            </div>
 					<table class="table table-hover table-condensed ">
 						<thead>

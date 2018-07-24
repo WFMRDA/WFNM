@@ -408,3 +408,6 @@ hr {
     border-radius: 50%;
     max-height: $navbar-height;
 }
+.pac-container{
+    z-index: 40000!important;
+}

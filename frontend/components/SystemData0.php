@@ -18,14 +18,10 @@ use yii\data\ActiveDataProvider;
 use common\models\popup\PopTable;
 use ptech\pyrocms\components\SystemData as BaseModel;
 use common\models\user\DefaultLocation;
-use yii\helpers\ArrayHelper;
 
 class SystemData extends BaseModel{
-    protected $_userData;
-    protected $_defaultLoc;
-    protected $_userMessages;
-    protected $_disclaimer;
-    protected $_userSettings;
+
+    public $user;
     protected $defaultFireClasses = [
        'A' => 'NEW',
        'B' => 'EMERGING',
@@ -43,92 +39,30 @@ class SystemData extends BaseModel{
         5 => '>= 100000 ac',
     ];
 
-    public function getUser($el = null){
-        if(!isset($this->_userData)){
-            $this->_userData = User::find()
-                ->joinWith([
-                    'defaultLocation',
-                    'messages',
-                    'myFires',
-                    'myLocations',
-                ])
-                ->where(['user.id' => Yii::$app->user->identity->id])
-                ->asArray()
-                ->one();
-        }
-        if(isset($el)){
-            $data = ArrayHelper::getValue($this->_userData,$el,[]);
-        }else{
-            $data = $this->_userData;
-        }
-        return $data;
-    }
+    protected $defaultMapLayers = [
+
+    ];
 
 
-    /*public function init()
+    // protected $defaultFireSizes = [1,2,3,4,5];
+
+    public function init()
     {
         if(!Yii::$app->user->isGuest){
             $this->setBaseValues();
         }
         parent::init();
     }
-    protected function setBaseValues(){
-        $this->user = $this->userData;
-    }
 
-    protected function getUserData(){
-        $cache = Yii::$app->cache;
-        $key  = $this->userCacheKey;
-        // $cache->delete($key) ;
-        if(!$cache->exists($key) || empty($data  = $cache->get($key))){
-           $data = $this->refreshUserData();
-        }
-        return $data;
-    }
-
-    public function refreshUserData(){
-        // Yii::trace('data refreshed','dev');
-        $query = User::find()
-            ->joinWith([
-                'defaultLocation'
-                'messages',
-                'myFires',
-                'myLocations',
-            ])
-            ->where(['user.id' => Yii::$app->user->identity->id])
-            ->asArray()
-            ->one();
-            $cache = Yii::$app->cache;
-            $key  = $this->userCacheKey;
-            $cache->set($key,$query,self::getNextRefreshTime());
-        return $query;
-    }
-    */
     public function getFireClasses(){
         return $this->defaultFireClasses;
     }
-
     public function getFireSizes(){
-
         return $this->defaultFireSizes;
     }
-    public function getPlLevel(){
-        $mapData = Yii::createObject(Yii::$app->params['mapData']);
-        return $mapData->getPrepardnessLevel('NIC');
-    }
 
 
-    public function getMapLayers(){
-        $layers = $this->getSetting('mapLayers');
-        return ($layers == null)? $this->getDefaultLayers() : json_decode($layers,true,512,JSON_NUMERIC_CHECK | JSON_PRESERVE_ZERO_FRACTION);
-    }
-
-    public function getUserMessages(){
-        if($this->_userMessages == null){
-            $this->setUserMessages();
-        }
-        return $this->_userMessages;
-    }
+    protected $_userMessages;
 
     public function setUserMessages(){
         $query = Messages::find()
@@ -146,10 +80,22 @@ class SystemData extends BaseModel{
 
     }
 
+    public function getUserMessages(){
+        if($this->_userMessages == null){
+            $this->setUserMessages();
+        }
+        return $this->_userMessages;
+    }
+
+    public function getLegendHelpToggle(){
+        $style = $this->getSetting('legendHelpToggle');
+        return ($style == null)?'active' : $style;
+    }
+
+    protected $_defaultLoc;
     protected function setDefaultLoaction(){
         $this->_defaultLoc = DefaultLocation::find()->where(['user_id' => Yii::$app->user->identity->id])->asArray()->one();
     }
-
     public function getDefaultLocation(){
         if(!isset($this->_defaultLoc)){
             $this->setDefaultLoaction();
@@ -157,11 +103,24 @@ class SystemData extends BaseModel{
         return $this->_defaultLoc;
     }
 
-    protected function getSetting($key){
-        $model = new UserSettings;
-        $key = $model->getSettingId($key);
-        return (empty($this->userSettings[$key])) ? null : $this->userSettings[$key]->data;
+    public function getMapLayers(){
+        $layers = $this->getSetting('mapLayers');
+        return ($layers == null)? $this->getDefaultLayers() : json_decode($layers,true,512,JSON_NUMERIC_CHECK | JSON_PRESERVE_ZERO_FRACTION);
     }
+
+    protected function getDefaultLayers(){
+        return  [
+            'incidentLayers'=>array_merge(array_keys($this->defaultFireClasses),array_keys($this->defaultFireSizes)),
+            // 'mapLayers'=>array_keys($this->defaultFireSizes),
+        ];
+    }
+
+    public function getPlLevel(){
+        $mapData = Yii::createObject(Yii::$app->params['mapData']);
+        return $mapData->getPrepardnessLevel('NIC');
+    }
+
+    protected $_userSettings;
 
     public function setUserSettings(){
         // $this->_userSettings = [];
@@ -178,6 +137,8 @@ class SystemData extends BaseModel{
         }
         return $this->_userSettings;
     }
+
+    protected $_disclaimer;
     public function setDisclaimer(){
         // $this->_disclaimer = true;
         // return false;
@@ -189,6 +150,76 @@ class SystemData extends BaseModel{
             $this->setDisclaimer();
         }
         return $this->_disclaimer;
+    }
+
+/*    public function setDisclaimer(){
+        $cache = Yii::$app->cache;
+        $key  = $this->userCacheKey.'Disclaimer';
+        $cache->set($key,$query,self::getNextRefreshTime());
+    }
+    public function getDisclaimer(){
+        $cache = Yii::$app->cache;
+        $key  = $this->userCacheKey.'Disclaimer';
+        // $cache->delete($key) ;
+        if(!$cache->exists($key) || empty($data  = $cache->get($key))){
+           $data = $this->refreshUserData();
+        }
+        return $data;
+    }*/
+
+    protected function getSetting($key){
+        $model = new UserSettings;
+        $key = $model->getSettingId($key);
+        return (empty($this->userSettings[$key])) ? null : $this->userSettings[$key]->data;
+    }
+
+    public function refreshUserData(){
+        // Yii::trace('data refreshed','dev');
+        $query = User::find()
+            ->with([
+                'socialAccounts'
+                // 'settings',
+                // 'messages',
+            ])
+            ->where(['user.id' => Yii::$app->user->identity->id])
+            ->asArray()
+            ->one();
+            $cache = Yii::$app->cache;
+            $key  = $this->userCacheKey;
+            $cache->set($key,$query,self::getNextRefreshTime());
+        return $query;
+    }
+
+    protected function getUserCacheKey(){
+        return 'wfnmUser'.Yii::$app->user->identity->id.'UserDataStore';
+    }
+
+    public function getAvatar($type = ''){
+        $url = $this->getAvatarUrl();
+        return WfnmHelpers::img($url,['class'=>$type]);
+    }
+
+/*    public function getAvatarUrl(){
+        if(empty($this->user['socialAccounts'])){
+            $url = Url::to('@media/default-user.png', true);
+        }else{
+            $url = json_decode($this->user['socialAccounts'][0]['data'],true)['image'];
+        }
+        return $url;
+    }*/
+
+    protected function setBaseValues(){
+        $this->user = $this->userData;
+    }
+
+    protected function getUserData(){
+        $cache = Yii::$app->cache;
+        $key  = $this->userCacheKey;
+        // $cache->delete($key) ;
+        if(!$cache->exists($key) || empty($data  = $cache->get($key))){
+           $data = $this->refreshUserData();
+        }
+        return $data;
     }
 
     /**
@@ -214,6 +245,8 @@ class SystemData extends BaseModel{
         }
         return $this->_nextRefreshTime;
     }
+
+
 }
 
 

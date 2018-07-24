@@ -7,10 +7,12 @@ use common\widgets\Alert;
 use yii\helpers\Url;
 use yii\web\View;
 use frontend\assets\AppAsset;
+use common\models\helpers\WfnmHelpers;
 
 $appAsset = AppAsset::register($this);
 $this->params['assetUrl'] = $appAsset->baseUrl;
 
+$fireData = WfnmHelpers::getFireData();
 $options = [
     'appName' => Yii::$app->name,
     'baseUrl' => Yii::$app->request->baseUrl,
@@ -19,7 +21,14 @@ $options = [
     'language' => Yii::$app->language,
     'mediaUrl' => Yii::getAlias('@media'),
     'plLevel' => Yii::$app->appSystemData->getPlLevel(),
-    'defaultLocation' => Yii::$app->appSystemData->defaultLocation
+    'defaultLocation' => Yii::$app->appSystemData->defaultLocation,
+    'wfnm' => $fireData['geoJson'],
+    'layers' => $fireData['layers'],
+    'myFires' => Yii::$app->appSystemData->getUser('myFires'),
+    'alerts' => Yii::$app->appSystemData->getUser('alerts'),
+    'myLocations' => Yii::$app->appSystemData->getUser('myLocations'),
+    'sitReport' => $fireData['sitReport'],
+    'fireDb' => $fireData['fullFireDb'],
 ];
 
 $this->registerJs(

@@ -281,47 +281,47 @@ new Vue({
         ],
     },
     created(){
-        $.post(yiiOptions.homeUrl+'/map-rest/my-fires',function( data ) {
-            // console.log('my-fires',data);
-            self.myFires = data;
-        }, "json" );
-        $.post(yiiOptions.homeUrl+'/map-rest/alerts',function( data ) {
-            // console.log('alerts',data);
-        }, "json" );
-        $.post(yiiOptions.homeUrl+'/map-rest/my-locations',function( data ) {
-            // console.log('my-locations',data);
-            self.myLocations = data;
-        }, "json" );
-        $.post(yiiOptions.homeUrl+'/map-rest/sit-rep',function( data ) {
-            // console.log('sit-report',data);
-            self.sitReport = data.sitreport;
-            self.fireDb = data.fireDb;
-        }, "json" );
+    this.plLevel = yiiOptions.plLevel;
+    this.dataSet = yiiOptions.wfnm;
+    this.activeIncidentLayers = yiiOptions.layers.incidentLayers;
+    this.myFires = yiiOptions.myFires;
+    this.alerts = yiiOptions.alerts;
+    this.myLocations = yiiOptions.myLocations;
+    this.sitReport = yiiOptions.sitReport;
+    this.fireDb = yiiOptions.fireDb;
+        // $.post(yiiOptions.homeUrl+'/map-rest/my-fires',function( data ) {
+        //     // console.log('my-fires',data);
+        //     self.myFires = data;
+        // }, "json" );
+        // $.post(yiiOptions.homeUrl+'/map-rest/alerts',function( data ) {
+        //     // console.log('alerts',data);
+        // }, "json" );
+        // $.post(yiiOptions.homeUrl+'/map-rest/my-locations',function( data ) {
+        //     // console.log('my-locations',data);
+        //     self.myLocations = data;
+        // }, "json" );
+        // $.post(yiiOptions.homeUrl+'/map-rest/sit-rep',function( data ) {
+        //     // console.log('sit-report',data);
+        //     self.sitReport = data.sitreport;
+        //     self.fireDb = data.fireDb;
+        // }, "json" );
     },
     mounted() {
         var vm = this;
         this.initMap();
-        this.plLevel = yiiOptions.plLevel;
-        $.post(yiiOptions.homeUrl+'/map-rest/fires',function( data ) {
-            // console.log(this.layers,vm.layers);
-            // console.log(data.layers);
-            vm.dataSet = data.wfnm;
-            // console.log(vm.dataSet);
-            vm.activeIncidentLayers = data.layers.incidentLayers;
-            var mapLayers = (data.layers.mapLayers == undefined)?[]:data.layers.mapLayers;
-            var obj = {};
-            var length = mapLayers.length;
-            for (var i = 0; i < length; i++) {
-                obj[mapLayers[i]] = 1;
-            }
-            var length = vm.layers.length;
-            for (var i = 0; i < length; i++) {
-                var layer = vm.layers[i];
-                layer.active = (layer.name in obj);
-            }
-            vm.initLayers();
-            vm.loading = false;
-        }, "json" );
+        var mapLayers = (yiiOptions.layers.mapLayers == undefined)?[]:yiiOptions.layers.mapLayers;
+        var obj = {};
+        var length = mapLayers.length;
+        for (var i = 0; i < length; i++) {
+            obj[mapLayers[i]] = 1;
+        }
+        var length = vm.layers.length;
+        for (var i = 0; i < length; i++) {
+            var layer = vm.layers[i];
+            layer.active = (layer.name in obj);
+        }
+        this.initLayers();
+        this.loading = false;
         $('[data-toggle="tooltip"]').tooltip();
         this.$nextTick(function() {
             this.initAutocomplete();
@@ -564,7 +564,7 @@ new Vue({
             this.firesNearMeTable.columns(3).search(options,true).draw();
         },
         initAutocomplete(){
-            // console.log('called Auto Complete');
+            console.log('called Auto Complete');
             this.autocomplete = new google.maps.places.Autocomplete((document.getElementById('addressInput')),
             {
                 // types: ['geocode'],
@@ -635,6 +635,7 @@ new Vue({
                 self.$nextTick(function(){
                     self.firesNearMeTable = $('#firesnearmeTable').DataTable({
                         "order": [[ 1, "asc" ]],
+                        "deferRender":true,
                         "columnDefs": [
                             {
                                 "targets": [ 3 ],
@@ -759,6 +760,9 @@ new Vue({
             if(this.activePane != str){
                 this.loading = true;
                 this.activePane = str;
+                if(str == 'myLocations'){
+                    this.initAutocomplete();
+                }
             }else{
                 this.activePane = '';
             }
@@ -1156,7 +1160,7 @@ new Vue({
                 self.radarTime = moment.tz(data.time,tz).format("MM/DD/YYYY HH:mm:z");
                 // console.log(data.time,self.radarTime);
             });
-            this.getUserLocation();
+            // this.getUserLocation();
         },
         splitOnCapitolLetter(string){
             if(string == undefined || string == null){

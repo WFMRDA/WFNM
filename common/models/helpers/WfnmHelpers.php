@@ -7,10 +7,63 @@ use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
 use common\models\myFires\MyFires;
 use common\models\system\System;
+use common\models\messages\Messages;
+use common\models\myLocations\MyLocations;
 
 
 class WfnmHelpers extends YiiHelpers
 {
+    /**
+     * Finds the MyFires model based on its primary key value.
+     * If the model is not found, a 404 HTTP exception will be thrown.
+     * @param integer $id
+     * @return MyFires the loaded model
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public static function getMyFires()
+    {
+        $models = MyFires::findAll(['user_id'=>Yii::$app->user->identity->id]);
+        $mapData = Yii::createObject(Yii::$app->params['mapData']);
+        return $mapData->buildFireList($models);
+    }
+
+    public static function findMyAlerts($offset = 0){
+        return  Messages::find()
+            ->andWhere(['user_id' => Yii::$app->user->identity->id])
+            ->orderBy([
+                // 'created_at' => SORT_ASC,
+                'created_at' => SORT_DESC,
+            ])->limit(10)->offset($offset)->asArray()->all();
+    }
+
+    public static function findMyLocations()
+    {
+        return  MyLocations::findAll(['user_id'=>Yii::$app->user->identity->id]);
+    }
+
+    public static function getSitReportData(){
+
+        $mapData = Yii::createObject(Yii::$app->params['mapData']);
+        // Yii::trace($mapData->wfnmData,'dev');
+        return ['sitreport'=>$mapData->sitReportInfo,'fireDb'=>$mapData->wfnmData];
+    }
+
+    public static function getMapFires(){
+        $mapData = Yii::createObject(Yii::$app->params['mapData']);
+        return ['wfnm' => $mapData->getWfnmGeoJsonLayer(),'layers'=>Yii::$app->appSystemData->mapLayers];
+    }
+
+    public static function getFireData(){
+        $mapData = Yii::createObject(Yii::$app->params['mapData']);
+        $data = [
+            'geoJson' => $mapData->getWfnmGeoJsonLayer(),
+            'layers' => Yii::$app->appSystemData->mapLayers,
+            'sitReport' => $mapData->sitReportInfo,
+            'fullFireDb' => $mapData->wfnmData
+        ];
+        return $data;
+    }
+
 
     public static function inString($needle,$haystack){
         return (($needle != null) && (stripos($haystack,$needle) !== FALSE))?true:false;

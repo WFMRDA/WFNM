@@ -152,7 +152,7 @@ class MapData extends Model{
             // Yii::trace(VarDumper::dumpAsString($updatesResponse->data,10),'dev');
             if ($updatesResponse->isOk) {
                 $data =  $updatesResponse->data;
-                foreach ($data as $key => &$row) {
+                foreach ($data as &$row) {
                     if($row['incidentTypeCategory'] == 'CX'){
                         $row['fireClassId'] = 'CX';
                         $row['fireClass'] = 'Complex';
@@ -497,7 +497,7 @@ class MapData extends Model{
                $data = $this->refreshMyLocationsFireInfo();
             }
 
-            // Yii::trace($data,'dev');
+            Yii::trace($data,'dev');
         }
         return $data;
     }
@@ -522,6 +522,7 @@ class MapData extends Model{
                     'lat' => $this->userData['latitude'],
                     'lon' => $this->userData['longitude'],
                     'dist' => $this->userData['distance'],
+                    'fireClassPrefs'=>['A','B','C','D','E']
                 ])
                 ->send();
             $cache = Yii::$app->cache;
