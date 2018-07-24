@@ -1,4 +1,49 @@
 var player = undefined;
+function empty (mixedVar) {
+  //  discuss at: http://locutus.io/php/empty/
+  // original by: Philippe Baumann
+  //    input by: Onno Marsman (https://twitter.com/onnomarsman)
+  //    input by: LH
+  //    input by: Stoyan Kyosev (http://www.svest.org/)
+  // bugfixed by: Kevin van Zonneveld (http://kvz.io)
+  // improved by: Onno Marsman (https://twitter.com/onnomarsman)
+  // improved by: Francesco
+  // improved by: Marc Jansen
+  // improved by: Rafał Kukawski (http://blog.kukawski.pl)
+  //   example 1: empty(null)
+  //   returns 1: true
+  //   example 2: empty(undefined)
+  //   returns 2: true
+  //   example 3: empty([])
+  //   returns 3: true
+  //   example 4: empty({})
+  //   returns 4: true
+  //   example 5: empty({'aFunc' : function () { alert('humpty'); } })
+  //   returns 5: false
+
+  var undef
+  var key
+  var i
+  var len
+  var emptyValues = [undef, null, false, 0, '', '0']
+
+  for (i = 0, len = emptyValues.length; i < len; i++) {
+    if (mixedVar === emptyValues[i]) {
+      return true
+    }
+  }
+
+  if (typeof mixedVar === 'object') {
+    for (key in mixedVar) {
+      if (mixedVar.hasOwnProperty(key)) {
+        return false
+      }
+    }
+    return true
+  }
+
+  return false
+}
 if (!Array.isArray) {
     Array.isArray = function(arg) {
         return Object.prototype.toString.call(arg) === '[object Array]';
@@ -467,6 +512,7 @@ new Vue({
             return mapLayers;
         },
         myLocationList(){
+            // console.log('browserLoc',this.browserLocation);
             var locationList = this.prepend(this.browserLocation,this.clone(this.myLocations));
             return locationList;
         }
@@ -482,19 +528,24 @@ new Vue({
     watch:{
         incidentLayers(updated,old){
             // console.log(updated,old);
-            if(updated != old && Object.getOwnPropertyNames(old).length ){
+            if(updated != old && !empty(old) ){
                 // console.log(updated,old);
                 this.storeMapList();
                 this.setIncidentLayer();
             }
         },
         wfnmFilter(updated,old){
-            if(updated != old && Object.getOwnPropertyNames(old).length ){
+            if(updated != old && !empty(old) ){
                 this.searchWFNMTable();
             }
         },
         userLocation(updated,old){
-            if(updated != old && Object.getOwnPropertyNames(old).length ){
+            // console.log('userLoc',updated,old);
+            //     console.log('updated',updated);
+            //         console.log('old',old,empty(old));
+            // if(updated != old && Object.getOwnPropertyNames(old).length ){
+            var isFirst = empty(old);
+            if(updated != old && !isFirst ){
                 this.wfnmTab ='index';
                 self = this;
                 var obj = updated.split('*|*');
@@ -504,7 +555,7 @@ new Vue({
                     lng:obj[2]
                 }
                 this.goToLocation(coords);
-            }else{
+            }else if(!isFirst){
                 this.wfnmTab ='index';
                 this.activePane = 'wfnm';
             }
@@ -657,9 +708,6 @@ new Vue({
             }, "json");
             // self.activePane = 'wfnm';
         },
-        placeUserIcon(){
-
-        },
         getUserLocation(){
             var vm = this;
             var defaultLoc = yiiOptions.defaultLocation;
@@ -687,7 +735,7 @@ new Vue({
                                     };
 
 
-                                    // vm.userLocation =  vm.formatLocation(vm.browserLocation);
+                                    vm.userLocation =  vm.formatLocation(vm.browserLocation);
 
                                     var coords = {
                                         address: address,
@@ -709,7 +757,7 @@ new Vue({
                                         lng:pos.coords.longitude,
                                     }
                                     vm.goToLocation(coords,false);
-                                    // vm.userLocation =  vm.formatLocation(vm.browserLocation);
+                                    vm.userLocation =  vm.formatLocation(vm.browserLocation);
                                 }
                             });
 
@@ -742,7 +790,7 @@ new Vue({
                     lng: defaultLoc.longitude,
                 }
                 this.goToLocation(coords,false);
-                // this.userLocation =  this.formatLocation(this.browserLocation);
+                this.userLocation =  this.formatLocation(this.browserLocation);
             }
         },
         addLocation(){
@@ -1194,7 +1242,6 @@ new Vue({
                 self.radarTime = moment.tz(data.time,tz).format("MM/DD/YYYY HH:mm:z");
                 // console.log(data.time,self.radarTime);
             });
-            // this.placeUserIcon();
             this.getUserLocation();
         },
         splitOnCapitolLetter(string){
