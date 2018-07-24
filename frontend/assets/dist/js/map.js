@@ -736,7 +736,13 @@ new Vue({
                     longitude: defaultLoc.longitude,
                     default:true,
                 };
-                this.userLocation =  this.formatLocation(this.browserLocation);
+                var coords = {
+                    address: defaultLoc.address,
+                    lat: defaultLoc.latitude,
+                    lng: defaultLoc.longitude,
+                }
+                this.goToLocation(coords,false);
+                // this.userLocation =  this.formatLocation(this.browserLocation);
             }
         },
         addLocation(){
