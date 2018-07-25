@@ -81,11 +81,22 @@ $this->title = Yii::$app->name;
 	<!-- LAYERS PANE -->
 	<transition name="slide-in-left" v-on:after-enter="clearLoading">
 		<div v-cloak id='layersPane' v-show="!showIncidentLayers && activePane == 'layers' && !paneActive">
-			<ul>
-				<li v-for="layer in layers" :key='layer.id' :class="{ active: layer.active }">
-					<span @click="toggleLayer(layer.id)" class="toggleSpan" data-toggle="tooltip" data-placement="right" :title="layer.name"> {{ layer.name }}</span>
-				</li>
-			</ul>
+			<div id="legendContainer">
+			  	<div id="layerBtns">
+					<ul>
+						<li v-for="layer in layers" :key='layer.id' :class="{ active: layer.active }">
+							<span @click="toggleLayer(layer.id)" class="toggleSpan" data-toggle="tooltip" data-placement="right" :title="layer.name"> {{ layer.name }}</span>
+						</li>
+					</ul>
+				</div>
+			  	<div id="close"  @click="activatePane('layers')">
+					<div class="text-center">
+						<i class="glyphicon glyphicon-menu-left" aria-hidden="true"></i>
+						<i class="glyphicon glyphicon-menu-left" aria-hidden="true"></i>
+						<i class="glyphicon glyphicon-menu-left" aria-hidden="true"></i>
+					</div>
+				</div>
+			</div>
 		</div>
  	</transition>
 

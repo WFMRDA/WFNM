@@ -353,12 +353,30 @@ $toolMobileBarHeight: 40px;
         // height: 500px;
         background: lightgrey;
         z-index: 401;
-        width: 200px;
+        width: 230px;
+        #legendContainer {
+            display: flex;
+            #layerBtns {
+                width: 205px;
+            }
+            #close {
+                flex: 1;
+                background: white;
+                cursor: pointer;
+                div{
+                    position: absolute;
+                    top: 50%;
+                    transform: translateY(-50%);
+                }
+            }
+        }
+
         ul{
             list-style: none;
             padding: 0;
             margin: 0;
             li{
+                position: relative;
                 border-style: solid;
                 border-width: 1px 1px 0px 1px;
                 width: 100%;
@@ -399,12 +417,6 @@ $toolMobileBarHeight: 40px;
                 i{
                     line-height: 38px;
                 }
-                // button{
-                //     background: transparent;
-                //     width: 100%;
-                //     height: 100%;
-                //     border: none;
-                // }
             }
         }
     }
@@ -797,7 +809,6 @@ $toolMobileBarHeight: 40px;
         }
         #layersPane{
             top: 165px;
-            width: 200px;
             ul{
                 li{
                     height: 40px;
