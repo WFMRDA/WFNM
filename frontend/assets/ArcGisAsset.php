@@ -14,6 +14,7 @@ class ArcGisAsset extends AssetBundle
         '//unpkg.com/leaflet@1.3.1/dist/leaflet.css',
         '//cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.css',
         '//cdn.datatables.net/1.10.18/css/jquery.dataTables.css',
+        // '//cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css',
         '//cdn.rawgit.com/socib/Leaflet.TimeDimension/master/dist/leaflet.timedimension.control.min.css',
     ];
     public $js = [

@@ -5,19 +5,28 @@
 
 use yii\helpers\Html;
 use yii\bootstrap\Nav;
-use yii\bootstrap\NavBar;
+use ptech\pyrocms\widgets\NavBar;
 use yii\widgets\Pjax;
 use yii\widgets\ListView;
 $menuItems = array();
 ?>
 
 <?php
+
     NavBar::begin([
         'brandLabel' => Html::img('@media/header-logo-trans.png',['class'=>'logo-img']),
         'brandUrl' => Yii::$app->homeUrl,
+        'brandOptions' => ['class'=> 'brand-logo '],
         'options' => [
-            'class' => 'navbar-default navbar-fixed-top',
+            'class' => 'navbar navbar-default navbar-fixed-top',
+            'id' => 'main-header',
         ],
+        'containerOptions'=>['class'=>'collapse navbar-collapse navbar-right'],
+
+        'innerContainerOptions'=>[
+            'class'=>'container-fluid',
+        ],
+        'appendContainer' => \ptech\pyrocms\widgets\UserNavWidget::widget(['user'=>false]),
     ]);
     if (!Yii::$app->user->isGuest) {
         $menuItems[] = [
@@ -34,15 +43,14 @@ $menuItems = array();
         }
 
         $menuItems[] = '<li><a id="feedback-btn-header" class ="hidden-xs hidden-sm" href="https://docs.google.com/forms/d/1dMNxmfK8GiDJ9U0KsLOBOK2_dKBAuOMOUR32vy3H1gA/edit?usp=sharing" target="_blank">Feedback</a></li>';
-
+        $menuItems[] = \ptech\pyrocms\widgets\UserNavWidget::widget(['cart'=>false]);
     }
-        $menuItems[] = ptech\pyrocms\widgets\UserNavWidget::widget();
 
-        echo Nav::widget([
-           'encodeLabels' => false,
-           'activateParents' => true,
-           'options' => ['class' => 'navbar-nav navbar-right'],
-           'items' => $menuItems,
-       ]);
+    echo Nav::widget([
+       'encodeLabels' => false,
+       'activateParents' => true,
+       'options' => ['class' => 'navbar-nav navbar-right'],
+       'items' => $menuItems,
+   ]);
     NavBar::end();
     ?>

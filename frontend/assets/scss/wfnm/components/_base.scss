@@ -253,7 +253,6 @@ $dropdownWidth:500px;
         z-index: 1;
     }
     #notifications-dropdown-menu{
-        width: $dropdownWidth;
         padding: 0;
         .panel{
             margin-bottom: 0;
@@ -410,4 +409,27 @@ hr {
 }
 .pac-container{
     z-index: 40000!important;
+}
+.btn-circle, .btn.btn-circle {
+    border-radius: 100px;
+}
+.btn-icon, .btn.btn-icon {
+    display: inline-block;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: none;
+    line-height: 28px;
+    text-align: center;
+    font-size: 14px;
+}
+.glyphicon-light::before {
+  font-weight: 100;
+}
+
+
+@media (min-width: $screen-sm-min) {
+    #notifications-dropdown-menu{
+        width: $dropdownWidth;
+    }
 }

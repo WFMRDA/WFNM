@@ -24,10 +24,11 @@ $this->title = Yii::$app->name;
 		placeholder="Search Fire"
 		filter-key="incidentName"
 		:min-length="3"
+		v-cloak
 	>
 	</typeahead>
 	<div class='loader-container' v-show="loading"><div class="sk-wave loader"><div class="sk-rect sk-rect1"></div><div class="sk-rect sk-rect2"></div><div class="sk-rect sk-rect3"></div><div class="sk-rect sk-rect4"></div><div class="sk-rect sk-rect5"></div></div></div>
-	<div v-show="!paneActive" class='toolbar-container'>
+	<div v-cloak  v-show="!paneActive" class='toolbar-container'>
 		<div class='toolbar-overlay'>
 			<ul class='list-unstyled toolbar'>
 				<li>
@@ -52,7 +53,7 @@ $this->title = Yii::$app->name;
 		</div>
 		<div class='basebar'></div>
 	</div>
-	<div class='legend thumbnail'>
+	<div v-cloak  class='legend thumbnail'>
 		<div v-show='ercLayer.active'>
 			<label>Fire Behavior Potential</label>
 			<br>
@@ -69,7 +70,7 @@ $this->title = Yii::$app->name;
 			<img src='https://www.wfas.net/cgi-bin/mapserv?map=/var/www/html/nfdr/mapfiles/ndfd_geog5.map&SERVICE=WMS&VERSION=1.3.0&SLD_VERSION=1.1.0&REQUEST=GetLegendGraphic&FORMAT=image/jpeg&LAYER=fbxday0&STYLE='>
 		</div>
 	</div>
-	<div class='weather-legend' v-show='weatherLayer.active && !paneActive'>
+	<div v-cloak  class='weather-legend' v-show='weatherLayer.active && !paneActive'>
 		<label>{{ radarTime }}</label>
 		<br>
 		<img src="https://nowcoast.noaa.gov/images/legends/radar.png" alt="legend">
@@ -79,30 +80,35 @@ $this->title = Yii::$app->name;
 
 	<!-- LAYERS PANE -->
 	<transition name="slide-in-left" v-on:after-enter="clearLoading">
-		<div id='layersPane' v-show="activePane == 'layers' && !paneActive">
+		<div v-cloak id='layersPane' v-show="!showIncidentLayers && activePane == 'layers' && !paneActive">
 			<ul>
 				<li v-for="layer in layers" :key='layer.id' :class="{ active: layer.active }">
-					<button @click="toggleLayer(layer.id)" data-toggle="tooltip" data-placement="right" :title="layer.name"></button>
+					<span @click="toggleLayer(layer.id)" class="toggleSpan" data-toggle="tooltip" data-placement="right" :title="layer.name"> {{ layer.name }}</span>
 				</li>
 			</ul>
 		</div>
  	</transition>
 
-
-
 	<!-- INCIDENTS SELECTION PANE -->
-	<transition name="shrink-left">
-		<div id='layersIncidentPane'  v-show="showIncidentLayers && activePane == 'layers' && !paneActive">
-			<div class='legendOptions-container container-fluid'>
-				<div id="maplegendform-firesizelist" class=" col-xs-12 col-sm-6" name="fireSize">
+	<transition name="slide-in-left" v-on:after-enter="clearLoading">
+			<div v-cloak id='layersIncidentPane' v-show="incidentsLayer.active && activePane == 'layers' && !paneActive">
+			<!-- <i class="glyphicon glyphicon-menu-left" @click="toggleLayer(incidentsLayer.id)"  aria-hidden="true"></i> -->
+			<button type="button" class="close closePanel btn-block" aria-label="Close" @click="toggleLayer(incidentsLayer.id)">
+				<i class="glyphicon glyphicon-menu-left" aria-hidden="true"></i>
+				<i class="glyphicon glyphicon-menu-left" aria-hidden="true"></i>
+				<i class="glyphicon glyphicon-menu-left" aria-hidden="true"></i>
+			</button>
+
+			<!-- <button @click="toggleLayer(incidentsLayer.id)" class="btn btn-default exit button" ><i class="glyphicon glyphicon-menu-left" aria-hidden="true"></i></button> -->
+
+			<div class='legendOptions-container'>
+				<div id="maplegendform-firesizelist" class=" col-xs-12" name="fireSize">
 					<h3>Fire Size</h3>
 					<div class="checkbox"><label><input type="checkbox" name="fireSize[]" value="1" v-model="activeIncidentLayers"> <div class="checkmark"></div> <div class='size-marker sizeClass-1'></div> < 99ac</label></div>
 					<div class="checkbox"><label><input type="checkbox" name="fireSize[]" value="2" v-model="activeIncidentLayers"> <div class="checkmark"></div> <div class='size-marker sizeClass-2'></div> 100ac - 999ac</label></div>
 					<div class="checkbox"><label><input type="checkbox" name="fireSize[]" value="3" v-model="activeIncidentLayers"> <div class="checkmark"></div> <div class='size-marker sizeClass-3'></div> 1000ac - 9999ac</label></div>
 					<div class="checkbox"><label><input type="checkbox" name="fireSize[]" value="4" v-model="activeIncidentLayers"> <div class="checkmark"></div> <div class='size-marker sizeClass-4'></div> 10000ac - 99999ac</label></div>
 					<div class="checkbox"><label><input type="checkbox" name="fireSize[]" value="5" v-model="activeIncidentLayers"> <div class="checkmark"></div> <div class='size-marker sizeClass-5'></div> >= 100000 ac</label></div>
-				</div>
-				<div id="maplegendform-firestatuslist" class=" col-xs-12 col-sm-6" name="fireClass">
 					<h3>Fire Status</h3>
 					<div class="checkbox"><label><input type="checkbox" name="fireClass[]" value="A" v-model="activeIncidentLayers"> <div class="checkmark"></div> <?=Html::img('@media/map_new_fire.png',['class'=>'legend-icon'])?> NEW</label></div>
 					<div class="checkbox"><label><input type="checkbox" name="fireClass[]" value="B" v-model="activeIncidentLayers"> <div class="checkmark"></div> <?=Html::img('@media/map_emerging_fire.png',['class'=>'legend-icon'])?> EMERGING</label></div>
@@ -112,13 +118,15 @@ $this->title = Yii::$app->name;
 					<div class="checkbox"><label><input type="checkbox" name="fireClass[]" value="CX" v-model="activeIncidentLayers"> <div class="checkmark"></div> <?=Html::img('@media/map_complex.png',['class'=>'legend-icon'])?> COMPLEXES</label></div>
 				</div>
 			</div>
-			<!-- <span>Checked names: {{ activeIncidentLayers }}</span> -->
 		</div>
- 	</transition>
+	</transition>
+
+
+
 
 
 	<transition name="slide-in-right" v-on:after-enter="panMapToCenter" v-on:after-leave="clearFireMarker"  >
-		<div ref="fireInfoPanelContainer" id='fireInfo-pane-container' v-show="showFireInfo" class='fireInfo-panel-container col-xs-12 col-sm-8 col-md-7 col-lg-6' :class="{ tickerLive: ticker.length}">
+		<div v-cloak ref="fireInfoPanelContainer" id='fireInfo-pane-container' v-show="showFireInfo" class='fireInfo-panel-container col-xs-12 col-sm-8 col-md-7 col-lg-6' :class="{ tickerLive: ticker.length}">
 			<button type="button" class="close closePanel" aria-label="Close" @click="showFireInfo = false"><span aria-hidden="true">&times;</span></button>
 			<div>
 				<h3  v-show="fireInfo.incidentTypeCategory =='WF'" class='title'>{{ fireInfo.incidentName }} Fire <br> <span v-show="fireInfo.complexParentIrwinId != null"><span class='complexMeta'>(Part of <span class='complex-link' @click="getFireInfo(fireInfo.complex,'CX')">{{ incidentInfo.complexIncidentName }} Complex</span>)</span></span>
@@ -313,7 +321,7 @@ $this->title = Yii::$app->name;
 
 
 	<transition name="slide-in-right" v-on:after-enter="clearLoading">
-		<div v-show="infoPaneActive" class='col-xs-12 col-sm-8 col-md-7 col-lg-6 fireInfo-panel-container' :class="{ tickerLive: ticker.length}">
+		<div v-cloak  v-show="infoPaneActive" class='col-xs-12 col-sm-8 col-md-7 col-lg-6 fireInfo-panel-container' :class="{ tickerLive: ticker.length}">
 			<button type="button" class="close closePanel" aria-label="Close" @click="activePane = ''"><span aria-hidden="true">&times;</span></button>
 
 
@@ -388,7 +396,7 @@ $this->title = Yii::$app->name;
 					</div>
 					<div class='col-xs-12'>
 						<div class="col-xs-12">
-							<div  class="legendOptions" name="fireClass">
+							<div class="legendOptions" name="fireClass">
 								<h3>Fire Status</h3>
 								<div class='col-xs-12 col-sm-6'>
 									<div class="checkbox"><label><input type="checkbox" name="fireClass[]" value="A" v-model="sitReportFilter"> <div class="checkmark"></div> <?=Html::img('@media/map_new_fire.png',['class'=>'legend-icon'])?> NEW</label></div>
@@ -410,19 +418,21 @@ $this->title = Yii::$app->name;
 							</div>
 						</div>
 						<div class=''>
-							<table class="table table-hover table-condensed ">
+							<table id="sitReportTable" class="table table-hover table-condensed ">
 								<thead>
 									<tr>
+										<th>Fire ClassId</th>
 										<th>Name</th>
 										<th>Status</th>
 										<th class="text-capitalize">{{splitOnCapitolLetter(sitReportType) }}</th>
 										<th>Last Updated</th>
 									</tr>
 								</thead>
-							  	<tr class='childFireRow' v-for="(fire,index) in sitReportData" :key="index">
+							  	<tr class='childFireRow' v-for="(fire,index) in fireDb" :key="index">
+									<td >{{ fire.fireClassId }}</td>
 									<td @click="getFireInfo(fire,'WF')"><b>{{ fire.incidentName }}</b></td>
 									<td @click="getFireInfo(fire,'WF')"><img class="table-fire-logo" :src="getFireIcon(fire.fireClassId)" alt=""> {{ fire.fireClass }} </td>
-									<td @click="getFireInfo(fire,'WF')">{{  formatSitReportInfo(fire[sitReportType]) }}</td>
+									<td :data-order="empty(fire[sitReportType])?0:fire[sitReportType]" @click="getFireInfo(fire,'WF')">{{  formatSitReportInfo(fire[sitReportType]) }}</td>
 									<td @click="getFireInfo(fire,'WF')">{{ formatDateTime(fire.modifiedOnDateTime) }}</td>
 								</tr>
 							</table>
@@ -506,14 +516,14 @@ $this->title = Yii::$app->name;
 					</div>
 				</div>
 				<div class='col-xs-12'>
-					<div class="btn-group btn-group-justified panel-btn-group-justified" role="group">
+					<!-- <div class="btn-group btn-group-justified panel-btn-group-justified" role="group">
 						<div class="btn-group" role="group">
 		                    <button :class="{active: wfnmTab == 'index'}"  @click="wfnmTab = 'index'" type="button" class="btn btn-default">General Info</button>
 		                </div>
 		                <div class="btn-group" role="group">
 		                    <button :class="{active: wfnmTab == 'weather'}"  @click="wfnmTab = 'weather'" type="button" class="btn btn-default">Weather Info</button>
 		                </div>
-		            </div>
+		            </div> -->
 					<div class='firesnearme' v-show="wfnmTab == 'index'">
 						<div v-show="!firesNearMe.length" class='col-xs-12 text-center'>
 							We found no incidents near this location
@@ -554,21 +564,21 @@ $this->title = Yii::$app->name;
 								</table>
 						</div>
 					</div>
-					<div class='panel panel-default' v-show="wfnmTab == 'weather'">
+					<!-- <div class='panel panel-default' v-show="wfnmTab == 'weather'">
 						<div class="panel-heading text-center">
 							<h3 class="panel-title">Weather Information</h3>
 						</div>
 						<div class='panel-body'>
 						</div>
-					</div>
+					</div> -->
 				</div>
 			</div>
 		</div>
 	</transition>
-	<div id='info-ticker' class="marquee" v-show="ticker.length">
+	<!-- <div v-cloak  id='info-ticker' class="marquee" v-show="ticker.length">
 		<div>
 			<span v-for="item of ticker">{{ item }}</span>
 		</div>
-	</div>
+	</div> -->
 	<div id="map"></div>
 </div>

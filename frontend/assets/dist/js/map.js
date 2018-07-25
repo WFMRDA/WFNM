@@ -117,9 +117,10 @@ new Vue({
         // showLayers: false,
         showIncidentLayers: false,
         dataSet:{},
-        activePane: '',
+        activePane: 'layers',
         incidentLayerId:undefined,
         firesNearMeTable:undefined,
+        sitReportTable:undefined,
         activeIncidentLayers: [],
         wfnmFilter:['A','B','C','D','E','CX'],
         sitReportFilter:['A','B','C','D','E','CX'],
@@ -157,6 +158,9 @@ new Vue({
             active:false,
         },
         weatherLayer:{
+            active:false,
+        },
+        incidentsLayer:{
             active:false,
         },
         weatherPlayer:undefined,
@@ -369,7 +373,19 @@ new Vue({
         this.loading = false;
         $('[data-toggle="tooltip"]').tooltip();
         this.$nextTick(function() {
-            this.initAutocomplete();
+            vm.initAutocomplete();
+            vm.sitReportTable = $('#sitReportTable').DataTable({
+                order: [[ 3, "desc" ]],
+                deferRender:true,
+                dom: '<"pull-left" l>rtip',
+                columnDefs: [
+                    {
+                        "targets": [0 ],
+                        "visible": false,
+                        "searchable": true
+                    },
+                ]
+            });
         });
     },
 
@@ -380,29 +396,30 @@ new Vue({
     computed:{
         series(){
             return this.fireDb;
-       },
-        //sitReportType
-        sitReportData(){
-            this.loading = true;
-            var vm = this;
-            // var newDb = this.clone(this.fireDb);
-            var newDb = [];
-            var dbL = this.fireDb.length;
-            for (var i = 0; i < dbL; i++) {
-                var fire = this.fireDb[i];
-                if(this.sitReportFilter.indexOf(fire.fireClassId) != -1){
-                    newDb.push(fire);
-                }
-
-            }
-            var sorted =  newDb.sort(function(a, b){
-                return b[vm.sitReportType] - a[vm.sitReportType];
-            });
-            // console.log(this.fireDb);
-            // console.log(sorted);
-            this.loading = false;
-            return sorted;
         },
+        //sitReportType
+        // sitReportData(){
+        //     return this.fireDb;
+        //     this.loading = true;
+        //     var vm = this;
+        //     // var newDb = this.clone(this.fireDb);
+        //     var newDb = [];
+        //     var dbL = this.fireDb.length;
+        //     for (var i = 0; i < dbL; i++) {
+        //         var fire = this.fireDb[i];
+        //         if(this.sitReportFilter.indexOf(fire.fireClassId) != -1){
+        //             newDb.push(fire);
+        //         }
+        //
+        //     }
+        //     var sorted =  newDb.sort(function(a, b){
+        //         return b[vm.sitReportType] - a[vm.sitReportType];
+        //     });
+        //     // console.log(this.fireDb);
+        //     // console.log(sorted);
+        //     this.loading = false;
+        //     return sorted;
+        // },
         fireHasInfo(){
             return this.fireInfo.projectedIncidentActivity72Plus == null &&
             this.fireInfo.projectedIncidentActivity72 == null &&
@@ -526,6 +543,34 @@ new Vue({
 
 
     watch:{
+        sitReportFilter(updated,old){
+            this.searchSitRepTable();
+            // if(updated != old && !empty(old) ){
+            //     // console.log(updated);
+            //     this.searchSitRepTable();
+            // }
+        },
+        sitReportType(updated,old){
+            if(updated != old && !empty(old) ){
+                // this.sitReportTable.order( [[ 3, 'desc' ]] ).draw( );
+                this.$nextTick(function() {
+                    // this.sitReportTable.destroy();
+                    this.sitReportTable = $('#sitReportTable').DataTable({
+                        order: [[ 3, "desc" ]],
+                        destroy: true,
+                        deferRender:true,
+                        dom: '<"pull-left" l>rtip',
+                        columnDefs: [
+                            {
+                                "targets": [0 ],
+                                "visible": false,
+                                "searchable": true
+                            },
+                        ]
+                    });
+                });
+            }
+        },
         incidentLayers(updated,old){
             // console.log(updated,old);
             if(updated != old && !empty(old) ){
@@ -614,6 +659,11 @@ new Vue({
             // console.log(options);
             this.firesNearMeTable.columns(3).search(options,true).draw();
         },
+        searchSitRepTable(){
+            var options = (this.sitReportFilter.length) ? this.sitReportFilter.join('|'):'XXXXX';
+            console.log(this.sitReportFilter.length,options);
+            this.sitReportTable.columns(0).search(options,true).draw();
+        },
         initAutocomplete(){
             // console.log('called Auto Complete');
             this.autocomplete = new google.maps.places.Autocomplete((document.getElementById('addressInput')),
@@ -657,12 +707,12 @@ new Vue({
             if(panMap == undefined){
                 panMap = true;
             }
-            console.log(coords,panMap);
+            // console.log(coords,panMap);
             this.loading = true;
             self = this;
             var lat = coords.lat;
             var lng = coords.lng;
-            console.log(lat,lng);
+            // console.log(lat,lng);
             if(this.map.hasLayer(this.locMarker) ){
                 this.map.removeLayer(this.locMarker);
             }
@@ -675,7 +725,7 @@ new Vue({
             this.locMarker.addTo(this.map);
             this.panMapToCenter('loc',panMap);
             $.post( "map-rest/fires-near-me",coords, function( data ) {
-                console.log(data);
+                // console.log(data);
                 if(self.firesNearMeTable !== undefined){
                     self.firesNearMeTable.destroy();
                 }
@@ -993,6 +1043,9 @@ new Vue({
                 case 'Weather':
                     this.weatherLayer = layer;
                     break;
+                case 'Incidents':
+                    this.incidentsLayer = layer;
+                    break;
             }
         },
         storeMapList(){
@@ -1053,7 +1106,7 @@ new Vue({
             if(panMap == undefined){
                 panMap = true;
             }
-            console.log(marker,panMap);
+            // console.log(marker,panMap);
             self = this;
             if(panMap){
                 var offset = this.getMarkerOffset();
