@@ -471,6 +471,7 @@ var vueModel = new Vue({
             this.incidentInfo.fireBehavior == '';
         },
         incidentInfo(){
+            // console.log(this.fireInfo);
             var gaccUrl = this.getGaccUrl(this.fireInfo.gacc);
             var pl = this.getPLCSS(this.fireInfo.localPrepLevel);
             var landOwnershipArray = [];
@@ -792,7 +793,7 @@ var vueModel = new Vue({
                     class: self.getPLCSS(data.localGaccPlLevel),
                     gaccUrl: self.getGaccUrl(data.gacc.gacc)
                 };
-                // console.log(self.localGaccPlLevel);
+                // console.log(self.firesNearMe);
 
                 self.$nextTick(function(){
                     self.firesNearMeTable = $('#firesnearmeTable').DataTable({
@@ -1196,6 +1197,7 @@ var vueModel = new Vue({
             this.loading =false;
         },
         getFireInfo(obj,type){
+            // console.log(obj);
             // var marker = (type == 'CX')?'map_complex':'active_fire';
             this.placeFireInfo(obj.irwinID,obj.pooLatitude,obj.pooLongitude,'active_fire');
         },

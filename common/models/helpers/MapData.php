@@ -253,7 +253,7 @@ class MapData extends Model{
         if(!$cache->exists($key) || empty($data  = $cache->get($key))){
            $data = $this->refreshFireInfo($fid);
         }
-        // Yii::trace($data,'dev');
+        Yii::trace($data,'dev');
         return $data;
     }
 
@@ -531,7 +531,6 @@ class MapData extends Model{
             if ($updatesResponse->isOk) {
 
                 foreach ($updatesResponse->data as $index => $model) {
-                    $key  = $this->getFireInfoKey($model['irwinID']);
                     if($model['incidentTypeCategory'] == 'CX'){
                         $model['fireClassId'] = 'CX';
                     }

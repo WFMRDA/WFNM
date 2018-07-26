@@ -44,7 +44,7 @@ class MapRestController extends Controller
             $isFollowing = WfnmHelpers::isUserFollowing(Yii::$app->user->identity->id,$fireId);
             // Yii::trace($prepLevel,'dev');
             // Yii::trace($query['gacc'],'dev');
-            // Yii::trace($query,'dev');
+            Yii::trace($query,'dev');
             return ['fireInfo'=>$query,'localGaccPlLevel'=> $prepLevel,'isFollowing'=>$isFollowing];
         }
     }
