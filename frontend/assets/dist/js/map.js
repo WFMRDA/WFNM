@@ -412,8 +412,10 @@ var vueModel = new Vue({
                 });
             }
             let initMap = (vm.fid.length == 0 || vm.fid == undefined)?false:true;
-            vm.getFireInfo(vm.fid,'WF');
-            history.pushState(null,null, yiiOptions.homeUrl);
+            if(initMap){
+                vm.getFireInfo(vm.fid,'WF');
+                history.pushState(null,null, yiiOptions.homeUrl);
+            }
 
         });
     },
@@ -1377,6 +1379,7 @@ var vueModel = new Vue({
             });
 
             let initMap = (this.fid.length == 0 || this.fid == undefined)?false:true;
+            this.getUserLocation(initMap);
 
         },
         splitOnCapitolLetter(string){
