@@ -16,7 +16,7 @@ use common\models\myLocations\MyLocationsForm;
 use common\models\myLocations\MyLocations;
 use common\models\messages\Messages;
 use yii\web\ServerErrorHttpException;
-
+use common\models\popup\PopTable;
 
 
 /**
@@ -76,17 +76,31 @@ class MapRestController extends Controller
         }
     }
 
-    protected function checkSeen($aid){
-        list($tag,$id) = explode('-', $aid);
-        $query = Messages::find()
-           ->andWhere(['and',
-                ['user_id' => Yii::$app->user->identity->id],
-                ['id' => $id]
-            ])->one();
-                // Yii::trace($query->attributes,'dev');
-        if($query != null && ($query->seen_at == null || $query->seen_at == 0)){
-            // Yii::trace($query->attributes,'dev');
-            $query->updateAttributes(['seen_at'=>time()]);
+    public function actionMarkAllNotificationSeen(){
+        Messages::updateAll(['seen_at' => time()], ['user_id'=>Yii::$app->user->identity->id]);
+        return WfnmHelpers::findMyAlerts();
+    }
+
+    public function actionGetAlert(){
+        if (Yii::$app->request->isAjax){
+            $params = ArrayHelper::merge(Yii::$app->request->queryParams,Yii::$app->request->bodyParams);
+            $id = ArrayHelper::getValue($params,'id');
+            if($id == null){
+                throw new InvalidParamException('Id Required');
+            }
+            $model = Messages::find()->where(['id'=>$id])->one();
+            if($model == null){
+                throw new InvalidParamException('Alert Not Found');
+            }
+            if($model != null && ($model->seen_at == null || $model->seen_at == 0)){
+                $model->updateAttributes(['seen_at'=>time()]);
+            }
+
+            $fire = WfnmHelpers::getFireInfo($model->irwinID);
+            return [
+                'fireInfo' => $fire,
+                'alerts' => WfnmHelpers::findMyAlerts(),
+            ];
         }
     }
 
@@ -132,6 +146,31 @@ class MapRestController extends Controller
             }
 
             return ['data'=>$this->findMyFires(), 'status' => WfnmHelpers::isUserFollowing(Yii::$app->user->identity->id,$fireId)];
+        }
+    }
+
+    public function actionCheckAlerts(){
+        if (Yii::$app->request->isAjax){
+            $model = PopTable::find()
+               ->andWhere(['and',
+                    ['user_id' => Yii::$app->user->identity->id],
+                    ['type' => PopTable::NOTIFICATIONS]
+                ])->one();
+                    // Yii::trace($query->attributes,'dev');
+            if($model == null){
+                $model = new PopTable([
+                    'user_id' => Yii::$app->user->identity->id,
+                    'type' => PopTable::NOTIFICATIONS,
+                    'seen_at' => time(),
+                ]);
+            } else{
+                $model->seen_at = time();
+            }
+            if(!$model->save()){
+                throw new ServerErrorHttpException($model->errors);
+            }else{
+                return WfnmHelpers::findMyAlerts();
+            }
         }
     }
 

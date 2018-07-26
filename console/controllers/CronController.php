@@ -24,7 +24,7 @@ class CronController extends Controller {
             echo "ENV Undetermined";
         }
     }
-    
+
     public function actionClearCache(){
         Yii::$app->cache->flush();
     }

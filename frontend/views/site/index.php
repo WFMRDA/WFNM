@@ -7,14 +7,16 @@ use common\widgets\PyroMenu;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
+use common\widgets\NotificationsWidget;
 
 use frontend\assets\ArcGisAsset;
 ArcGisAsset::register($this);
 
 /* @var $this yii\web\View */
 $this->title = Yii::$app->name;
+$this->render('_disclaimer');
 ?>
-<?php // Yii::$app->appSystemData->disclaimer?$this->render('_disclaimer'):''?>
+<?= Yii::$app->appSystemData->disclaimer ? $this->render('_disclaimer') : '' ?>
 
 <div id="app">
 	<!-- Our component-->
@@ -354,7 +356,7 @@ $this->title = Yii::$app->name;
 								<th>Last Updated</th>
 							</tr>
 						</thead>
-					  	<tr class='childFireRow' v-for="fire in myFires">
+					  	<tr class='childFireRow' v-for="(fire,index) in myFires" :key="index">
 							<td @click="getFireInfo(fire,'WF')"><b>{{ fire.incidentName }}</b></td>
 							<td @click="getFireInfo(fire,'WF')"><img class="table-fire-logo" :src="getFireIcon(fire.fireClassId)" alt=""> {{ fire.fireClass }} </td>
 							<td @click="getFireInfo(fire,'WF')">{{  formatAcres(fire.dailyAcres) }}</td>
@@ -366,20 +368,24 @@ $this->title = Yii::$app->name;
 			</div>
 
 
-
-
-
-
-
 			<!-- ALERTS -->
-			<div v-show="activePane == 'alerts'" class='alerts col-xs-12'>
-				<div class='col-xs-12 text-center'>
-					<h3>Alerts</h3>
+			<div v-show="activePane == 'alerts'" class='alerts'>
+				<div class='row'>
+					<div class='col-xs-12 text-center'>
+						<h3>Alerts</h3>
+					</div>
+				</div>
+				<div class='row'>
+					<div id="notifications-panel-div">
+						<li @click="gotoAlert(alert)" :class="{ unread : empty(alert.seen_at) , read: !empty(alert.seen_at) }" v-for="(alert,index) in myAlerts" :key="index">
+							<p class="notifications ">
+								<i class="fa fa-clock-o">{{ alert.timeLapse }}</i>
+								<i class="fa fa-exclamation-triangle text-green" ></i> {{ alert.subject }}
+				            </p>
+						</li>
+					</div>
 				</div>
 			</div>
-
-
-
 
 
 			<!-- SITUATION REPORT -->

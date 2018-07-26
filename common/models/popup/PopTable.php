@@ -18,6 +18,7 @@ use common\models\user\User;
 class PopTable extends \yii\db\ActiveRecord
 {
     const DISCLAIMER = 10;
+    const NOTIFICATIONS = 20;
     /**
      * @inheritdoc
      */
@@ -34,7 +35,8 @@ class PopTable extends \yii\db\ActiveRecord
         return [
             [['user_id', 'type', 'seen_at'], 'required'],
             [['user_id', 'type', 'seen_at'], 'integer'],
-            [['user_id', 'type'], 'unique'],
+            // [['user_id', 'type'], 'unique'],
+            [['user_id', 'type'], 'unique', 'targetAttribute' => ['user_id', 'type']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
     }

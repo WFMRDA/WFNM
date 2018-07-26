@@ -20,6 +20,24 @@ class SiteController extends Controller
     /**
      * @inheritdoc
      */
+    public function behaviors()
+    {
+        return [
+            'access_app' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
+        ];
+    }
+    /**
+     * @inheritdoc
+     */
     public function actions()
     {
         return [
@@ -55,8 +73,13 @@ class SiteController extends Controller
         // $fireData  = WfnmHelpers::getFireData();
         // Yii::trace(array_keys($fireData),'dev');
         // $fireData = WfnmHelpers::getFireData();
+        // $params = ArrayHelper::merge(Yii::$app->request->queryParams,Yii::$app->request->bodyParams);
+        // $fireId = ArrayHelper::getValue($params,'fid');
+        // $query = WfnmHelpers::getFireInfo($fireId);
+        // Yii::trace($query,'dev');
         $this->layout = 'map-main';
         return $this->render('index',[
+
         ]);
     }
 

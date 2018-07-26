@@ -497,7 +497,7 @@ class MapData extends Model{
                $data = $this->refreshMyLocationsFireInfo();
             }
 
-            Yii::trace($data,'dev');
+            // Yii::trace($data,'dev');
         }
         return $data;
     }
@@ -510,6 +510,7 @@ class MapData extends Model{
     }
 
     public function refreshMyLocationsFireInfo(){
+        $data = [];
         try {
             if(!isset($this->userData['distance'])){
                 $this->userData['distance'] = 100;
@@ -528,11 +529,20 @@ class MapData extends Model{
             $cache = Yii::$app->cache;
             $key  = $this->getMyLocationFireArrayCacheKey();
             if ($updatesResponse->isOk) {
+
+                foreach ($updatesResponse->data as $index => $model) {
+                    $key  = $this->getFireInfoKey($model['irwinID']);
+                    if($model['incidentTypeCategory'] == 'CX'){
+                        $model['fireClassId'] = 'CX';
+                    }
+                    $data[] = $model;
+                }
+
                 //SELECT * FROM `gacclayer` WHERE ST_Within( ST_GeomFromText('POINT(-84 37.795653)', 1), SHAPE )
                 $gacc =  Gacclayer::find()->select(['gacc_nwcg_ as gacc'])->where('ST_Within( ST_GeomFromText("POINT('.$this->userData['longitude'].' '.$this->userData['latitude'].')", 1), SHAPE )')->asArray()->one();
                 // Yii::trace($gacc->prepare(Yii::$app->db->queryBuilder)->createCommand()->rawSql,'dev');
                 $dataSet = [
-                    'fireInfo'=>  $updatesResponse->data,
+                    'fireInfo'=>  $data,
                     'gacc' => $gacc
                 ];
 

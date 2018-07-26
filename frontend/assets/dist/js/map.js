@@ -109,7 +109,8 @@ function getValue(array, key, dVal)
     }
     return ((Array.isArray(array) || isObject(array)) && (array[key] !== undefined && array[key] !== null)) ? array[key] : defaultValue;
 }
-new Vue({
+
+var vueModel = new Vue({
     el: '#app',
     data: {
         loading:true,
@@ -117,7 +118,7 @@ new Vue({
         // showLayers: false,
         showIncidentLayers: false,
         dataSet:{},
-        activePane: 'layers',
+        activePane: '',
         incidentLayerId:undefined,
         firesNearMeTable:undefined,
         sitReportTable:undefined,
@@ -131,6 +132,7 @@ new Vue({
         isFollowing:undefined,
         activeFireInfoTab:'index',
         myFires:[],
+        alerts:[],
         myLocations:[],
         sitReport: [],
         fireDb:[],
@@ -142,6 +144,7 @@ new Vue({
         userLocation: '',
         browserLocation:'',
         sitReportType:'dailyAcres',
+        fid:undefined,
         localGaccPlLevel:{
             name:'',
             class: '',
@@ -338,6 +341,22 @@ new Vue({
     this.myLocations = yiiOptions.myLocations;
     this.sitReport = yiiOptions.sitReport;
     this.fireDb = yiiOptions.fireDb;
+    this.fid =  yiiOptions.fid;
+    // console.log(yiiOptions.fid);
+
+/*    for (var i = 0; i < 10; i++) {
+        this.myFires.push({
+            created_at:"1527703841",
+            id:"25",
+            irwinID:"2BBE0D86-42D7-47ED-870F-8328171EC838",
+            name:"LAGOON",
+            updated_at:"1527703841",
+            user_id:"1",
+        })
+    }
+    console.log(yiiOptions.myFires[0],this.myFires[0])*/
+
+    // console.log(this.fid);
         // $.post(yiiOptions.homeUrl+'/map-rest/my-fires',function( data ) {
         //     // console.log('my-fires',data);
         //     self.myFires = data;
@@ -386,6 +405,16 @@ new Vue({
                     },
                 ]
             });
+            if($('#terms-of-service').length){
+                $('#terms-of-service').modal('show');
+                $('#terms-of-service').on('hidden.bs.modal', function (e) {
+                    vm.saveDisclaimerSeen();
+                });
+            }
+            let initMap = (vm.fid.length == 0 || vm.fid == undefined)?false:true;
+            vm.getFireInfo(vm.fid,'WF');
+            history.pushState(null,null, yiiOptions.homeUrl);
+
         });
     },
 
@@ -394,6 +423,9 @@ new Vue({
 
 
     computed:{
+        myAlerts(){
+            return this.alerts.dataSet;
+        },
         series(){
             return this.fireDb;
         },
@@ -580,9 +612,7 @@ new Vue({
             }
         },
         wfnmFilter(updated,old){
-            if(updated != old && !empty(old) ){
-                this.searchWFNMTable();
-            }
+            this.searchWFNMTable();
         },
         userLocation(updated,old){
             // console.log('userLoc',updated,old);
@@ -625,6 +655,29 @@ new Vue({
 
 
     methods: {
+        saveDisclaimerSeen(){
+            $.post( yiiOptions.homeUrl+"/system-rest/store-disclaimer" ,function( data ) {
+                console.log(data);
+            });
+        },
+        markAllNotificationSeen(){
+            var vm = this;
+            $.post( yiiOptions.homeUrl+"/map-rest/mark-all-notification-seen" ,function( data ) {
+                console.log(data);
+                vm.alerts = data;
+            });
+        },
+        gotoAlert(alert){
+            var vm = this;
+            $.post(yiiOptions.homeUrl+ "/map-rest/get-alert" ,{id:alert.id},function( data ) {
+                console.log(data);
+                // var fire = data.fireInfo;
+                vm.getFireInfo(data.fireInfo,'WF')
+
+                vm.alerts = data.alerts;
+            });
+
+        },
         prepend(value, array) {
             var newArray = array.slice();
             newArray.unshift(value);
@@ -655,7 +708,7 @@ new Vue({
             return 'pl-sprite pl' + level;
         },
         searchWFNMTable(){
-            var options = this.wfnmFilter.join('|');
+            var options = (this.wfnmFilter.length) ? this.wfnmFilter.join('|'):'XXXXX';
             // console.log(options);
             this.firesNearMeTable.columns(3).search(options,true).draw();
         },
@@ -703,7 +756,7 @@ new Vue({
                 this.userLocation = obj;
             }
         },
-        goToLocation(coords,panMap){
+        goToLocation(coords,panMap,initMap){
             if(panMap == undefined){
                 panMap = true;
             }
@@ -723,8 +776,10 @@ new Vue({
             });
             this.locMarker = L.marker([lat,lng], {icon: locIcon});
             this.locMarker.addTo(this.map);
-            this.panMapToCenter('loc',panMap);
-            $.post( "map-rest/fires-near-me",coords, function( data ) {
+            if(initMap !== true){
+                this.panMapToCenter('loc',panMap);
+            }
+            $.post( "/map-rest/fires-near-me",coords, function( data ) {
                 // console.log(data);
                 if(self.firesNearMeTable !== undefined){
                     self.firesNearMeTable.destroy();
@@ -758,7 +813,7 @@ new Vue({
             }, "json");
             // self.activePane = 'wfnm';
         },
-        getUserLocation(){
+        getUserLocation(initMap){
             var vm = this;
             var defaultLoc = yiiOptions.defaultLocation;
             // console.log(defaultLoc);
@@ -792,7 +847,7 @@ new Vue({
                                         lat:pos.coords.latitude,
                                         lng:pos.coords.longitude,
                                     }
-                                    vm.goToLocation(coords,false);
+                                    vm.goToLocation(coords,false,initMap);
                                 }else{
                                     var address = pos.coords.latitude + ', ' +pos.coords.longitude;
                                     vm.browserLocation = {
@@ -806,7 +861,7 @@ new Vue({
                                         lat:pos.coords.latitude,
                                         lng:pos.coords.longitude,
                                     }
-                                    vm.goToLocation(coords,false);
+                                    vm.goToLocation(coords,false,initMap);
                                     vm.userLocation =  vm.formatLocation(vm.browserLocation);
                                 }
                             });
@@ -839,7 +894,7 @@ new Vue({
                     lat: defaultLoc.latitude,
                     lng: defaultLoc.longitude,
                 }
-                this.goToLocation(coords,false);
+                this.goToLocation(coords,false,initMap);
                 this.userLocation =  this.formatLocation(this.browserLocation);
             }
         },
@@ -881,15 +936,28 @@ new Vue({
             }
             return acres;
         },
-        activatePane(str){
-            if(this.activePane != str){
-                this.loading = true;
+        activatePane(str,forceOpen){
+            if(forceOpen){
                 this.activePane = str;
                 if(str == 'myLocations'){
                     this.initAutocomplete();
                 }
+                if(str == 'alerts'){
+                    this.seenAlerts();
+                }
             }else{
-                this.activePane = '';
+                if(this.activePane != str){
+                    this.loading = true;
+                    this.activePane = str;
+                    if(str == 'myLocations'){
+                        this.initAutocomplete();
+                    }
+                    if(str == 'alerts'){
+                        this.seenAlerts();
+                    }
+                }else{
+                    this.activePane = '';
+                }
             }
         },
         clearLoading(){
@@ -942,6 +1010,7 @@ new Vue({
             }
             var tz = moment.tz.guess();
             if(timestamp){
+                date = date * 1000;
                 var format = moment.tz(date,tz).format("dddd, MMMM Do YYYY, h:mm:ss a");
             }else{
                 var format = moment(date, "YYYY-MM-DD HH:mm:ss").tz(tz).format("dddd, MMMM Do YYYY, h:mm:ss a");
@@ -1058,17 +1127,17 @@ new Vue({
         },
         setIncidentLayer(){
             // console.log('incident layer');
-            self = this;
-            var layer = self.layers[self.incidentLayerId];
-            if(self.map.hasLayer(layer.instance) ){
-                self.map.removeLayer(layer.instance);
+            var vm = this;
+            var layer = vm.layers[vm.incidentLayerId];
+            if(vm.map.hasLayer(layer.instance) ){
+                vm.map.removeLayer(layer.instance);
             }
-            layer.instance = L.geoJSON(self.dataSet,{
+            layer.instance = L.geoJSON(vm.dataSet,{
                 filter: function(feature, layer) {
-                    return ((feature.properties.fireType in self.incidentLayers) && (feature.properties.fireClass in self.incidentLayers));
+                    return ((feature.properties.fireType in vm.incidentLayers) && (feature.properties.fireClass in vm.incidentLayers));
                 },
                 pointToLayer: function (feature, latlng) {
-                    var iconUrl = self.getFireIcon(feature.properties.fireType);
+                    var iconUrl = vm.getFireIcon(feature.properties.fireType);
                     if(iconUrl){
                         var sizeClass = (feature.properties.fireType == 'CX')? '5':feature.properties.fireClass;
                         var fireIcon = L.icon({
@@ -1077,11 +1146,11 @@ new Vue({
                         });
                         return L.marker(latlng,{
                             icon : fireIcon
-                        }).on('click',self.getInfo);
+                        }).on('click',vm.getInfo);
                     }
                 }
             });
-            layer.instance.addTo(self.map);
+            layer.instance.addTo(vm.map);
         },
         getMarkerOffset(){
             var docWidth = $(document).width();
@@ -1125,7 +1194,7 @@ new Vue({
             this.loading =false;
         },
         getFireInfo(obj,type){
-            var marker = (type == 'CX')?'map_complex':'active_fire';
+            // var marker = (type == 'CX')?'map_complex':'active_fire';
             this.placeFireInfo(obj.irwinID,obj.pooLatitude,obj.pooLongitude,'active_fire');
         },
         getInfo(e){
@@ -1186,7 +1255,9 @@ new Vue({
                 fid:id,
             },function( data ) {
                 console.log(data);
-                FB.XFBML.parse(document.getElementById('comment-tab'));
+                if (typeof FB !== 'undefined') {
+                    FB.XFBML.parse(document.getElementById('comment-tab'));
+                }
                 self.fireInfo = data.fireInfo;
                 self.fireInfo.localPrepLevel = '';
                 self.fireInfo.localPrepLevel = data.localGaccPlLevel;
@@ -1204,7 +1275,7 @@ new Vue({
             console.log('unfollow',fid);
             self = this;
             self.loading = true;
-            $.post( "/map-rest/unfollow-fire", {fid:fid}, function( data ) {
+            $.post( yiiOptions.homeUrl+"/map-rest/unfollow-fire", {fid:fid}, function( data ) {
                 self.myFires = data.data;
                 self.loading = false;
             }, "json");
@@ -1214,14 +1285,14 @@ new Vue({
             console.log('toggle',fid);
             self = this;
             if(this.isFollowing){
-                $.post( "/map-rest/unfollow-fire", {fid:fid}, function( data ) {
+                $.post( yiiOptions.homeUrl+"/map-rest/unfollow-fire", {fid:fid}, function( data ) {
                     self.myFires = data.data;
                     self.isFollowing = data.status;
                     console.log(data.status);
                     self.loading = false;
                 }, "json");
             }else if(!this.isFollowing){
-                $.post( "/map-rest/follow-fire", {fid:fid}, function( data ) {
+                $.post(yiiOptions.homeUrl+ "/map-rest/follow-fire", {fid:fid}, function( data ) {
                     self.myFires = data.data;
                     self.isFollowing = data.status;
                     console.log(data.status);
@@ -1256,6 +1327,15 @@ new Vue({
                     var icon = false;
             }
             return icon;
+        },
+        seenAlerts(){
+            var vm = this;
+            console.log('Seen Alerts');
+            $.post(yiiOptions.homeUrl+'/map-rest/check-alerts',function( data ) {
+                // console.log('my-fires',data);
+                // self.myFires = data;
+                vm.alerts = data
+            }, "json" );
         },
         initMap() {
             var endDate = new Date();
@@ -1295,7 +1375,9 @@ new Vue({
                 self.radarTime = moment.tz(data.time,tz).format("MM/DD/YYYY HH:mm:z");
                 // console.log(data.time,self.radarTime);
             });
-            this.getUserLocation();
+
+            let initMap = (this.fid.length == 0 || this.fid == undefined)?false:true;
+
         },
         splitOnCapitolLetter(string){
             if(string == undefined || string == null){
@@ -1309,5 +1391,52 @@ new Vue({
             }
             return string.charAt(0).toUpperCase() + string.slice(1);
         },
+        removeURLParameter(url, parameter) {
+            //prefer to use l.search if you have a location/link object
+            var urlparts= url.split('?');
+            if (urlparts.length>=2) {
+
+                var prefix= encodeURIComponent(parameter)+'=';
+                var pars= urlparts[1].split(/[&;]/g);
+
+                //reverse iteration as may be destructive
+                for (var i= pars.length; i-- > 0;) {
+                    //idiom for string.startsWith
+                    if (pars[i].lastIndexOf(prefix, 0) !== -1) {
+                        pars.splice(i, 1);
+                    }
+                }
+
+                url= urlparts[0] + (pars.length > 0 ? '?' + pars.join('&') : "");
+                return url;
+            } else {
+                return url;
+            }
+        },
+        GetURLParameter(sParam){
+            var sPageURL = window.location.search.substring(1);
+            var sURLVariables = sPageURL.split('&');
+            for (var i = 0; i < sURLVariables.length; i++)
+            {
+                var sParameterName = sURLVariables[i].split('=');
+                if (sParameterName[0] == sParam)
+                {
+                    return sParameterName[1];
+                }
+            }
+        },
+    },
+});
+var vueHeader = new Vue({
+    el:'#top-notifications-li',
+    computed:{
+        badge(){
+            // console.log('badge',vueModel.alerts.badge);
+            return vueModel.alerts.badge;
+        },
+        unreadTotal(){
+            // console.log('unreadTotal',vueModel.alerts.unreadTotal);
+            return vueModel.alerts.unreadTotal;
+        }
     },
 });

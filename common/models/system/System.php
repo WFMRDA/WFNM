@@ -15,7 +15,7 @@ use common\models\myFires\MyFires;
 use common\models\messages\Messages;
 use common\models\helpers\MailerProcessor;
 use common\models\helpers\WfnmHelpers;
-use common\modules\User\helpers\Html2Text;
+use ptech\pyrocms\models\helpers\Html2Text;
 use yii\data\ActiveDataProvider;
 use common\models\system\Session;
 
@@ -50,6 +50,66 @@ class System extends Model{
     public function init(){
         parent::init();
         $this->mapData = Yii::createObject(Yii::$app->params['mapData']);
+    }
+
+    public function findNewAlerts(){
+        $alerts = $this->findUndiscoveredAlerts();
+        $updates = $this->findFireUpdates();
+        // Yii::trace($alerts,'dev');
+        // Yii::trace($updates,'dev');
+        return [
+            'fireCount' => count($this->fireDb),
+            'montitoredFires' => count($this->fires),
+            'montitoredLocations' => count($this->locations),
+        ];
+    }
+
+    protected function findUndiscoveredAlerts(){
+        $query = MyLocations::find()
+            ->joinWith('user')
+            ->andWhere(['user.status' => \ptech\pyrocms\models\helpers\UserHelpers::getStatusId(User::STATUS_ACTIVE)]);
+
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+            'pagination' => [ 'pageSize' => 100],
+        ]);
+        $count = $dataProvider->totalCount;
+        $pages = (ceil($dataProvider->totalCount/100));
+        for ($i = 0; $i < $pages; $i++) {
+            $dataProvider->pagination->page = (int)$i;
+            $dataProvider->refresh();
+            $models = $dataProvider->getModels();
+            $keys = $dataProvider->getKeys();
+            $rows = [];
+            foreach (array_values($models) as $index => $model) {
+                $key = $keys[$index];
+                $response = $this->findFires($model);
+            }
+        }
+    }
+
+    protected function findFires($location){
+        $fireDb = $this->fireDb;
+        $alertDistance = $location->user->profile->alert_dist;
+        if( !is_numeric($alertDistance)){
+            $alertDistance = 25;
+        }
+        foreach ($fireDb as $key => $fire) {
+            /*
+                We No Longer Send Alerts for Complexes due to partner system bad practices
+                We can revisit this later.
+            */
+            if($fire['fireClassId'] == 'CX'){
+                // Yii::trace($fire,'dev');
+                continue;
+            }
+            $distance = GPS::distance($location->latitude, $location->longitude, $fire['pooLatitude'], $fire['pooLongitude']);
+            if($distance <= $alertDistance){
+                //User need to be alerted of new fire
+                //Let's make sure they haven't been alerted already First
+                $this->storeFireAlert($location,$fire,$distance);
+            }
+        }
     }
 
     public function cleanSessions(){
@@ -123,8 +183,8 @@ class System extends Model{
     }
 
     protected function buildEmail($user,$updatesArray = [],$alertsArray = []){
-        $alerts = (empty($alertsArray))?'All Clear. Nothing To Report':implode(' ', $alertsArray);
-        $updates = (empty($updatesArray))?'All Clear. Nothing To Report':implode(' ', $updatesArray);
+        $alerts = (empty($alertsArray))?'All Clear. No New Alerts. Please check your fire Updates':implode(' ', $alertsArray);
+        $updates = (empty($updatesArray))?'All Clear. No New Alerts. Please check your fire Alerts':implode(' ', $updatesArray);
         $processor  = new MailerProcessor();
         $messageTemplate = Yii::$app->view->render('@common/mail/notifications');
         $html =  $processor->processHtml($user,$messageTemplate,[
@@ -142,7 +202,7 @@ class System extends Model{
             ->joinWith(['user','profile'])
             ->andWhere([
                 'and',
-                ['user.status' => User::STATUS_ACTIVE],
+                ['user.status' => \ptech\pyrocms\models\helpers\UserHelpers::getStatusId(User::STATUS_ACTIVE)],
                 ['>=', 'profile.email_prefs', Profile::ALERTS_EMAILS_ONLY],
                 ['messages.sent_at' => NULL],
                 ['messages.seen_at' => NULL],
@@ -157,7 +217,7 @@ class System extends Model{
             ->joinWith(['user','profile'])
             ->andWhere([
                 'and',
-                ['user.status' => User::STATUS_ACTIVE],
+                ['user.status' => \ptech\pyrocms\models\helpers\UserHelpers::getStatusId(User::STATUS_ACTIVE)],
                 ['>=', 'profile.email_prefs', Profile::ALERTS_EMAILS_ONLY],
                 ['messages.sent_at' => NULL],
                 ['messages.seen_at' => NULL],
@@ -175,7 +235,7 @@ class System extends Model{
         ->joinWith(['user','profile'])
         ->andWhere([
             'and',
-            ['user.status' => User::STATUS_ACTIVE],
+            ['user.status' => \ptech\pyrocms\models\helpers\UserHelpers::getStatusId(User::STATUS_ACTIVE)],
             ['>=', 'profile.email_prefs', Profile::ALERTS_EMAILS_ONLY],
             ['messages.sent_at' => NULL],
             ['messages.seen_at' => NULL],
@@ -208,7 +268,7 @@ class System extends Model{
     protected function setLocations(){
         $this->_locations = MyLocations::find()
             ->joinWith('user')
-            ->andWhere(['user.status' => User::STATUS_ACTIVE])
+            ->andWhere(['user.status' => \ptech\pyrocms\models\helpers\UserHelpers::getStatusId(User::STATUS_ACTIVE)])
             ->all();
     }
     public function getLocations(){
@@ -221,7 +281,7 @@ class System extends Model{
     protected function setFires(){
         $this->_fires = MyFires::find()
             ->joinWith('user')
-            ->andWhere(['user.status' => User::STATUS_ACTIVE])
+            ->andWhere(['user.status' => \ptech\pyrocms\models\helpers\UserHelpers::getStatusId(User::STATUS_ACTIVE)])
             ->all();
     }
     public function getFires(){
@@ -231,46 +291,12 @@ class System extends Model{
         return $this->_fires;
     }
 
-    public function findNewAlerts(){
-        $alerts = $this->findUndiscoveredAlerts();
-        $updates = $this->findFireUpdates();
-        // Yii::trace($alerts,'dev');
-        // Yii::trace($updates,'dev');
-        return [
-            'fireCount' => count($this->fireDb),
-            'montitoredFires' => count($this->fires),
-            'montitoredLocations' => count($this->locations),
-        ];
-    }
 
-    protected function findUndiscoveredAlerts(){
-        $query = MyLocations::find()
-            ->joinWith('user')
-            ->andWhere(['user.status' => User::STATUS_ACTIVE]);
-
-        $dataProvider = new ActiveDataProvider([
-            'query' => $query,
-            'pagination' => [ 'pageSize' => 100],
-        ]);
-        $count = $dataProvider->totalCount;
-        $pages = (ceil($dataProvider->totalCount/100));
-        for ($i = 0; $i < $pages; $i++) {
-            $dataProvider->pagination->page = (int)$i;
-            $dataProvider->refresh();
-            $models = $dataProvider->getModels();
-            $keys = $dataProvider->getKeys();
-            $rows = [];
-            foreach (array_values($models) as $index => $model) {
-                $key = $keys[$index];
-                $response = $this->findFires($model);
-            }
-        }
-    }
 
     protected function findFireUpdates(){
         $query = MyFires::find()
             ->joinWith('user')
-            ->andWhere(['user.status' => User::STATUS_ACTIVE]);
+            ->andWhere(['user.status' => \ptech\pyrocms\models\helpers\UserHelpers::getStatusId(User::STATUS_ACTIVE)]);
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => [ 'pageSize' => 100],
@@ -292,13 +318,22 @@ class System extends Model{
 
 
     protected function processUpdate($fire){
+        // Yii::trace($fire,'dev');
         //See if Fire is still in WFNM
-        if(isset($this->fireDb[$fire->irwinID])){
+        // Yii::trace(array_keys($this->fireDb),'dev');
+        // Yii::trace(isset($this->fireDb[$fire->irwinID]),'dev');
+        // Yii::trace($fire->attributes,'dev');
+        // Yii::trace(isset($this->fireDb[$fire->irwinID]),'dev');
+        // Yii::trace(Messages::UPDATES ,'dev');
+        // Yii::trace($this->storedMessages ,'dev');
+        if(isset($this->fireDb[$fire->irwinID]) ){
+            // Yii::trace('Fire In','dev');
+            // Yii::trace($fire->attributes,'dev');
             //Fire is still in WFNM
             //See if this is the users first updates
             // Yii::trace($this->storedMessages[$fire->user_id][Messages::UPDATES],'dev');
             // Yii::trace($this->storedMessages[$fire->user_id][Messages::UPDATES][$fire['irwinID']],'dev');
-            if(isset($this->storedMessages[$fire->user_id][Messages::UPDATES][$fire['irwinID']])){
+            if($this->storeMessageExist($fire->user_id, Messages::UPDATES ,$fire['irwinID'])){
                 $messages = Messages::find()
                 ->andWhere([
                     'and',
@@ -320,15 +355,17 @@ class System extends Model{
             }
         }else{
             //Fire is no long in WFNM
-            if(isset($this->storedMessages[$fire->user_id][Messages::FINAL_MESSAGE][$fire['irwinID']])){
-                // $this->storeExpiredFireMonitoringAlert($fire);
+            // Yii::trace('Fire Out','dev');
+            // Yii::trace($fire->attributes,'dev');
+            if(!$this->storeMessageExist($fire->user_id, Messages::FINAL_MESSAGE ,$fire['irwinID'])){
+                $this->storeExpiredFireMonitoringAlert($fire);
             }
         }
     }
 
     protected function storeExpiredFireMonitoringAlert($fire){
-        $subject =  'Your Fire '. $fire->name .' has been removed from WFNM.';
-        $body = 'Your Fire '. $fire->name .' has been removed from WFNM.';
+        $subject =  'Your Fire '. $fire->name .' has been removed from our System.';
+        $body = 'Your Fire '. $fire->name .' has been removed from System. You can still view this record by following the link';
         $data = [];
         $message = Yii::createObject([
             'class'=> Messages::className(),
@@ -449,44 +486,16 @@ class System extends Model{
         }
     }
 
-    protected function findFires($location){
-        $fireDb = $this->fireDb;
-        foreach ($fireDb as $key => $fire) {
-            $distance = GPS::distance($location->latitude, $location->longitude, $fire['pooLatitude'], $fire['pooLongitude']);
-            if($distance <= $this->alertDistance){
-                //User need to be alerted of new fire
-                //Let's make sure they haven't been alerted already First
-                $this->storeFireAlert($location,$fire,$distance);
-
-            }
-        }
-    }
-
-    protected $_storedMessages;
-
-    protected function setStoredMessages(){
-        // Yii::trace('called','dev');
-        $this->_storedMessages = array();
-        $query = Messages::find()
-            ->select(['user_id','irwinID','type'])
-            ->asArray()
-            ->all();
-        foreach ($query as $key =>  $value) {
-            $this->_storedMessages[$value['user_id']][$value['type']][$value['irwinID']] = 0;
-        }
-
-    }
-
-    protected function getStoredMessages(){
-        // Yii::trace($this->_storedMessages,'dev');
-        if(!isset($this->_storedMessages)){
-            $this->setStoredMessages();
-        }
-        return $this->_storedMessages;
+    protected function storeMessageExist ($userId, $type,$irwinID){
+        return Messages::find()
+           ->andWhere(['user_id' => $userId])
+           ->andWhere(['type' => $type])
+           ->andWhere(['irwinID' => $irwinID])
+           ->exists();
     }
 
     protected function storeFireAlert($location,$fire,$distance){
-        if(!isset($this->storedMessages[$location->user_id][Messages::ALERTS][$fire['irwinID']])){
+        if( !$this->storeMessageExist($location->user_id, Messages::ALERTS ,$fire['irwinID']) ){
             $subject = $fire['incidentName'] . ' Fire is within '. round($distance,2).'mi of '. $location->address;
             $body = $subject;
             $message = Yii::createObject([

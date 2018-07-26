@@ -52,6 +52,7 @@ class SystemRestController extends Controller
             if($model->save()){
                 Yii::$app->getResponse()->setStatusCode(204);
             }else{
+                // Yii::trace($model->errors,'dev');
                 throw new ServerErrorHttpException('Failure to Save Settings');
             }
         }

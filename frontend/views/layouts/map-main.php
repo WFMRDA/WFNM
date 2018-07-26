@@ -8,11 +8,16 @@ use yii\helpers\Url;
 use yii\web\View;
 use frontend\assets\AppAsset;
 use common\models\helpers\WfnmHelpers;
+use yii\helpers\ArrayHelper;
 
 $appAsset = AppAsset::register($this);
 $this->params['assetUrl'] = $appAsset->baseUrl;
 
 $fireData = WfnmHelpers::getFireData();
+$params = ArrayHelper::merge(Yii::$app->request->queryParams,Yii::$app->request->bodyParams);
+$fireId = ArrayHelper::getValue($params,'fid');
+$query = ($fireId == null)?[]:WfnmHelpers::getFireInfo($fireId);
+
 $options = [
     'appName' => Yii::$app->name,
     'baseUrl' => Yii::$app->request->baseUrl,
@@ -24,11 +29,12 @@ $options = [
     'defaultLocation' => Yii::$app->appSystemData->defaultLocation,
     'wfnm' => $fireData['geoJson'],
     'layers' => $fireData['layers'],
-    'myFires' => Yii::$app->appSystemData->getUser('myFires'),
-    'alerts' => Yii::$app->appSystemData->getUser('alerts'),
-    'myLocations' => Yii::$app->appSystemData->getUser('myLocations'),
+    'myFires' => WfnmHelpers::getMyFires(),
+    'alerts' =>  WfnmHelpers::findMyAlerts(),
+    'myLocations' =>  WfnmHelpers::findMyLocations(),
     'sitReport' => $fireData['sitReport'],
     'fireDb' => $fireData['fullFireDb'],
+    'fid' =>  $query,
 ];
 
 $this->registerJs(

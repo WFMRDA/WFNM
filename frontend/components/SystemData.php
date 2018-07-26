@@ -123,6 +123,13 @@ class SystemData extends BaseModel{
         return ($layers == null)? $this->getDefaultLayers() : json_decode($layers,true,512,JSON_NUMERIC_CHECK | JSON_PRESERVE_ZERO_FRACTION);
     }
 
+    protected function getDefaultLayers(){
+        return  [
+            'incidentLayers'=>array_merge(array_keys($this->defaultFireClasses),array_keys($this->defaultFireSizes)),
+            // 'mapLayers'=>array_keys($this->defaultFireSizes),
+        ];
+    }
+
     public function getUserMessages(){
         if($this->_userMessages == null){
             $this->setUserMessages();

@@ -28,9 +28,39 @@ $menuItems = array();
         if(Yii::$app->controller->layout == 'main' ||Yii::$app->controller->layout == null ){
             $menuItems[] = ['label' => 'Home', 'url' => ['/site/index']];
         }else if(Yii::$app->controller->layout == 'map-main'){
-            $menuItems[] = common\widgets\NotificationsWidget::widget([
-                'dataProvider' => Yii::$app->appSystemData->userMessages,
-            ]);
+            // $menuItems[] = common\widgets\NotificationsWidget::widget([
+            //     'dataProvider' => Yii::$app->appSystemData->userMessages,
+            // ]);
+            ob_start();
+?>
+<li id="top-notifications-li" class="dropdown notifications-menu">
+    <a id="top-notification-href" href="#" @click="vueModel.seenAlerts" class="dropdown-toggle" data-toggle="dropdown">
+        <i class="fa fa-bell-o"></i>
+        <span v-cloak v-show="badge>0" id = "header-notification-label" class="label label-warning label-as-badge">{{ badge }}</span>
+    </a>
+    <ul id="notifications-dropdown-menu" class="dropdown-menu">
+        <div class="panel panel-default">
+            <div class="panel-heading text-center">You have <span id="notifications-num">{{ unreadTotal }}</span> new notifications
+                <a  href="javascript:;" @click="vueModel.markAllNotificationSeen" class="panel-heading text-center">Mark All Read</a></div>
+
+            <div class="panel-body">
+                <ul class="menu">
+                    <div id="notifications-div">
+                        <li @click="vueModel.gotoAlert(alert)" :class="{ unread : empty(alert.seen_at) , read: !empty(alert.seen_at) }" v-for="(alert,index) in vueModel.myAlerts" :key="index">
+                            <p class="notifications ">
+                                <i class="fa fa-clock-o">{{ alert.timeLapse }}</i>
+                                <i class="fa fa-exclamation-triangle text-green" ></i> {{ alert.subject }}
+                            </p>
+                        </li>
+                    </div>
+                </ul>
+            </div>
+            <div @click="vueModel.activatePane('alerts',true)" class="panel-footer text-center"><a  href="javascript:;"  class="legend-btn" id ="liNotif">View All Notifications</a></div>
+        </div>
+    </ul>
+</li>
+<?php
+            $menuItems[] = ob_get_clean();
         }
 
         $menuItems[] = '<li><a id="feedback-btn-header" class ="hidden-xs hidden-sm" href="https://docs.google.com/forms/d/1dMNxmfK8GiDJ9U0KsLOBOK2_dKBAuOMOUR32vy3H1gA/edit?usp=sharing" target="_blank">Feedback</a></li>';

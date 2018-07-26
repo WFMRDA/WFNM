@@ -9,6 +9,7 @@ use common\models\myFires\MyFires;
 use common\models\system\System;
 use common\models\messages\Messages;
 use common\models\myLocations\MyLocations;
+use common\models\popup\PopTable;
 
 
 class WfnmHelpers extends YiiHelpers
@@ -28,12 +29,41 @@ class WfnmHelpers extends YiiHelpers
     }
 
     public static function findMyAlerts($offset = 0){
-        return  Messages::find()
+        $badge = 0;
+        $unreadTotal = 0;
+        $model = PopTable::find()
+           ->andWhere(['and',
+                ['user_id' => Yii::$app->user->identity->id],
+                ['type' => PopTable::NOTIFICATIONS]
+            ])->one();
+
+        if($model != null){
+
+            $lastViewed = (  $model->seen_at == null)? 0: $model->seen_at;
+        }else {
+            $lastViewed = 0;
+        }
+
+        $que =   Messages::find()
             ->andWhere(['user_id' => Yii::$app->user->identity->id])
             ->orderBy([
                 // 'created_at' => SORT_ASC,
                 'created_at' => SORT_DESC,
-            ])->limit(10)->offset($offset)->asArray()->all();
+            ])->limit(100)->offset($offset)->asArray()->all();
+        foreach ($que as &$model) {
+            $val['timeLapse'] =  WfnmHelpers::humanTiming($model['created_at']);
+            if($model['created_at'] > $lastViewed){
+                $badge++;
+            }
+            if($model['seen_at']  == null || $model['seen_at'] == 0){
+                $unreadTotal++;
+            }
+        }
+        return [
+            'dataSet'=>$que,
+            'badge' => $badge,
+            'unreadTotal' => $unreadTotal,
+        ];
     }
 
     public static function findMyLocations()
@@ -190,7 +220,7 @@ class WfnmHelpers extends YiiHelpers
         $firename = ArrayHelper::getValue($baseData,'incidentName','') . ' Fire';
         $timing = self::humanTiming($model->created_at) ;
         $message = $model->body;
-        $fireUrl = Yii::$app->urlManager->createAbsoluteUrl(['site/notification','id'=>$model->id]);
+        $fireUrl = Yii::$app->urlManager->createAbsoluteUrl(['site','fid'=>$model->irwinID]);
         return '<li class="fire-line-desc"><p style="Margin:0;Margin-bottom:10px;color:#0a0a0a;display:inline;font-family:Helvetica,Arial,sans-serif;font-size:16px;font-weight:400;line-height:1.3;margin:0;margin-bottom:10px;padding:0;text-align:left">'.$firename.' :</p><img src="http://media.wildfiresnearme.wfmrda.com/img/mini_timer.png" style="-ms-interpolation-mode:bicubic;clear:both;display:inline;max-width:100%;outline:0;text-decoration:none;width:auto"><p style="Margin:0;Margin-bottom:10px;color:#0a0a0a;display:inline;font-family:Helvetica,Arial,sans-serif;font-size:16px;font-weight:400;line-height:1.3;margin:0;margin-bottom:10px;padding:0;text-align:left">'.$timing.' ago. '.$message.'</p><table class="button small expanded" style="Margin:0 0 16px 0;border-collapse:collapse;border-spacing:0;margin:0 0 16px 0;padding:0;text-align:left;vertical-align:top;width:100%!important"><tr style="padding:0;text-align:left;vertical-align:top"><td style="-moz-hyphens:auto;-webkit-hyphens:auto;Margin:0;border-collapse:collapse!important;color:#0a0a0a;font-family:Helvetica,Arial,sans-serif;font-size:16px;font-weight:400;hyphens:auto;line-height:1.3;margin:0;padding:0;text-align:left;vertical-align:top;word-wrap:break-word"><table style="border-collapse:collapse;border-spacing:0;padding:0;text-align:left;vertical-align:top;width:100%"><tr style="padding:0;text-align:left;vertical-align:top"><td style="-moz-hyphens:auto;-webkit-hyphens:auto;Margin:0;background:#2199e8;border:2px solid #2199e8;border-collapse:collapse!important;color:#fefefe;font-family:Helvetica,Arial,sans-serif;font-size:12px;font-weight:400;hyphens:auto;line-height:1.3;margin:0;padding:5px 10px 5px 10px;text-align:left;vertical-align:top;word-wrap:break-word"><center data-parsed="" style="min-width:none!important;width:100%"><a href="'.$fireUrl.'" target="_blank" align="center" class="float-center" style="Margin:0;border:0 solid #2199e8;border-radius:3px;color:#fefefe;display:inline-block;font-family:Helvetica,Arial,sans-serif;font-size:12px;font-weight:700;line-height:1.3;margin:0;padding:5px 10px 5px 10px;padding-left:0;padding-right:0;text-align:center;text-decoration:none;width:100%">See '.$firename.' Alert</a></center></td></tr></table></td><td class="expander" style="-moz-hyphens:auto;-webkit-hyphens:auto;Margin:0;border-collapse:collapse!important;color:#0a0a0a;font-family:Helvetica,Arial,sans-serif;font-size:16px;font-weight:400;hyphens:auto;line-height:1.3;margin:0;padding:0!important;text-align:left;vertical-align:top;visibility:hidden;width:0;word-wrap:break-word"></td></tr></table></li>';
     }
     public static function getUpdatesLine($model){
@@ -199,7 +229,7 @@ class WfnmHelpers extends YiiHelpers
         $firename = ArrayHelper::getValue($baseData,'incidentName','') . ' Fire';
         $timing = self::humanTiming($model->created_at) ;
         $message = $model->body;
-        $updateUrl = Yii::$app->urlManager->createAbsoluteUrl(['site/notification','id'=>$model->id]);
+        $updateUrl = Yii::$app->urlManager->createAbsoluteUrl(['site','fid'=>$model->irwinID]);
         return '<li class="fire-line-desc"><p style="Margin:0;Margin-bottom:10px;color:#0a0a0a;display:inline;font-family:Helvetica,Arial,sans-serif;font-size:16px;font-weight:400;line-height:1.3;margin:0;margin-bottom:10px;padding:0;text-align:left">'.$firename.' :</p><img src="http://media.wildfiresnearme.wfmrda.com/img/mini_timer.png" style="-ms-interpolation-mode:bicubic;clear:both;display:inline;max-width:100%;outline:0;text-decoration:none;width:auto"><p style="Margin:0;Margin-bottom:10px;color:#0a0a0a;display:inline;font-family:Helvetica,Arial,sans-serif;font-size:16px;font-weight:400;line-height:1.3;margin:0;margin-bottom:10px;padding:0;text-align:left">'.$timing.' ago. '.$message.'</p><table class="button small expanded" style="Margin:0 0 16px 0;border-collapse:collapse;border-spacing:0;margin:0 0 16px 0;padding:0;text-align:left;vertical-align:top;width:100%!important"><tr style="padding:0;text-align:left;vertical-align:top"><td style="-moz-hyphens:auto;-webkit-hyphens:auto;Margin:0;border-collapse:collapse!important;color:#0a0a0a;font-family:Helvetica,Arial,sans-serif;font-size:16px;font-weight:400;hyphens:auto;line-height:1.3;margin:0;padding:0;text-align:left;vertical-align:top;word-wrap:break-word"><table style="border-collapse:collapse;border-spacing:0;padding:0;text-align:left;vertical-align:top;width:100%"><tr style="padding:0;text-align:left;vertical-align:top"><td style="-moz-hyphens:auto;-webkit-hyphens:auto;Margin:0;background:#2199e8;border:2px solid #2199e8;border-collapse:collapse!important;color:#fefefe;font-family:Helvetica,Arial,sans-serif;font-size:12px;font-weight:400;hyphens:auto;line-height:1.3;margin:0;padding:5px 10px 5px 10px;text-align:left;vertical-align:top;word-wrap:break-word"><center data-parsed="" style="min-width:none!important;width:100%"><a href="'.$updateUrl.'" target="_blank" align="center" class="float-center" style="Margin:0;border:0 solid #2199e8;border-radius:3px;color:#fefefe;display:inline-block;font-family:Helvetica,Arial,sans-serif;font-size:12px;font-weight:700;line-height:1.3;margin:0;padding:5px 10px 5px 10px;padding-left:0;padding-right:0;text-align:center;text-decoration:none;width:100%">See '.$firename.' Update</a></center></td></tr></table></td><td class="expander" style="-moz-hyphens:auto;-webkit-hyphens:auto;Margin:0;border-collapse:collapse!important;color:#0a0a0a;font-family:Helvetica,Arial,sans-serif;font-size:16px;font-weight:400;hyphens:auto;line-height:1.3;margin:0;padding:0!important;text-align:left;vertical-align:top;visibility:hidden;width:0;word-wrap:break-word"></td></tr></table></li>';
     }
 }
