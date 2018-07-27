@@ -13,7 +13,7 @@ class AppAsset extends AssetBundle
     public $css = [
         '//use.fontawesome.com/66160b7582.css',
         '//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css',
-        YII_ENV_DEV ? 'css/wfnm.css' : '//assets.wildfiresnearme.wfmrda.com/css/wfnm.css',
+        !YII_ENV_DEV ? 'css/wfnm.css' : '//assets.wildfiresnearme.wfmrda.com/css/wfnm.css',
     ];
     public $js = [
         '//maps.googleapis.com/maps/api/js?key=AIzaSyBGrF8tvV6q8f5pIMS6eKMbPsLAj_IlXxE&libraries=places',
