@@ -10,7 +10,8 @@ use yii\filters\AccessControl;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
 use common\models\helpers\WfnmHelpers;
-use yii\web\NotFoundHttpException;
+use yii\web\NotFoundHttpException;;
+use common\models\messages\Messages;
 
 /**
  * Site controller
@@ -83,5 +84,13 @@ class SiteController extends Controller
         ]);
     }
 
+    public function actionNotification($id){
+
+        $model = Messages::find()->where(['id'=>$id])->one();
+        if($model == null){
+            throw new InvalidParamException('Alert Not Found');
+        }
+        $this->redirect(['/site/index','fid'=>$model->irwinID]);
+    }
 
 }
