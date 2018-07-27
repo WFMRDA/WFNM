@@ -5,6 +5,15 @@ $params = array_merge(
     require(__DIR__ . '/params.php'),
     require(__DIR__ . '/params-local.php')
 );
+if (isset($_SERVER['HTTPS']) &&
+    ($_SERVER['HTTPS'] == 'on' || $_SERVER['HTTPS'] == 1) ||
+    isset($_SERVER['HTTP_X_FORWARDED_PROTO']) &&
+    $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') {
+  $protocol = 'https://';
+}
+else {
+  $protocol = 'http://';
+}
 
 return [
     'id' => 'app-frontend',
@@ -51,6 +60,7 @@ return [
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
+            'baseUrl' => $protocol. Ptech_HOST,
             'rules' => [
             ],
         ],
