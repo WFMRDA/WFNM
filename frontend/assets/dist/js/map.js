@@ -342,37 +342,7 @@ var vueModel = new Vue({
     this.sitReport = yiiOptions.sitReport;
     this.fireDb = yiiOptions.fireDb;
     this.fid =  yiiOptions.fid;
-    // console.log(yiiOptions.fid);
-
-/*    for (var i = 0; i < 10; i++) {
-        this.myFires.push({
-            created_at:"1527703841",
-            id:"25",
-            irwinID:"2BBE0D86-42D7-47ED-870F-8328171EC838",
-            name:"LAGOON",
-            updated_at:"1527703841",
-            user_id:"1",
-        })
-    }
-    console.log(yiiOptions.myFires[0],this.myFires[0])*/
-
-    // console.log(this.fid);
-        // $.post(yiiOptions.homeUrl+'/map-rest/my-fires',function( data ) {
-        //     // console.log('my-fires',data);
-        //     self.myFires = data;
-        // }, "json" );
-        // $.post(yiiOptions.homeUrl+'/map-rest/alerts',function( data ) {
-        //     // console.log('alerts',data);
-        // }, "json" );
-        // $.post(yiiOptions.homeUrl+'/map-rest/my-locations',function( data ) {
-        //     // console.log('my-locations',data);
-        //     self.myLocations = data;
-        // }, "json" );
-        // $.post(yiiOptions.homeUrl+'/map-rest/sit-rep',function( data ) {
-        //     // console.log('sit-report',data);
-        //     self.sitReport = data.sitreport;
-        //     self.fireDb = data.fireDb;
-        // }, "json" );
+    // console.log(yiiOptions.fireDb);
     },
     mounted() {
         var vm = this;
@@ -431,29 +401,6 @@ var vueModel = new Vue({
         series(){
             return this.fireDb;
         },
-        //sitReportType
-        // sitReportData(){
-        //     return this.fireDb;
-        //     this.loading = true;
-        //     var vm = this;
-        //     // var newDb = this.clone(this.fireDb);
-        //     var newDb = [];
-        //     var dbL = this.fireDb.length;
-        //     for (var i = 0; i < dbL; i++) {
-        //         var fire = this.fireDb[i];
-        //         if(this.sitReportFilter.indexOf(fire.fireClassId) != -1){
-        //             newDb.push(fire);
-        //         }
-        //
-        //     }
-        //     var sorted =  newDb.sort(function(a, b){
-        //         return b[vm.sitReportType] - a[vm.sitReportType];
-        //     });
-        //     // console.log(this.fireDb);
-        //     // console.log(sorted);
-        //     this.loading = false;
-        //     return sorted;
-        // },
         fireHasInfo(){
             return this.fireInfo.projectedIncidentActivity72Plus == null &&
             this.fireInfo.projectedIncidentActivity72 == null &&
