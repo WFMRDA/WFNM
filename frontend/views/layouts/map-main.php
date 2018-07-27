@@ -18,10 +18,12 @@ $params = ArrayHelper::merge(Yii::$app->request->queryParams,Yii::$app->request-
 $fireId = ArrayHelper::getValue($params,'fid');
 $query = ($fireId == null)?[]:WfnmHelpers::getFireInfo($fireId);
 $schema = (YII_ENV_DEV)?true:'https';
+
+$hostInfo =  Yii::$app->getUrlManager()->hostInfo;
 $options = [
     'appName' => Yii::$app->name,
     'baseUrl' => Yii::$app->request->baseUrl,
-    'homeUrl' => Url::base($schema),
+    'homeUrl' => $hostInfo,
     'assetUrl' => $this->params['assetUrl'],
     'language' => Yii::$app->language,
     'mediaUrl' => Yii::getAlias('@media'),
