@@ -80,6 +80,7 @@ class AppMigrate extends Model{
         $pages = (ceil($dataProvider->totalCount/100));
         return [$dataProvider,$count,$pages];
     }
+    
     public function migrate(){
         $this->migrateUsers();
         $this->migrateProfile();
