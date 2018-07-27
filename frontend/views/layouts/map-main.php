@@ -17,11 +17,11 @@ $fireData = WfnmHelpers::getFireData();
 $params = ArrayHelper::merge(Yii::$app->request->queryParams,Yii::$app->request->bodyParams);
 $fireId = ArrayHelper::getValue($params,'fid');
 $query = ($fireId == null)?[]:WfnmHelpers::getFireInfo($fireId);
-
+$schema = (YII_ENV_DEV)?true:'https';
 $options = [
     'appName' => Yii::$app->name,
     'baseUrl' => Yii::$app->request->baseUrl,
-    'homeUrl' => Url::base(true),
+    'homeUrl' => Url::base($schema),
     'assetUrl' => $this->params['assetUrl'],
     'language' => Yii::$app->language,
     'mediaUrl' => Yii::getAlias('@media'),
