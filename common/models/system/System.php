@@ -53,7 +53,7 @@ class System extends Model{
     }
 
     public function findNewAlerts(){
-        $alerts = $this->findUndiscoveredAlerts();
+        $alerts = $this->();
         $updates = $this->findFireUpdates();
         // Yii::trace($alerts,'dev');
         // Yii::trace($updates,'dev');
@@ -98,8 +98,14 @@ class System extends Model{
             /*
                 We No Longer Send Alerts for Complexes due to partner system bad practices
                 We can revisit this later.
+
+                Only Send Alerts for A B C class fires
             */
-            if($fire['fireClassId'] == 'CX'){
+            if(
+                $fire['fireClassId'] != 'A' ||
+                $fire['fireClassId'] != 'B' ||
+                $fire['fireClassId'] != 'C'
+            ){
                 // Yii::trace($fire,'dev');
                 continue;
             }
@@ -206,7 +212,7 @@ class System extends Model{
                 ['>=', 'profile.email_prefs', Profile::ALERTS_EMAILS_ONLY],
                 ['messages.sent_at' => NULL],
                 ['messages.seen_at' => NULL],
-                ['>=', 'messages.created_at', Yii::$app->formatter->asTimestamp('-24 hours')]
+                ['>=', 'messages.created_at', Yii::$app->formatter->asTimestamp('-12 hours')]
             ])
             ->distinct()
             ->asArray()
