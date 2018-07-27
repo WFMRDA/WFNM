@@ -7,33 +7,31 @@ use Yii;
 /**
  * This is the model class for table "profile".
  *
- * @property integer $user_id
+ * @property int $user_id
  * @property string $first_name
  * @property string $middle_name
  * @property string $last_name
  * @property string $birth_date
- * @property integer $birth_month
- * @property integer $birth_day
- * @property integer $birth_year
- * @property integer $gender
+ * @property int $birth_month
+ * @property int $birth_day
+ * @property int $birth_year
+ * @property int $gender
  * @property string $alternate_email
  * @property string $website
  * @property string $street
  * @property string $city
  * @property string $state
- * @property integer $zip
+ * @property int $zip
  * @property string $phone
  * @property string $bio
- * @property integer $email_prefs
- * @property integer $created_at
- * @property integer $updated_at
- *
- * @property User $user
+ * @property int $email_prefs
+ * @property int $created_at
+ * @property int $updated_at
  */
 class Profile extends \yii\db\ActiveRecord
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {
@@ -49,7 +47,7 @@ class Profile extends \yii\db\ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
@@ -59,12 +57,12 @@ class Profile extends \yii\db\ActiveRecord
             [['birth_date'], 'safe'],
             [['bio'], 'string'],
             [['first_name', 'middle_name', 'last_name', 'alternate_email', 'website', 'street', 'city', 'state', 'phone'], 'string', 'max' => 255],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
+            [['user_id'], 'unique'],
         ];
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function attributeLabels()
     {
@@ -90,13 +88,5 @@ class Profile extends \yii\db\ActiveRecord
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUser()
-    {
-        return $this->hasOne(User::className(), ['id' => 'user_id']);
     }
 }

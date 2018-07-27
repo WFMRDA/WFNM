@@ -7,19 +7,17 @@ use Yii;
 /**
  * This is the model class for table "myFires".
  *
- * @property integer $id
- * @property integer $user_id
+ * @property int $id
+ * @property int $user_id
  * @property string $irwinID
  * @property string $name
- * @property integer $created_at
- * @property integer $updated_at
- *
- * @property User $user
+ * @property int $created_at
+ * @property int $updated_at
  */
 class MyFires extends \yii\db\ActiveRecord
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {
@@ -35,21 +33,21 @@ class MyFires extends \yii\db\ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['user_id', 'irwinID', 'created_at', 'updated_at'], 'required'],
-            [['user_id', 'created_at', 'updated_at'], 'integer'],
+            [['id', 'user_id', 'irwinID', 'created_at', 'updated_at'], 'required'],
+            [['id', 'user_id', 'created_at', 'updated_at'], 'integer'],
             [['irwinID', 'name'], 'string', 'max' => 255],
-            [['user_id', 'irwinID'], 'unique', 'targetAttribute' => ['user_id', 'irwinID'], 'message' => 'The combination of User ID and Irwin ID has already been taken.'],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
+            [['user_id', 'irwinID'], 'unique', 'targetAttribute' => ['user_id', 'irwinID']],
+            [['id'], 'unique'],
         ];
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function attributeLabels()
     {
@@ -61,13 +59,5 @@ class MyFires extends \yii\db\ActiveRecord
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUser()
-    {
-        return $this->hasOne(User::className(), ['id' => 'user_id']);
     }
 }

@@ -253,7 +253,7 @@ class MapData extends Model{
         if(!$cache->exists($key) || empty($data  = $cache->get($key))){
            $data = $this->refreshFireInfo($fid);
         }
-        Yii::trace($data,'dev');
+        // Yii::trace($data,'dev');
         return $data;
     }
 

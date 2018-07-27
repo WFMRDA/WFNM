@@ -9,9 +9,6 @@ use yii\helpers\VarDumper;
 use yii\helpers\Console;
 use yii\helpers\Html;
 
-use ptech\pyrocms\models\pages\CmsPages;
-use ptech\pyrocms\models\pages\CmsPageCategories;
-
 use common\dataMigration\AppMigrate;
 
 class SetupController extends Controller {

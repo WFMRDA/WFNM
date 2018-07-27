@@ -29,7 +29,10 @@ $this->render('_disclaimer');
 		v-cloak
 	>
 	</typeahead>
-	<div class='loader-container' v-show="loading"><div class="sk-wave loader"><div class="sk-rect sk-rect1"></div><div class="sk-rect sk-rect2"></div><div class="sk-rect sk-rect3"></div><div class="sk-rect sk-rect4"></div><div class="sk-rect sk-rect5"></div></div></div>
+	<div class='loader-container' v-show="loading">
+		<!-- <div class="sk-wave loader"><div class="sk-rect sk-rect1"></div><div class="sk-rect sk-rect2"></div><div class="sk-rect sk-rect3"></div><div class="sk-rect sk-rect4"></div><div class="sk-rect sk-rect5"></div></div> -->
+		<div class="spinner loader  spinner--black"> <div class="spinner__item1"></div><div class="spinner__item2"></div> <div class="spinner__item3"></div><div class="spinner__item4"></div></div>
+	</div>
 	<div v-cloak  v-show="!paneActive" class='toolbar-container'>
 		<div class='toolbar-overlay'>
 			<ul class='list-unstyled toolbar'>

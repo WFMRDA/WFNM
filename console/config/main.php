@@ -27,7 +27,7 @@ return [
         ],
         'log' => [
             'targets' => [
-                [
+                /*[
                     'class' => 'yii\log\EmailTarget',
                     'mailer' => 'mailer',
                     'levels' => ['error','warning'],
@@ -36,7 +36,16 @@ return [
                         'to' => ['Rgoolsby@firenet.gov'],
                         'subject' => 'CRON ERROR!!!!!!! Internal Error Message',
                     ],
-                ]
+                ],*/
+                [
+                    'class' => 'yii\log\FileTarget',
+                    'levels' => ['trace'],
+                    'categories' => ['dev'],
+                    'logVars' => ['_GET','_POST'],
+                    'logFile' => '@app/runtime/logs/Dev/trace.log',
+                    'maxFileSize' => 1024 * 2,
+                    'maxLogFiles' => 50,
+                ],
             ],
         ],
     ],

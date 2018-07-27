@@ -24,4 +24,4 @@ yes
 MIGRATE
 sleep 1
 
-# php yii setup/migrate
+php yii setup/migrate

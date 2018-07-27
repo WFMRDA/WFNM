@@ -7,39 +7,28 @@ use Yii;
 /**
  * This is the model class for table "user".
  *
- * @property integer $id
+ * @property int $id
  * @property string $username
  * @property string $email
- * @property integer $status
- * @property integer $role
+ * @property int $status
+ * @property int $role
  * @property string $auth_key
  * @property string $access_token
  * @property string $password_hash
  * @property string $confirmation_token
- * @property integer $confirmation_sent_at
- * @property integer $confirmed_at
+ * @property int $confirmation_sent_at
+ * @property int $confirmed_at
  * @property string $recovery_token
- * @property integer $recovery_sent_at
- * @property integer $blocked_at
- * @property integer $registration_ip
- * @property integer $created_at
- * @property integer $updated_at
- *
- * @property Messages[] $messages
- * @property MyFires[] $myFires
- * @property MyLocations[] $myLocations
- * @property PopTable[] $popTables
- * @property Profile $profile
- * @property Session[] $sessions
- * @property SocialAccounts[] $socialAccounts
- * @property Role $role0
- * @property Status $status0
- * @property UserSettings[] $userSettings
+ * @property int $recovery_sent_at
+ * @property int $blocked_at
+ * @property int $registration_ip
+ * @property int $created_at
+ * @property int $updated_at
  */
 class User extends \yii\db\ActiveRecord
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {
@@ -55,30 +44,20 @@ class User extends \yii\db\ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['username', 'email', 'auth_key', 'access_token', 'password_hash', 'confirmation_token', 'created_at', 'updated_at'], 'required'],
-            [['status', 'role', 'confirmation_sent_at', 'confirmed_at', 'recovery_sent_at', 'blocked_at', 'registration_ip', 'created_at', 'updated_at'], 'integer'],
+            [['id', 'username', 'email', 'auth_key', 'access_token', 'password_hash', 'confirmation_token', 'created_at', 'updated_at'], 'required'],
+            [['id', 'status', 'role', 'confirmation_sent_at', 'confirmed_at', 'recovery_sent_at', 'blocked_at', 'registration_ip', 'created_at', 'updated_at'], 'integer'],
             [['username', 'email', 'password_hash'], 'string', 'max' => 255],
             [['auth_key', 'access_token', 'confirmation_token', 'recovery_token'], 'string', 'max' => 32],
-            [['username'], 'unique'],
-            [['email'], 'unique'],
-            [['auth_key'], 'unique'],
-            [['access_token'], 'unique'],
-            [['username'], 'unique'],
-            [['email'], 'unique'],
-            [['auth_key'], 'unique'],
-            [['access_token'], 'unique'],
-            [['role'], 'exist', 'skipOnError' => true, 'targetClass' => Role::className(), 'targetAttribute' => ['role' => 'id']],
-            [['status'], 'exist', 'skipOnError' => true, 'targetClass' => Status::className(), 'targetAttribute' => ['status' => 'id']],
         ];
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function attributeLabels()
     {
@@ -101,85 +80,5 @@ class User extends \yii\db\ActiveRecord
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getMessages()
-    {
-        return $this->hasMany(Messages::className(), ['user_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getMyFires()
-    {
-        return $this->hasMany(MyFires::className(), ['user_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getMyLocations()
-    {
-        return $this->hasMany(MyLocations::className(), ['user_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getPopTables()
-    {
-        return $this->hasMany(PopTable::className(), ['user_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getProfile()
-    {
-        return $this->hasOne(Profile::className(), ['user_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getSessions()
-    {
-        return $this->hasMany(Session::className(), ['user_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getSocialAccounts()
-    {
-        return $this->hasMany(SocialAccounts::className(), ['user_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getRole0()
-    {
-        return $this->hasOne(Role::className(), ['id' => 'role']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getStatus0()
-    {
-        return $this->hasOne(Status::className(), ['id' => 'status']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUserSettings()
-    {
-        return $this->hasMany(UserSettings::className(), ['user_id' => 'id']);
     }
 }
