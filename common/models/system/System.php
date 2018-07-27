@@ -53,7 +53,7 @@ class System extends Model{
     }
 
     public function findNewAlerts(){
-        $alerts = $this->();
+        $alerts = $this->findUndiscoveredAlerts();
         $updates = $this->findFireUpdates();
         // Yii::trace($alerts,'dev');
         // Yii::trace($updates,'dev');
