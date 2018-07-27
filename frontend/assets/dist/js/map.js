@@ -342,7 +342,7 @@ var vueModel = new Vue({
     this.sitReport = yiiOptions.sitReport;
     this.fireDb = yiiOptions.fireDb;
     this.fid =  yiiOptions.fid;
-    // console.log(yiiOptions.fireDb);
+    console.log(yiiOptions.homeUrl);
     },
     mounted() {
         var vm = this;

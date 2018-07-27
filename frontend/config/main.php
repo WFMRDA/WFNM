@@ -60,7 +60,7 @@ return [
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
-            'baseUrl' => $protocol. Ptech_HOST,
+            // 'baseUrl' => $protocol. Ptech_HOST,
             'rules' => [
             ],
         ],
