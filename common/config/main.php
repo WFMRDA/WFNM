@@ -185,7 +185,7 @@ return [
                     'maxFileSize' => 1024 * 2,
                     'maxLogFiles' => 50,
                 ],
-                /*[
+                [
                     'class' => 'yii\log\EmailTarget',
                     'mailer' => 'mailer',
                     'levels' => ['error','warning'],
@@ -197,7 +197,7 @@ return [
                         'to' => ['rgoolsby@firenet.gov'],
                         'subject' => 'WFNM Internal ERROR!!!!!!! Internal Error Message',
                     ],
-                ],*/
+                ],
             ],
         ],
     ],
