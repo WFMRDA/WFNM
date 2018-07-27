@@ -37,22 +37,22 @@ $this->render('_disclaimer');
 		<div class='toolbar-overlay'>
 			<ul class='list-unstyled toolbar'>
 				<li>
-					<button data-toggle="tooltip" data-placement="top" title="Layers" @click="activatePane('layers')" class='toolbar-btn layers' :class="{ active: activePane == 'layers' }"><?=Html::img('@web/img/maplayers_btn.png',['class'=>'sidebar-fa-ms-png center'])?></button>
+					<button data-toggle="tooltip" data-placement="top" title="Layers" @click="activatePane('layers')" class='toolbar-btn layers' :class="{ active: activePane == 'layers' }"><?=Html::img('@assets/img/maplayers_btn.png',['class'=>'sidebar-fa-ms-png center'])?></button>
 				</li>
 				<li>
-					<button data-toggle="tooltip" data-placement="top" title="My Fires" @click="activatePane('myFires')" class='toolbar-btn myFires' :class="{ active: activePane == 'myFires' }"><?=Html::img('@web/img/my_fires_btn.png',['class'=>'sidebar-fa-ms-png center'])?></button>
+					<button data-toggle="tooltip" data-placement="top" title="My Fires" @click="activatePane('myFires')" class='toolbar-btn myFires' :class="{ active: activePane == 'myFires' }"><?=Html::img('@assets/img/my_fires_btn.png',['class'=>'sidebar-fa-ms-png center'])?></button>
 				</li>
 				<li>
-					<button data-toggle="tooltip" data-placement="top" title="My Locations" @click="activatePane('myLocations')" class='toolbar-btn myLocations' :class="{ active: activePane == 'myLocations' }"><?=Html::img('@web/img/my_locations_btn.png',['class'=>'sidebar-fa-ms-png center'])?></button>
+					<button data-toggle="tooltip" data-placement="top" title="My Locations" @click="activatePane('myLocations')" class='toolbar-btn myLocations' :class="{ active: activePane == 'myLocations' }"><?=Html::img('@assets/img/my_locations_btn.png',['class'=>'sidebar-fa-ms-png center'])?></button>
 				</li>
 				<li>
-					<button data-toggle="tooltip" data-placement="top" title="Situational Report" @click="activatePane('sitRep')" class='toolbar-btn sitRep' :class="{ active: activePane == 'sitRep' }"><?=Html::img('@web/img/sitrep_btn.png',['class'=>'sidebar-fa-ms-png center'])?></button>
+					<button data-toggle="tooltip" data-placement="top" title="Situational Report" @click="activatePane('sitRep')" class='toolbar-btn sitRep' :class="{ active: activePane == 'sitRep' }"><?=Html::img('@assets/img/sitrep_btn.png',['class'=>'sidebar-fa-ms-png center'])?></button>
 				</li>
 				<li>
-					<button data-toggle="tooltip" data-placement="top" title="Alerts" @click="activatePane('alerts')" class='toolbar-btn alerts' :class="{ active: activePane == 'alerts' }"><?=Html::img('@web/img/alerts_btn.png',['class'=>'sidebar-fa-ms-png center'])?></button>
+					<button data-toggle="tooltip" data-placement="top" title="Alerts" @click="activatePane('alerts')" class='toolbar-btn alerts' :class="{ active: activePane == 'alerts' }"><?=Html::img('@assets/img/alerts_btn.png',['class'=>'sidebar-fa-ms-png center'])?></button>
 				</li>
 				<li>
-					<button data-toggle="tooltip" data-placement="top" title="Wildfres Near Me" @click="activatePane('wfnm')" class='toolbar-btn wfnm' :class="{ active: activePane == 'wfnm' }"><?=Html::img('@web/img/wfnm_btn.png',['class'=>'sidebar-fa-ms-png center'])?></button>
+					<button data-toggle="tooltip" data-placement="top" title="Wildfres Near Me" @click="activatePane('wfnm')" class='toolbar-btn wfnm' :class="{ active: activePane == 'wfnm' }"><?=Html::img('@assets/img/wfnm_btn.png',['class'=>'sidebar-fa-ms-png center'])?></button>
 				</li>
 			</ul>
 		</div>
