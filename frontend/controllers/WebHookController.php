@@ -66,7 +66,7 @@ class WebHookController extends Controller
         }
         Yii::$app->response->statusCode = 200;
     }
-    
+
     /**
      * Lists all MyFires models.
      * @return mixed
