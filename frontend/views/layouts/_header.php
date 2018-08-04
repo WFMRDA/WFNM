@@ -31,4 +31,10 @@ use yii\helpers\Url;
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="msapplication-TileImage" content="<?=Url::to('@media/ms-icon-144x144.png', true)?>">
     <meta name="theme-color" content="#ffffff">
+    <meta property="fb:app_id" content="1393521670974339" />
+    <meta property="og:url" content="https://wildfiresnearme.wfmrda.com" />
+    <meta property="og:title" content="Wildfires Near me" />
+    <meta property="og:description" content="Wildfires Near Me, Wildfire tracking and notification system" />
+    <meta property="og:image" content="<?=Url::to('@media/img/header-logo-trans.png', true)?>" />
+    <meta property="og:type" content="website"/>
 </head>
