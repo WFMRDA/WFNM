@@ -32,6 +32,7 @@ class ArcGisAsset extends AssetBundle
         // 'https://unpkg.com/esri-leaflet@2.1.4/dist/esri-leaflet.js',
         '//cdnjs.cloudflare.com/ajax/libs/corejs-typeahead/1.2.1/typeahead.bundle.min.js',
         YII_ENV_DEV ? 'js/jTouch.js' :'//assets.wildfiresnearme.wfmrda.com/js/jTouch.js',
+        YII_ENV_DEV ? 'js/typeahead.js' :'//assets.wildfiresnearme.wfmrda.com/js/typeahead.js',
         YII_ENV_DEV ? 'js/map.js' :'//assets.wildfiresnearme.wfmrda.com/js/map.js',
     ];
     public $depends = [
