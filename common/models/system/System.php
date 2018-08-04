@@ -102,8 +102,8 @@ class System extends Model{
                 Only Send Alerts for A B C class fires
             */
             if(
-                $fire['fireClassId'] != 'A' ||
-                $fire['fireClassId'] != 'B' ||
+                $fire['fireClassId'] != 'A' &&
+                $fire['fireClassId'] != 'B' &&
                 $fire['fireClassId'] != 'C'
             ){
                 // Yii::trace($fire,'dev');
