@@ -35,6 +35,6 @@ use yii\helpers\Url;
     <meta property="og:url" content="https://wildfiresnearme.wfmrda.com" />
     <meta property="og:title" content="Wildfires Near me" />
     <meta property="og:description" content="Wildfires Near Me, Wildfire tracking and notification system" />
-    <meta property="og:image" content="<?=Url::to('@media/header-logo-trans.png', true)?>" />
+    <meta property="og:image" content="https:<?=Url::to('@media/header-logo-trans.png', true)?>" />
     <meta property="og:type" content="website"/>
 </head>
