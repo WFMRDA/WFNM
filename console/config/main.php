@@ -27,7 +27,7 @@ return [
         ],
         'log' => [
             'targets' => [
-                /*[
+                [
                     'class' => 'yii\log\EmailTarget',
                     'mailer' => 'mailer',
                     'levels' => ['error','warning'],
@@ -36,7 +36,7 @@ return [
                         'to' => ['Rgoolsby@firenet.gov'],
                         'subject' => 'CRON ERROR!!!!!!! Internal Error Message',
                     ],
-                ],*/
+                ],
                 [
                     'class' => 'yii\log\FileTarget',
                     'levels' => ['trace'],
