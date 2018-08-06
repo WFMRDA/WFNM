@@ -45,14 +45,11 @@ class SystemRestController extends Controller
                     'seen_at' => time(),
                 ]);
 
-            }else{
-                $model->seen_at = time();
             }
-
-
+            $model->seen_at = time();
             if ($model->save()) {
                 Yii::$app->getResponse()->setStatusCode(204);
-            } elseif ($model->hasErrors()) {
+            } elseif ($model->hasErrors() && !$model->update()) {
                 throw new ServerErrorHttpException(\yii\helpers\VarDumper::dumpAsString($model->errors));
             }else{
                 throw new ServerErrorHttpException('Failed to Save Settings for unknown reason.');

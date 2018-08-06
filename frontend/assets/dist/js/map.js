@@ -1208,11 +1208,6 @@ var vueModel = new Vue({
                 fid:id,
             },function( data ) {
                 console.log(data);
-                vm.$nextTick(function() {
-                    if (typeof FB !== 'undefined') {
-                        FB.XFBML.parse(document.getElementById('comment-tab'));
-                    }
-                });
                 vm.fireInfo = data.fireInfo;
                 vm.fireInfo.localPrepLevel = '';
                 vm.fireInfo.localPrepLevel = data.localGaccPlLevel;
@@ -1224,6 +1219,12 @@ var vueModel = new Vue({
                     vm.activePane = '';
                 }
                 vm.loading = false;
+
+                vm.$nextTick(function() {
+                    if (typeof FB !== 'undefined') {
+                        FB.XFBML.parse(document.getElementById('comment-tab'));
+                    }
+                });
             }, "json" );
         },
         unFollowFire(fid){
