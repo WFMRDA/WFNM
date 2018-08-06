@@ -460,6 +460,8 @@ var vueModel = new Vue({
 
 
             // console.log(landOwnershipArray);
+            var commentsUrl = 'https://www.wildfiresnearme.wfmrda.com/' + this.fireInfo.uniqueFireIdentifier,
+            commentsUrl = commentsUrl.replace(/-/g, "");
             var fireObj = {
                 complexity: getValue(this.fireInfo,'fireMgmtComplexity','Not Specified'),
                 fireCause: getValue(this.fireInfo,'fireCause','Unknown'),
@@ -473,7 +475,7 @@ var vueModel = new Vue({
                 },
                 location: this.precisionRound(this.fireInfo.pooLatitude,2)+' , '+this.precisionRound(this.fireInfo.pooLongitude,2),
                 gaccName: this.getGaccName(this.fireInfo.gacc),
-                commentsUrl: 'https://www.wildfiresnearme.wfmrda.com/wfnm/index#' + this.fireInfo.uniqueFireIdentifier,
+                commentsUrl: commentsUrl,
                 countyState: getValue(this.fireInfo,'pooCity','') + ' ' + getValue(this.fireInfo,'pooCounty','')+' '+getValue(this.fireInfo,'pooState',''),
                 landOwnership: landOwnershipArray.join(' '),
                 modifiedBySystem: getValue(this.fireInfo,'modifiedBySystem','').toUpperCase(),
@@ -1200,26 +1202,28 @@ var vueModel = new Vue({
             this.loadFireInfo(id);
         },
         loadFireInfo(id){
-            self = this;
+            var vm = this;
             console.log(id);
             $.post(yiiOptions.homeUrl+'/map-rest/fire-info',{
                 fid:id,
             },function( data ) {
                 console.log(data);
-                if (typeof FB !== 'undefined') {
-                    FB.XFBML.parse(document.getElementById('comment-tab'));
-                }
-                self.fireInfo = data.fireInfo;
-                self.fireInfo.localPrepLevel = '';
-                self.fireInfo.localPrepLevel = data.localGaccPlLevel;
-                self.isFollowing = data.isFollowing;
-                if(self.showFireInfo){
-                    self.panMapToCenter();
+                vm.$nextTick(function() {
+                    if (typeof FB !== 'undefined') {
+                        FB.XFBML.parse(document.getElementById('comment-tab'));
+                    }
+                });
+                vm.fireInfo = data.fireInfo;
+                vm.fireInfo.localPrepLevel = '';
+                vm.fireInfo.localPrepLevel = data.localGaccPlLevel;
+                vm.isFollowing = data.isFollowing;
+                if(vm.showFireInfo){
+                    vm.panMapToCenter();
                 }else{
-                    self.showFireInfo = true;
-                    self.activePane = '';
+                    vm.showFireInfo = true;
+                    vm.activePane = '';
                 }
-                self.loading = false;
+                vm.loading = false;
             }, "json" );
         },
         unFollowFire(fid){

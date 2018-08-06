@@ -320,13 +320,7 @@ $this->render('_disclaimer');
 					    <h3 class="panel-title">Comments</h3>
 				  	</div>
 					<div class='panel-body'>
-	                    <div
-							class="fb-comments"
-							:data-href="incidentInfo.commentsUrl"
-							data-width="100%"
-							data-colorscheme='light'
-							data-numposts="10">
-						</div>
+						<div id='commment-tab' class="fb-comments" :data-href="incidentInfo.commentsUrl" data-width="100%" data-numposts="10"></div>
 					</div>
 				</div>
 			</div>
