@@ -49,12 +49,21 @@ class SystemRestController extends Controller
                 $model->seen_at = time();
             }
 
-            if($model->save()){
+
+            if ($model->save()) {
                 Yii::$app->getResponse()->setStatusCode(204);
+            } elseif ($model->hasErrors()) {
+                throw new ServerErrorHttpException(\yii\helpers\VarDumper::dumpAsString($model->errors));
             }else{
-                // Yii::trace($model->errors,'dev');
-                throw new ServerErrorHttpException('Failure to Save Settings');
+                throw new ServerErrorHttpException('Failed to Save Settings for unknown reason.');
             }
+
+            // if($model->save()){
+            //     Yii::$app->getResponse()->setStatusCode(204);
+            // }else{
+            //     // Yii::trace($model->errors,'dev');
+            //     throw new ServerErrorHttpException('Failure to Save Settings');
+            // }
         }
     }
 
