@@ -35,8 +35,14 @@ class SystemRestController extends Controller
 
     public function actionStoreDisclaimer(){
         if (Yii::$app->request->isAjax){
+            $isNew = false;
             $id = Yii::$app->user->identity->id;
-            $model = PopTable::findOne(['user_id'=> Yii::$app->user->identity->id, 'type' => PopTable::DISCLAIMER]);
+            // $model = PopTable::findOne(['user_id'=> Yii::$app->user->identity->id, 'type' => PopTable::DISCLAIMER]);
+            $model = PopTable::find()
+            ->andWhere(['user_id'=> Yii::$app->user->identity->id])
+            ->andWhere(['type' => PopTable::DISCLAIMER])
+            ->one();
+            // Yii::trace($model,'dev');
             if($model == null){
                 $model = Yii::createObject([
                     'class' => PopTable::className(),
@@ -44,10 +50,10 @@ class SystemRestController extends Controller
                     'type' => PopTable::DISCLAIMER,
                     'seen_at' => time(),
                 ]);
-
+                $isNew = true;
             }
             $model->seen_at = time();
-            if ($model->save()) {
+            if ($model->save($isNew)) {
                 Yii::$app->getResponse()->setStatusCode(204);
             } elseif ($model->hasErrors() && !$model->update()) {
                 throw new ServerErrorHttpException(\yii\helpers\VarDumper::dumpAsString($model->errors));

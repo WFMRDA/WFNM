@@ -26,17 +26,6 @@ class FiresNearMeController extends Controller{
 	        'authenticator' => [
                 'class' => JwtHttpBearerAuth::className(),
 		    ],
-		    'corsFilter' => [
-	            'class' => \yii\filters\Cors::className(),
-	             'cors' => [
-	                'Origin' => ['*'],
-			        'Access-Control-Request-Method' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
-			        'Access-Control-Request-Headers' => ['*'],
-			        'Access-Control-Allow-Credentials' => null,
-			        'Access-Control-Max-Age' => 86400,
-			        'Access-Control-Expose-Headers' => [],
-	            ],
-	        ],
 	    ]);
 	}
 
@@ -58,11 +47,17 @@ class FiresNearMeController extends Controller{
     {
         $requestParams = ArrayHelper::merge(Yii::$app->request->queryParams,Yii::$app->request->bodyParams);
 
+		if(!isset($requestParams['lon'])){
+			throw new BadRequestHttpException('Longitude must be set using the variable \'lon\'');
+		}
+		if(!isset($requestParams['lat'])){
+			throw new BadRequestHttpException('Latitude must be set using the variable \'lat\'');
+		}
         $mapData = Yii::createObject(Yii::$app->params['mapData']);
         $mapData->userData = [
-            'longitude' => $requestParams['lng'],
+            'longitude' => $requestParams['lon'],
             'latitude' =>  $requestParams['lat'],
-            'distance' =>  ArrayHelper::getValue($requestParams,'distance']),
+            'distance' =>  ArrayHelper::getValue($requestParams,'distance',25),
         ];
         $query = $mapData->getFiresNearUserLocation();
 

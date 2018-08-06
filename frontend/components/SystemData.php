@@ -189,6 +189,7 @@ class SystemData extends BaseModel{
         // $this->_disclaimer = true;
         // return false;
         $query =  PopTable::findOne(['user_id'=> Yii::$app->user->identity->id, 'type' => PopTable::DISCLAIMER]);
+        // Yii::trace($query,'dev');
         $this->_disclaimer = ($query == null || $query->seen_at < Yii::$app->formatter->asTimestamp('- 1 week'));
     }
     public function getDisclaimer(){

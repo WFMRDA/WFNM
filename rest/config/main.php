@@ -80,7 +80,7 @@ return [
                     'patterns'=>[
                         'POST delete'    => 'delete',
                         'POST create'      => 'create',
-                        'GET'       => 'index',
+                        'GET,POST'       => 'index',
                         // 'PUT,PATCH users/<id>' => 'user/update',
                         // 'DELETE users/<id>' => 'user/delete',
                         // 'GET,HEAD users/<id>' => 'user/view',

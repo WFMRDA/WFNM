@@ -23,18 +23,7 @@ class GenerateTokenController extends Controller
 				'auth' => function ($username, $password) {
                     return User::restLogin($username, $password);
 				}
-            ],
-		    'corsFilter' => [
-	            'class' => \yii\filters\Cors::className(),
-	             'cors' => [
-	                'Origin' => ['*'],
-			        'Access-Control-Request-Method' => ['GET', 'POST', 'OPTIONS'],
-			        'Access-Control-Request-Headers' => ['*'],
-			        'Access-Control-Allow-Credentials' => null,
-			        'Access-Control-Max-Age' => 86400,
-			        'Access-Control-Expose-Headers' => [],
-	            ],
-	        ],
+            ]
 	    ]);
 	}
 

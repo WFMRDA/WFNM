@@ -106,9 +106,11 @@ class System extends Model{
                 $fire['fireClassId'] != 'B' &&
                 $fire['fireClassId'] != 'C'
             ){
+                // Yii::trace($fire['fireClassId'] . ' Skipped','dev');
                 // Yii::trace($fire,'dev');
                 continue;
             }
+            // Yii::trace($fire['fireClassId'] . ' Passed','dev');
             $distance = GPS::distance($location->latitude, $location->longitude, $fire['pooLatitude'], $fire['pooLongitude']);
             if($distance <= $alertDistance){
                 //User need to be alerted of new fire
