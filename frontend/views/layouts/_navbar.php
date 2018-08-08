@@ -63,7 +63,8 @@ $menuItems = array();
             $menuItems[] = ob_get_clean();
         }
 
-        $menuItems[] = '<li><a id="feedback-btn-header" class ="hidden-xs hidden-sm" href="https://docs.google.com/forms/d/1dMNxmfK8GiDJ9U0KsLOBOK2_dKBAuOMOUR32vy3H1gA/edit?usp=sharing" target="_blank">Feedback</a></li>';
+        // $menuItems[] = '<li><a id="feedback-btn-header" class ="hidden-xs hidden-sm" href="https://docs.google.com/forms/d/1dMNxmfK8GiDJ9U0KsLOBOK2_dKBAuOMOUR32vy3H1gA/edit?usp=sharing" target="_blank">Feedback</a></li>';
+        $menuItems[] = '<li><a id="feedback-btn-header" class ="hidden-xs hidden-sm" href="https://www.facebook.com/wildfiresnearme" target="_blank">Feedback</a></li>';
 
     }
         $menuItems[] = ptech\pyrocms\widgets\UserNavWidget::widget();
