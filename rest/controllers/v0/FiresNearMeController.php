@@ -13,9 +13,11 @@ use yii\data\ArrayDataProvider;
 use rest\models\User;
 use yii\helpers\ArrayHelper;
 use yii\web\BadRequestHttpException;
+use yii\base\InvalidParamException;
 use yii\helpers\Url;
 use yii\web\ServerErrorHttpException;
 use yii\data\DataFilter;
+use common\models\helpers\WfnmHelpers;
 
 class FiresNearMeController extends Controller{
 
@@ -46,31 +48,31 @@ class FiresNearMeController extends Controller{
     public function actionIndex()
     {
         $requestParams = ArrayHelper::merge(Yii::$app->request->queryParams,Yii::$app->request->bodyParams);
-
-		if(!isset($requestParams['lon'])){
+        if(!isset($requestParams['lon'])){
 			throw new BadRequestHttpException('Longitude must be set using the variable \'lon\'');
 		}
 		if(!isset($requestParams['lat'])){
 			throw new BadRequestHttpException('Latitude must be set using the variable \'lat\'');
 		}
+		if(!isset($requestParams['distance'])){
+			throw new BadRequestHttpException('Distance must be set using the variable \'distance\'');
+		}
+        $lat = ArrayHelper::getValue($requestParams,'lat');
+        $lng = ArrayHelper::getValue($requestParams,'lon');
+        $distance = ArrayHelper::getValue($requestParams,'distance');
         $mapData = Yii::createObject(Yii::$app->params['mapData']);
         $mapData->userData = [
-            'longitude' => $requestParams['lon'],
-            'latitude' =>  $requestParams['lat'],
-            'distance' =>  ArrayHelper::getValue($requestParams,'distance',25),
+            'longitude' => $lng,
+            'latitude' =>  $lat,
+            'distance' => $distance,
         ];
-        $query = $mapData->getFiresNearUserLocation();
-
-        return Yii::createObject([
-           'class' => ArrayDataProvider::className(),
-           'allModels' => $query,
-           'pagination' => [
-               'params' => $requestParams,
-           ],
-           'sort' => [
-               'params' => $requestParams,
-           ],
-        ]);
+        $data = $mapData->getFiresNearUserLocation();
+        $prepLevel = WfnmHelpers::getPrepLevel($data['gacc']);
+        return [
+            'fireInfo'=> $data['fireInfo'],
+            'gacc' => $data['gacc'],
+            'localGaccPlLevel'=> $prepLevel
+        ];
     }
 
 }

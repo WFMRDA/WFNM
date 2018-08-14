@@ -1,6 +1,7 @@
 <?php
 namespace rest\models\jwt;
 
+use Yii;
 use yii\di\Instance;
 use yii\filters\auth\AuthMethod;
 

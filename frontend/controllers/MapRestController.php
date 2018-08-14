@@ -54,7 +54,7 @@ class MapRestController extends Controller
             $params = ArrayHelper::merge(Yii::$app->request->queryParams,Yii::$app->request->bodyParams);
             $lat = ArrayHelper::getValue($params,'lat');
             $lng = ArrayHelper::getValue($params,'lng');
-            $address = ArrayHelper::getValue($params,'address');
+            // $address = ArrayHelper::getValue($params,'address');
             $mapData = Yii::createObject(Yii::$app->params['mapData']);
             // Yii::trace($params,'dev');
             if($lng == null || $lat == null){
@@ -88,7 +88,9 @@ class MapRestController extends Controller
             if($id == null){
                 throw new InvalidParamException('Id Required');
             }
-            $model = Messages::find()->where(['id'=>$id])->one();
+            // $model = Messages::find()->where(['id'=>$id])->one();
+            $model = Messages::find()->where( ['and',['user_id'=> Yii::$app->user->identity->id,'id'=>$id]])->one();
+
             if($model == null){
                 throw new InvalidParamException('Alert Not Found');
             }

@@ -23,12 +23,13 @@ return [
             'identityCookie' => ['name' => '_identity-rest', 'httpOnly' => true],
         ],
         'response' => [
-           'class' => 'yii\web\Response',
+            'class' => 'yii\web\Response',
+            'format' =>  \yii\web\Response::FORMAT_JSON,
             'formatters' => [
                 \yii\web\Response::FORMAT_JSON => [
-                     'class' => 'yii\web\JsonResponseFormatter',
-                     'prettyPrint' => YII_DEBUG, // use "pretty" output in debug mode
-                     'encodeOptions' =>  JSON_NUMERIC_CHECK | JSON_PRESERVE_ZERO_FRACTION,
+                    'class' => 'yii\web\JsonResponseFormatter',
+                    'prettyPrint' => YII_DEBUG, // use "pretty" output in debug mode
+                    'encodeOptions' =>  JSON_NUMERIC_CHECK | JSON_PRESERVE_ZERO_FRACTION,
                 ],
             ],
         ],
@@ -72,8 +73,29 @@ return [
                 [
                     'class' => 'yii\rest\UrlRule',
                     'controller' => [
+                        'mya' => 'v0/my-alerts',
+                    ],
+                    'patterns'=>[
+                        'POST get-alert'    => 'get-alert',
+                        'GET check-alerts'    => 'check-alerts',
+                        'GET mark-all-notification-seen'    => 'mark-all-notification-seen',
+                    ],
+                ],
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => [
+                        'info' => 'v0/info',
+                    ],
+                    'patterns'=>[
+                        'GET sit-rep'    => 'sit-rep',
+                    ],
+                ],
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => [
                         'lc' => 'v0/locations',
-                        'fnm' => 'v0/fires-near-me'
+                        'myf' => 'v0/my-fires',
+                        'fnm' => 'v0/fires-near-me',
                     ],
                     // 'except'=>['delete'],
                     // 'except' => ['update'],

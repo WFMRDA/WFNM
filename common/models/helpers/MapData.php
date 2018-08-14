@@ -505,7 +505,8 @@ class MapData extends Model{
     protected function getMyLocationFireArrayCacheKey(){
         $lat = abs(round($this->userData['longitude'],2));
         $lng = abs(round($this->userData['latitude'],2));
-        $placeId = '_'.$lng.'_'.$lat;
+        $distance = (!isset($this->userData['distance']))?100:$this->userData['distance'];
+        $placeId = '_'.$lng.'_'.$lat.'_'.$distance;
         return $this->myFiresArrayCacheKey.$placeId;
     }
 
@@ -529,8 +530,11 @@ class MapData extends Model{
             $cache = Yii::$app->cache;
             $key  = $this->getMyLocationFireArrayCacheKey();
             if ($updatesResponse->isOk) {
-
+                // Yii::trace('in resposne','dev');
                 foreach ($updatesResponse->data as $index => $model) {
+                    if($model['distance'] > $this->userData['distance']){
+                        continue;
+                    }
                     if($model['incidentTypeCategory'] == 'CX'){
                         $model['fireClassId'] = 'CX';
                     }

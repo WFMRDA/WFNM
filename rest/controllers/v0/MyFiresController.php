@@ -13,13 +13,14 @@ use yii\data\ActiveDataProvider;
 use rest\models\User;
 use yii\helpers\ArrayHelper;
 use yii\web\BadRequestHttpException;
-use common\models\myLocations\MyLocations;
-use common\models\myLocations\MyLocationsSearch;
+use common\models\myFires\MyFires;
+use common\models\myFires\MyFiresSearch;
 use yii\helpers\Url;
 use yii\web\ServerErrorHttpException;
 use yii\data\DataFilter;
+use common\models\helpers\WfnmHelpers;
 
-class LocationsController extends Controller
+class MyFiresController extends Controller
 {
 
     public function behaviors()
@@ -50,18 +51,7 @@ class LocationsController extends Controller
     {
 
         $requestParams = ArrayHelper::merge(Yii::$app->request->queryParams,Yii::$app->request->bodyParams);
-        $query = $this->getAllRecords();
-
-        return Yii::createObject([
-           'class' => ActiveDataProvider::className(),
-           'query' => $query,
-           'pagination' => [
-               'params' => $requestParams,
-           ],
-           'sort' => [
-               'params' => $requestParams,
-           ],
-        ]);
+        return $this->getAllRecords();
     }
 
     /**
@@ -71,23 +61,27 @@ class LocationsController extends Controller
      */
     public function actionCreate()
     {
-        $model = new MyLocations([
-            'user_id' => Yii::$app->user->identity->id
-        ]);
 
-        $requestParams = ArrayHelper::merge(Yii::$app->request->queryParams,Yii::$app->request->bodyParams);
-        $model->load($requestParams, '');
-        if ($model->save()) {
-            // $response = Yii::$app->getResponse();
-            // $response->setStatusCode(201);
-            // $id = implode(',', array_values($model->getPrimaryKey(true)));
-            // Yii::trace(Url::toRoute(['view', 'id' => $id], true),'dev');
-            // $response->getHeaders()->set('Location', Url::toRoute(['view', 'id' => $id], true));
-        }  elseif (!$model->hasErrors()) {
-            throw new ServerErrorHttpException('Failed to create the object for unknown reason.');
+        $params = ArrayHelper::merge(Yii::$app->request->queryParams,Yii::$app->request->bodyParams);
+        $fireId = ArrayHelper::getValue($params,'fid');
+        $model = $this->getFireFollowModel($fireId);
+        $mapData = Yii::createObject(Yii::$app->params['mapData']);
+        $query = $mapData->getFireInfo($fireId);
+        if($model == null){
+            $model = Yii::createObject([
+                'class'=> MyFires::className(),
+                'user_id'=>Yii::$app->user->identity->id,
+                'irwinID'=>$fireId,
+                'name'=> $query['incidentName'],
+            ]);
+            if(!$model->save()){
+                throw new ServerErrorHttpException($model->errors);
+            }
+        }else{
+            throw new ServerErrorHttpException('You Are Already Monitoring This Fire');
         }
+        return ['data'=>$this->getAllRecords(), 'status' => WfnmHelpers::isUserFollowing(Yii::$app->user->identity->id,$fireId)];
 
-        return $this->getAllRecords()->asArray()->all();
         // return  MyLocations::find()->andWhere(['user_id' => Yii::$app->user->identity->id])->orderBy(['id' => SORT_ASC])->asArray()->all();
     }
 
@@ -98,23 +92,16 @@ class LocationsController extends Controller
     public function actionDelete()
     {
         $requestParams = ArrayHelper::merge(Yii::$app->request->queryParams,Yii::$app->request->bodyParams);
-        $model = $this->findModel(ArrayHelper::getValue($requestParams,'lid'));
-        if ($model->delete() === false) {
-            throw new ServerErrorHttpException('Failed to delete the object for unknown reason.');
+        $fireId = ArrayHelper::getValue($requestParams,'fid');
+        $model = $this->getFireFollowModel($fireId);
+        if($model !== null){
+            if(!$model->delete()){
+                throw new ServerErrorHttpException($model->errors);
+            }
+        }else{
+            throw new ServerErrorHttpException('You are not monitoring this fire');
         }
-        $query = $this->getAllRecords();
-
-        return Yii::createObject([
-           'class' => ActiveDataProvider::className(),
-           'query' => $query,
-           'pagination' => [
-               'params' => $requestParams,
-           ],
-           'sort' => [
-               'params' => $requestParams,
-           ],
-        ]);
-        // Yii::$app->getResponse()->setStatusCode(204);
+        return ['data'=>$this->getAllRecords(), 'status' => WfnmHelpers::isUserFollowing(Yii::$app->user->identity->id,$fireId)];
     }
 
     /**
@@ -126,14 +113,16 @@ class LocationsController extends Controller
      */
     protected function findModel($id)
     {
-        if ($id !== null && ($model = MyLocations::find()->where(['and',['user_id' => Yii::$app->user->identity->id],['id' => $id]])->one()) !== null) {
+        if ($id !== null && ($model = MyFires::find()->where(['and',['user_id' => Yii::$app->user->identity->id],['irwinID' => $id]])->one()) !== null) {
             return $model;
         } else {
             throw new ServerErrorHttpException('Record Not Found');
         }
     }
-
+    protected function getFireFollowModel($fireId){
+        return MyFires::find()->where(['and',['user_id'=> Yii::$app->user->identity->id,'irwinID'=>$fireId]])->one();
+    }
     protected function getAllRecords(){
-        return MyLocations::find()->andWhere(['user_id' => Yii::$app->user->identity->id])->orderBy(['id' => SORT_ASC]);
+        return WfnmHelpers::getMyFires();
     }
 }
