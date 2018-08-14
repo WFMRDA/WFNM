@@ -88,6 +88,7 @@ return [
                     ],
                     'patterns'=>[
                         'GET sit-rep'    => 'sit-rep',
+                        'POST fire-info'    => 'fire-info',
                     ],
                 ],
                 [

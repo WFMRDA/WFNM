@@ -55,6 +55,15 @@ class InfoController extends Controller{
         return WfnmHelpers::getSitReportData();
     }
 
+    public function actionFireInfo(){
+        $params = ArrayHelper::merge(Yii::$app->request->queryParams,Yii::$app->request->bodyParams);
+        $fireId = ArrayHelper::getValue($params,'fid');
+        $query = WfnmHelpers::getFireInfo($fireId);
+        $prepLevel = WfnmHelpers::getPrepLevel($query['gacc']);
+        $isFollowing = WfnmHelpers::isUserFollowing(Yii::$app->user->identity->id,$fireId);
+        return ['fireInfo'=>$query,'localGaccPlLevel'=> $prepLevel,'isFollowing'=>$isFollowing];
+    }
+
     public function actionStoreDisclaimer(){
         if (Yii::$app->request->isAjax){
             $isNew = false;
