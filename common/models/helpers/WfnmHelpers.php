@@ -14,6 +14,30 @@ use common\models\popup\PopTable;
 
 class WfnmHelpers extends YiiHelpers
 {
+
+    /**
+     * @var int Seconds till next 5 min clock interval which the fire cache needs to be reset.
+     */
+    protected static $_nextRefreshTime;
+
+     /**
+     *  Sets Next Time Refresh Variable for till the next 5 min clock interval which the fire cache needs to be reset.
+     */
+    protected static function setNextRefreshTime(){
+        $now = time();
+        self::$_nextRefreshTime = (int) (ceil($now/(300))* 300) - $now;
+    }
+
+    /**
+     * Gets Next Time Refresh Variable for till the next 5 min clock interval which the fire cache needs to be reset.
+     * @return int Seconds till next 5 min clock interval which the fire cache needs to be reset.
+     */
+    public static function getNextRefreshTime(){
+        if(!isset(self::$_nextRefreshTime)){
+            self::setNextRefreshTime();
+        }
+        return self::$_nextRefreshTime;
+    }
     /**
      * Finds the MyFires model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.

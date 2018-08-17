@@ -114,7 +114,7 @@ class MapData extends Model{
      */
     public function getWfnmData(){
         //Check Cache for WFNM GeoJson, If unavailable set Cache and return values
-        $cache = Yii::$app->cache;
+        $cache = Yii::$app->fireCache;
         $key  = $this->wfnmCacheKey;
         // Yii::trace($this->nextRefreshTime,'dev');
         // $cache->delete($key) ;
@@ -146,7 +146,7 @@ class MapData extends Model{
                 ->addHeaders(['Authorization' => 'Basic '.$this->getAuthKey()])
                 ->send();
 
-            $cache = Yii::$app->cache;
+            $cache = Yii::$app->fireCache;
             $key  = $this->wfnmCacheKey;
             // Yii::trace(VarDumper::dumpAsString($updatesResponse,10),'dev');
             // Yii::trace(VarDumper::dumpAsString($updatesResponse->data,10),'dev');
@@ -246,9 +246,10 @@ class MapData extends Model{
      */
     public function getFireInfo($fid){
         //Check Cache for WFNM GeoJson, If unavailable set Cache and return values
-        $cache = Yii::$app->cache;
+        $cache = Yii::$app->fireCache;
         $key  = $this->getFireInfoKey($fid);
         // Yii::trace($key,'dev');
+        // Yii::trace($cache->exists($key),'dev');
         // $cache->delete($key) ;
         if(!$cache->exists($key) || empty($data  = $cache->get($key))){
            $data = $this->refreshFireInfo($fid);
@@ -264,7 +265,7 @@ class MapData extends Model{
      */
     public function buildFireList($models){
         // Yii::trace($models,'dev');
-        $cache = Yii::$app->cache;
+        $cache = Yii::$app->fireCache;
         $refreshIds = [];
         $dataSet = [];
         foreach ($models as $key => $model) {
@@ -302,7 +303,7 @@ class MapData extends Model{
                     'fid' => $fids,
                 ])
                 ->send();
-            $cache = Yii::$app->cache;
+            $cache = Yii::$app->fireCache;
             // Yii::trace($updatesResponse->data,'dev');
 
             // Yii::trace(VarDumper::dumpAsString($updatesResponse,10),'dev');
@@ -344,7 +345,7 @@ class MapData extends Model{
                     'fid' => $fid,
                 ])
                 ->send();
-            $cache = Yii::$app->cache;
+            $cache = Yii::$app->fireCache;
             $key  = $this->getFireInfoKey($fid);
             // Yii::trace(VarDumper::dumpAsString($updatesResponse,10),'dev');
             // Yii::trace(VarDumper::dumpAsString($updatesResponse->data,10),'dev');
@@ -385,7 +386,7 @@ class MapData extends Model{
      */
     public function getSitReportInfo(){
         //Check Cache for WFNM GeoJson, If unavailable set Cache and return values
-        $cache = Yii::$app->cache;
+        $cache = Yii::$app->fireCache;
         $key  = $this->getSitReportKey();
         // Yii::trace($key,'dev');
         // $cache->delete($key) ;
@@ -408,7 +409,7 @@ class MapData extends Model{
                 ->setMethod('get')
                 ->addHeaders(['Authorization' => 'Basic '.$this->getAuthKey()])
                 ->send();
-            $cache = Yii::$app->cache;
+            $cache = Yii::$app->fireCache;
             $key  = $this->getSitReportKey();
             // Yii::trace(VarDumper::dumpAsString($updatesResponse,10),'dev');
             // Yii::trace(VarDumper::dumpAsString($updatesResponse->data,10),'dev');
@@ -437,8 +438,9 @@ class MapData extends Model{
      *  Sets Next Time Refresh Variable for till the next 5 min clock interval which the fire cache needs to be reset.
      */
     protected function setNextRefreshTime(){
-        $now = time();
-        $this->_nextRefreshTime = (int) ceil($now/(300))*(300) - $now;
+        $this->_nextRefreshTime = WfnmHelpers::getNextRefreshTime();
+        // $now = time();
+        // $this->_nextRefreshTime = (int) (ceil($now/(300))* 300) - $now;
     }
 
     /**
@@ -489,7 +491,7 @@ class MapData extends Model{
             $data = [];
         }else{
             //Check Cache for WFNM GeoJson, If unavailable set Cache and return values
-            $cache = Yii::$app->cache;
+            $cache = Yii::$app->fireCache;
             $key  = $this->getMyLocationFireArrayCacheKey();
             // Yii::trace($key,'dev');
             // $cache->delete($key) ;
@@ -527,7 +529,7 @@ class MapData extends Model{
                     'fireClassPrefs'=>['A','B','C','D','E']
                 ])
                 ->send();
-            $cache = Yii::$app->cache;
+            $cache = Yii::$app->fireCache;
             $key  = $this->getMyLocationFireArrayCacheKey();
             if ($updatesResponse->isOk) {
                 // Yii::trace('in resposne','dev');
@@ -564,7 +566,7 @@ class MapData extends Model{
     }
 
     public function getPrepardnessLevel($type){
-        $cache = Yii::$app->cache;
+        $cache = Yii::$app->fireCache;
         $key  = $this->plLevelCacheKey;
         // $cache->delete($key) ;
         if(!$cache->exists($key) || empty($data  = $cache->get($key))){
@@ -579,7 +581,7 @@ class MapData extends Model{
                 ->setMethod('get')
                 ->addHeaders(['Authorization' => 'Basic '.$this->getAuthKey()])
                 ->send();
-            $cache = Yii::$app->cache;
+            $cache = Yii::$app->fireCache;
             $key  = $this->plLevelCacheKey;
             if ($updatesResponse->isOk) {
                 // Yii::trace($updatesResponse->data,'dev');

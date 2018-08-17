@@ -17,7 +17,15 @@ return [
             'class' => 'yii\redis\Cache',
             'keyPrefix' =>  YII_DEBUG ? 'dev_wfnm' : 'prod_wfnm',  //Set To Unique App Abbreviation to prevent conflict with other apps
         ],
+        'fireCache' => [
+            'class' => 'common\models\system\Cache',
+            'keyPrefix' =>  YII_DEBUG ? 'dev_fire' : 'prod_fire',  //Set To Unique App Abbreviation to prevent conflict with other apps
+        ],
         'session' => [
+            'class' => 'yii\redis\Session',
+            'keyPrefix' =>  YII_DEBUG ? 'dev_wfnm' : 'prod_wfnm',  //Set To Unique App Abbreviation to prevent conflict with other apps
+        ],
+        /*'session' => [
             'class' => 'yii\web\DbSession',
             // 'db' => 'db',
             // 'sessionTable' => 'session',
@@ -27,7 +35,7 @@ return [
                    'last_write' => time(),
                 ];
             },
-        ],
+        ],*/
         'formatter' => [
             'class' => 'yii\i18n\Formatter',
             'defaultTimeZone' => 'UTC',
