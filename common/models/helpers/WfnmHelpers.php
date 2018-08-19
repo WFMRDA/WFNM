@@ -25,7 +25,11 @@ class WfnmHelpers extends YiiHelpers
      */
     protected static function setNextRefreshTime(){
         $now = time();
-        self::$_nextRefreshTime = (int) (ceil($now/(300))* 300) - $now;
+        $duration = (int) (ceil($now/(300))* 300) - $now;
+        if ($duration === 0) {
+            $duration = 300;
+        }
+        self::$_nextRefreshTime = $duration;
     }
 
     /**

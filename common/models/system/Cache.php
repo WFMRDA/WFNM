@@ -26,6 +26,9 @@ class Cache extends yii\redis\Cache{
         if ($duration === null) {
             $duration = $this->nextRefreshTime;
         }
+        if ($duration === 0) {
+            $duration = 300;
+        }
 
         if ($dependency !== null && $this->serializer !== false) {
             $dependency->evaluateDependency($this);
