@@ -46,7 +46,12 @@ class MyLocations extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'place_id', 'latitude', 'longitude'], 'required'],
+            [['user_id','latitude', 'longitude'], 'required'],
+            // normalize "phone" input
+            ['place_id', 'filter', 'filter' => function ($value) {
+                $key = number_format($this->latitude, 2).','.number_format($this->longitude, 2);
+                return md5($key);
+            }],
             [['user_id', 'created_at', 'updated_at'], 'integer'],
             [['address'], 'string'],
             [['latitude', 'longitude'], 'number'],
@@ -80,4 +85,5 @@ class MyLocations extends \yii\db\ActiveRecord
     {
         return $this->hasOne(User::className(), ['id' => 'user_id']);
     }
+
 }
