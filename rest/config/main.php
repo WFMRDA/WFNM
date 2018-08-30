@@ -79,6 +79,8 @@ return [
                         'POST get-alert'    => 'get-alert',
                         'GET check-alerts'    => 'check-alerts',
                         'GET mark-all-notification-seen'    => 'mark-all-notification-seen',
+                        'GET,POST count'   => 'get-count',
+                        'GET,POST alerts'   => 'get-alerts',
                     ],
                 ],
                 [

@@ -10,6 +10,7 @@ use yii\helpers\Console;
 use yii\helpers\Html;
 
 use common\dataMigration\AppMigrate;
+use common\models\system\DataCreator;
 
 class SetupController extends Controller {
 
@@ -32,4 +33,14 @@ class SetupController extends Controller {
         $this->stdout("Total Execution Time: {$time}". PHP_EOL, Console::FG_GREEN);
     }
 
+
+    public function actionCreateAlerts($id,$count = 1){
+        $this->stdout('Creating Data Now... StandBy'. PHP_EOL, Console::FG_GREEN);
+        $system = new DataCreator();
+        $response = $system->createAlerts($id,$count);
+        $this->stdout(VarDumper::dumpAsString($response,10,false) . PHP_EOL, Console::FG_CYAN);
+        $time = microtime(true) - $_SERVER["REQUEST_TIME_FLOAT"];
+        $this->stdout("Total Execution Time: {$time}". PHP_EOL, Console::FG_GREEN);
+
+    }
 }

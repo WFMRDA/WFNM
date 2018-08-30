@@ -47,6 +47,9 @@ class MessagesSearch extends Messages
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination' => [
+                'pageSizeLimit' => [0, 100]
+            ],
         ]);
 
         $this->load($params);

@@ -161,7 +161,7 @@ class System extends Model{
                 $message = Yii::$app->mailer->compose()
                     ->setFrom(Yii::$app->params['adminEmail'])
                     ->setTo($user->email)
-                    ->setSubject($user->fullName.' You Have New Information In WIldfires Near Me')
+                    ->setSubject($user->fullName.' You Have New Information In Wildfires Near Me')
                     ->setTextBody($textHtml)
                     ->setHtmlBody($html);
 

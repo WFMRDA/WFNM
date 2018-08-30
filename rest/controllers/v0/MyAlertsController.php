@@ -17,9 +17,13 @@ use yii\base\InvalidParamException;
 use yii\helpers\Url;
 use yii\web\ServerErrorHttpException;
 use yii\data\DataFilter;
+use yii\data\ActiveDataProvider;
 use common\models\helpers\WfnmHelpers;
 use common\models\messages\Messages;
+use common\models\messages\MessagesSearch;
 use common\models\popup\PopTable;
+
+
 
 class MyAlertsController extends Controller{
 
@@ -42,15 +46,65 @@ class MyAlertsController extends Controller{
         return $actions;
     }
 
-
+    public $serializer = [
+        'class' => 'yii\rest\Serializer',
+        'collectionEnvelope' => 'items',
+    ];
     /**
      * Lists all My Alerts .
      * @return Array
      */
     public function actionIndex()
     {
+     // return $this->getAllRecords();
+        $model = PopTable::find()
+           ->andWhere(['and',
+                ['user_id' => Yii::$app->user->identity->id],
+                ['type' => PopTable::NOTIFICATIONS]
+            ])->one();
+        if($model != null){
+            $lastViewed = (  $model->seen_at == null)? 0: $model->seen_at;
+        }else {
+            $lastViewed = 0;
+        }
         $requestParams = ArrayHelper::merge(Yii::$app->request->queryParams,Yii::$app->request->bodyParams);
-        return $this->getAllRecords();
+        $searchModel = new MessagesSearch();
+        $dataProvider = $searchModel->search($requestParams);
+        return [
+            'dataSet '=> $this->serializeData($dataProvider),
+            'badge' =>  Messages::find()->where(['>','created_at',$lastViewed])->count(),
+            'unreadTotal' => Messages::find()->where(['or',
+                ['seen_at' => null],
+                ['seen_at' => 0],
+            ])->count(),
+        ];
+    }
+
+    public function actionGetAlerts(){
+        $requestParams = ArrayHelper::merge(Yii::$app->request->queryParams,Yii::$app->request->bodyParams);
+        $searchModel = new MessagesSearch();
+        return $searchModel->search($requestParams);
+    }
+
+
+    public function actionGetCount(){
+       $model = PopTable::find()
+          ->andWhere(['and',
+               ['user_id' => Yii::$app->user->identity->id],
+               ['type' => PopTable::NOTIFICATIONS]
+           ])->one();
+       if($model != null){
+           $lastViewed = (  $model->seen_at == null)? 0: $model->seen_at;
+       }else {
+           $lastViewed = 0;
+       }
+        return [
+            'badge' =>  Messages::find()->where(['>','created_at',$lastViewed])->count(),
+            'unreadTotal' => Messages::find()->where(['or',
+                ['seen_at' => null],
+                ['seen_at' => 0],
+            ])->count(),
+        ];
     }
 
     public function actionGetAlert(){
