@@ -47,7 +47,8 @@ class MyAlertsController extends Controller{
     }
 
     public $serializer = [
-        'class' => '\rest\models\Serializer',
+        'class' => 'yii\rest\Serializer',
+        'collectionEnvelope' => 'items',
     ];
     /**
      * Lists all My Alerts .
