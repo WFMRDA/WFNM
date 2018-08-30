@@ -43,4 +43,14 @@ class SetupController extends Controller {
         $this->stdout("Total Execution Time: {$time}". PHP_EOL, Console::FG_GREEN);
 
     }
+
+    public function actionClearAlertSeen($id){
+        $this->stdout('Creating Data Now... StandBy'. PHP_EOL, Console::FG_GREEN);
+        $system = new DataCreator();
+        $response = $system->clearAlertSeen($id);
+        $this->stdout(VarDumper::dumpAsString($response,10,false) . PHP_EOL, Console::FG_CYAN);
+        $time = microtime(true) - $_SERVER["REQUEST_TIME_FLOAT"];
+        $this->stdout("Total Execution Time: {$time}". PHP_EOL, Console::FG_GREEN);
+
+    }
 }
