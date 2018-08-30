@@ -76,6 +76,7 @@ return [
                         'mya' => 'v0/my-alerts',
                     ],
                     'patterns'=>[
+                        'GET,POST'       => 'index',
                         'POST get-alert'    => 'get-alert',
                         'GET check-alerts'    => 'check-alerts',
                         'GET mark-all-notification-seen'    => 'mark-all-notification-seen',
