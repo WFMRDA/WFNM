@@ -1,4 +1,38 @@
 var player = undefined;
+function humanTiming(time) {
+    time = 1535732553;
+    let now = Math.floor(new Date().getTime() / 1000);
+    let timeSince = now - time;
+    let Units = [
+        '31536000',
+        '2592000',
+        '604800',
+        '86400',
+        '3600',
+        '60',
+        '1',
+    ];
+    let Desc = [
+        'year',
+        'month',
+        'week',
+        'day',
+        'hour',
+        'minute',
+        'second',
+    ];
+
+    for (let i = 0; i < 7; i++) {
+        let unit = parseInt(Units[i]);
+        if (timeSince < unit) {
+            continue;
+        }
+        let text = Desc[i];
+        let numberOfUnits = Math.floor(timeSince / unit);
+        return numberOfUnits + ' ' + text + ((numberOfUnits > 1) ? 's' : '');
+    }
+    return '0 second\'s';
+}
 function empty (mixedVar) {
   //  discuss at: http://locutus.io/php/empty/
   // original by: Philippe Baumann
@@ -961,23 +995,21 @@ var vueModel = new Vue({
                 return '';
             }
             var tz = moment.tz.guess();
+            // console.log(tz);
             if(timestamp){
                 date = date * 1000;
-                var format = moment.tz(date,tz).format("dddd, MMMM Do YYYY, h:mm:ss a");
+                var format = moment.tz(date,tz).format("M/D/YYYY, HH:mm z");
             }else{
-                var format = moment(date, "YYYY-MM-DD HH:mm:ss").tz(tz).format("dddd, MMMM Do YYYY, h:mm:ss a");
+                var format = moment(date, "YYYY-MM-DD HH:mm:ss").tz(tz).format("M/D/YYYY, HH:mm z");
             }
             return format;
-            var tz = new Date().getTimezoneOffset();
-            // console.log('tz',tz);
-            return moment(date, "YYYY-MM-DD HH:mm:ss").utcOffset(tz).format("dddd, MMMM Do YYYY, h:mm:ss a");
         },
         formatDate(date){
             if(date == undefined || date == null){
                 return '';
             }
             var tz = moment.tz.guess();
-            return moment(date, "YYYY-MM-DD").tz(tz).format("dddd, MMMM Do YYYY");
+            return moment(date, "YYYY-MM-DD").tz(tz).format("M/D/YYYY");
         },
         precisionRound(number, precision) {
             var factor = Math.pow(10, precision);

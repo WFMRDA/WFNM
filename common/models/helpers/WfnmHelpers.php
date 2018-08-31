@@ -79,7 +79,7 @@ class WfnmHelpers extends YiiHelpers
                 'created_at' => SORT_DESC,
             ])->limit(100)->offset($offset)->asArray()->all();
         foreach ($que as &$model) {
-            $val['timeLapse'] =  WfnmHelpers::humanTiming($model['created_at']);
+            $model['timeLapse'] =  WfnmHelpers::humanTiming($model['created_at']);
             if($model['created_at'] > $lastViewed){
                 $badge++;
             }

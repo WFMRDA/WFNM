@@ -22,7 +22,7 @@ use common\models\helpers\WfnmHelpers;
 use common\models\messages\Messages;
 use common\models\messages\MessagesSearch;
 use common\models\popup\PopTable;
-
+use yii\web\Response;
 
 
 class MyAlertsController extends Controller{
@@ -72,11 +72,11 @@ class MyAlertsController extends Controller{
         $dataProvider = $searchModel->search($requestParams);
         return [
             'dataSet '=> $this->serializeData($dataProvider),
-            'badge' =>  Messages::find()->where(['>','created_at',$lastViewed])->count(),
-            'unreadTotal' => Messages::find()->where(['or',
-                ['seen_at' => null],
-                ['seen_at' => 0],
-            ])->count(),
+            // 'badge' =>  Messages::find()->where(['>','created_at',$lastViewed])->count(),
+            // 'unreadTotal' => Messages::find()->where(['or',
+            //     ['seen_at' => null],
+            //     ['seen_at' => 0],
+            // ])->count(),
         ];
     }
 
@@ -153,7 +153,8 @@ class MyAlertsController extends Controller{
 
     public function actionMarkAllNotificationSeen(){
         Messages::updateAll(['seen_at' => time()], ['user_id'=>Yii::$app->user->identity->id]);
-        return $this->getAllRecords();
+        $this->redirect(['index','']);
+        // return $this->getAllRecords();
     }
 
     protected function getAllRecords(){

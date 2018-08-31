@@ -376,7 +376,7 @@ $this->render('_disclaimer');
 					<div id="notifications-panel-div">
 						<li @click="gotoAlert(alert)" :class="{ unread : empty(alert.seen_at) , read: !empty(alert.seen_at) }" v-for="(alert,index) in myAlerts" :key="index">
 							<p class="notifications ">
-								<i class="fa fa-clock-o">{{ alert.timeLapse }}</i>
+								<i class="fa fa-clock-o">{{ alert.timeLapse }} ago</i>
 								<i class="fa fa-exclamation-triangle text-green" ></i> {{ alert.subject }}
 				            </p>
 						</li>

@@ -48,7 +48,7 @@ $menuItems = array();
                     <div id="notifications-div">
                         <li @click="vueModel.gotoAlert(alert)" :class="{ unread : empty(alert.seen_at) , read: !empty(alert.seen_at) }" v-for="(alert,index) in vueModel.myAlerts" :key="index">
                             <p class="notifications ">
-                                <i class="fa fa-clock-o">{{ alert.timeLapse }}</i>
+                                <i class="fa fa-clock-o">{{ alert.timeLapse }} ago</i>
                                 <i class="fa fa-exclamation-triangle text-green" ></i> {{ alert.subject }}
                             </p>
                         </li>
