@@ -147,7 +147,7 @@ class MyAlertsController extends Controller{
         if(!$model->save()){
             throw new ServerErrorHttpException($model->errors);
         }else{
-            return $this->getAllRecords();
+            $this->redirect(['/mya/count']);
         }
     }
 
