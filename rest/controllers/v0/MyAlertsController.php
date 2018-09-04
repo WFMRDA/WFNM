@@ -100,7 +100,9 @@ class MyAlertsController extends Controller{
        }
         return [
             'badge' =>  Messages::find()->where(['>','created_at',$lastViewed])->count(),
-            'unreadTotal' => Messages::find()->where(['or',
+            'unreadTotal' => Messages::find()
+            ->andWhere(['user_id'=> Yii::$app->user->identity->id])
+            ->andWhere(['or',
                 ['seen_at' => null],
                 ['seen_at' => 0],
             ])->count(),
@@ -153,7 +155,8 @@ class MyAlertsController extends Controller{
 
     public function actionMarkAllNotificationSeen(){
         Messages::updateAll(['seen_at' => time()], ['user_id'=>Yii::$app->user->identity->id]);
-        $this->redirect(['index','']);
+        // $this->redirect(['index','']);
+        $this->redirect(['/mya/count']);
         // return $this->getAllRecords();
     }
 
