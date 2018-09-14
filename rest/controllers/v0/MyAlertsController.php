@@ -123,6 +123,7 @@ class MyAlertsController extends Controller{
             $model->updateAttributes(['seen_at'=>time()]);
         }
 
+
         $fire = WfnmHelpers::getFireInfo($model->irwinID);
         return [
             'fireInfo' => $fire,

@@ -15,6 +15,9 @@
     "repositories": [
         {
             "type": "vcs","url": "https://bitbucket.org/Rjgoolsby/yii2-pyrocms"
+        },
+        {
+            "type": "vcs","url": "https://github.com/PyrotechSolutions/yii2-eauth"
         }
     ],
     "minimum-stability": "dev",
@@ -29,7 +32,7 @@
         "kartik-v/yii2-password": "~1.5",
         "kartik-v/yii2-widgets": "~3.4",
         "yiidoc/yii2-redactor": "@dev",
-        "nodge/yii2-eauth": "2.5.0",
+        "nodge/yii2-eauth": "dev-master",
         "symfony/http-foundation": "^3.2",
         "predis/predis": "^1.1",
         "yiisoft/yii2-jui": "~2.0.0",
