@@ -70,6 +70,7 @@ return [
             'rules' => [
                 '/' => 'site/index',
                 'POST,GET generate-token' => 'generate-token/index',
+                'POST,GET firesearch' => 'v0/fire-search/index',
                 [
                     'class' => 'yii\rest\UrlRule',
                     'controller' => [

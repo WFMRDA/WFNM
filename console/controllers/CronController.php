@@ -69,6 +69,15 @@ class CronController extends Controller {
         $this->stdout("Total Execution Time: {$time}". PHP_EOL, Console::FG_GREEN);
     }
 
+    public function actionSetFireCache(){
+        $this->stdout('Setting Cache ... StandBy'. PHP_EOL, Console::FG_GREEN);
+        $system = new System();
+        $response = $system->setFireCache();
+        $this->stdout(VarDumper::dumpAsString($response,10,false) . PHP_EOL, Console::FG_CYAN);
+        $time = microtime(true) - $_SERVER["REQUEST_TIME_FLOAT"];
+        $this->stdout("Total Execution Time: {$time}". PHP_EOL, Console::FG_GREEN);
+    }
+
     /*public function actionTestFunct(){
         $this->stdout('Processing Users ... StandBy'. PHP_EOL, Console::FG_GREEN);
         $model = new UserMigration();

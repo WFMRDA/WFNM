@@ -18,6 +18,7 @@ use common\models\helpers\WfnmHelpers;
 use ptech\pyrocms\models\helpers\Html2Text;
 use yii\data\ActiveDataProvider;
 use common\models\system\Session;
+use common\models\fireCache\FireCache;
 
 class System extends Model{
     public $alertDistance = 25;
@@ -524,5 +525,31 @@ class System extends Model{
             }
         }
     }
+
+
+    /*
+    *   Set Fire Cache for Faster Searches
+    */
+
+    public function setFireCache(){
+        $allModels = FireCache::find()->select('irwinID')->limit(10)->column();
+        $values = array_flip($allModels);
+        // return $values;
+        //Clean up DB by delete all that aren't in this query. 
+        FireCache::deleteAll(['NOT IN', 'irwinID', $allModels]);
+        $fireDb = $this->fireDb;
+        foreach ($fireDb as $irwinID => $fire) {
+            if(!isset($values[$irwinID])){
+                $model = new FireCache([
+                    'irwinID' => $irwinID,
+                    'name' => (string)$fire['incidentName']
+                ]);
+                if(!$model->save()){
+                    throw new InvalidParamException(VarDumper::dumpAsString($model->errors,10,false));
+                }
+            }
+        }
+    }
+
 
 }
