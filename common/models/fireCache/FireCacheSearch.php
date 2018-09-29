@@ -209,7 +209,7 @@ class FireCacheSearch extends FireCache
 
     public function searchRest($params){
         $query = FireCache::getDb()->cache(function ($db) {
-            return FireCache::find();
+            return FireCache::find()->select(['irwinID','incidentName']);
         });
         // add conditions that should always apply here
         $dataProvider = new ActiveDataProvider([
