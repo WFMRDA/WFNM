@@ -225,7 +225,9 @@ class m180927_164748_fireListCacheTable extends Migration
             'irwinID',
             'incidentName',
             'pooLatitude',
-            'pooLongitude'
+            'pooLongitude',
+            'fireClassId',
+            'fireClass',
         ],$unique = false);
     }
 
