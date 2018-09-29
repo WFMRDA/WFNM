@@ -540,10 +540,14 @@ class System extends Model{
         $fireDb = $this->fireDb;
         foreach ($fireDb as $irwinID => $fire) {
             if(!isset($values[$irwinID])){
-                $model = new FireCache([
-                    'irwinID' => $irwinID,
-                    'name' => (string)$fire['incidentName']
-                ]);
+                $fire['localIncidentIdentifier'] = (string)$fire['localIncidentIdentifier'];
+                $fire['pooFips'] = (string)$fire['pooFips'];
+                $fire['fsOverrideCode'] = (string)$fire['fsOverrideCode'];
+                $fire['incidentName'] = (string)$fire['incidentName'];
+                $fire['pooLegalDescRange'] = (string)$fire['pooLegalDescRange'];
+                $fire['pooLegalDescRange'] = (string)$fire['pooLegalDescRange'];
+                $fire['pooLegalDescTownship'] = (string)$fire['pooLegalDescTownship'];
+                $model = new FireCache($fire);
                 if(!$model->save()){
                     throw new InvalidParamException(VarDumper::dumpAsString($model->errors,10,false));
                 }

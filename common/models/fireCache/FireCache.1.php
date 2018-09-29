@@ -93,7 +93,6 @@ use yii\behaviors\TimestampBehavior;
  * @property string $pooLegalDescTownship
  * @property string $pooLegalDescPrincipalMeridian
  * @property string $fireClassId
- * @property string $fireClass
  * @property int $created_at
  * @property int $updated_at
  * @property string $fireIgnitionDateTime
@@ -150,8 +149,7 @@ use yii\behaviors\TimestampBehavior;
  */
 class FireCache extends \yii\db\ActiveRecord
 {
-
-    /**
+        /**
      * @inheritdoc
      */
     public function behaviors()
@@ -179,7 +177,7 @@ class FireCache extends \yii\db\ActiveRecord
             [['inConflict', 'isComplex', 'isFSAssisted', 'isMultiJurisdictional', 'isTrespass', 'isReimbursable', 'totalIncidentPersonnel', 'fatalities', 'injuries', 'residencesDestroyed', 'residencesThreatened', 'otherStructuresDestroyed', 'otherStructuresThreatened', 'percentContained', 'percentPerimeterToBeContained', 'isValid', 'unitIDValidation', 'pooLegalDescSection', 'created_at', 'updated_at', 'fireStrategyMonitorPercent', 'fireStrategyConfinePercent', 'fireStrategyPointZonePercent', 'fireStrategyFullSuppPercent', 'hasFatalities', 'hasInjuries', 'inFuelTreatment', 'inNFPORS', 'isFireCauseInvestigated', 'isFireCodeRequested', 'isInitialFireStrategyMet', 'isQuarantined', 'isUnifiedCommand'], 'integer'],
             [['initialLatitude', 'initialLongitude', 'discoveryAcres', 'pooLatitude', 'pooLongitude', 'initialResponseAcres', 'dailyAcres', 'calculatedAcres', 'estimatedCostToDate', 'finalAcres'], 'number'],
             [['significantEvents', 'weatherConcerns', 'projectedIncidentActivity12', 'plannedActions', 'ics209Remarks', 'finalFireReportNarrative', 'fireBehaviorGeneral', 'fireBehaviorGeneral1', 'fireBehaviorGeneral2', 'fireBehaviorGeneral3', 'fireBehaviorDescription', 'secondaryFuelModel', 'additionalFuelModel', 'summaryFuelModel', 'projectedIncidentActivity24', 'projectedIncidentActivity48', 'projectedIncidentActivity72', 'projectedIncidentActivity72Plus'], 'string'],
-            [['irwinID', 'recordSource', 'createdBySystem', 'modifiedBySystem', 'conflictParentIrwinId', 'uniqueFireIdentifier', 'pooProtectingUnit', 'localIncidentIdentifier', 'dispatchCenterId', 'incidentName', 'fireCause', 'incidentTypeKind', 'incidentTypeCategory', 'pooJurisdictionalUnit', 'pooState', 'pooCounty', 'pooFips', 'pooLandownerKind', 'pooLandownerCategory', 'initialFireStrategy', 'firecodeRequested', 'abcdMisc', 'fireCode', 'fsJobCode', 'fsOverrideCode', 'complexParentIrwinId', 'fireMgmtComplexity', 'incidentCommanderName', 'incidentManagementOrganization', 'ics209ReportStatus', 'gacc', 'adsPermissionState', 'incidentShortDescription', 'primaryFuelModel', 'pooCity', 'pooIncidentJurisdictionalAgency', 'pooLegalDescQtrQtr', 'pooLegalDescQtr', 'pooLegalDescRange', 'pooLegalDescTownship', 'pooLegalDescPrincipalMeridian', 'fireClassId', 'fireClass', 'fireCauseGeneral', 'fireCauseSpecific', 'fireCauseInvestigatedIndicator', 'pooJurisdictionalUnitParentUnit', 'initialFireStrategyMetIndicator', 'predominantFuelModel', 'finalFireReportApprovedByUnit', 'finalFireReportApprovedBy', 'finalFireReportApprovedByTitle', 'unifiedCommand', 'wfdssDecisionStatus', 'fiscallyResponsibleUnit', 'mergeParentIrwinId', 'criticalResourceNeeds', 'fireDepartmentID', 'pooDispatchCenterID', 'pooJurisdictionalAgency', 'pooPredictiveServiceAreaID', 'pooProtectingAgency', 'predominantFuelGroup'], 'string', 'max' => 255],
+            [['irwinID', 'recordSource', 'createdBySystem', 'modifiedBySystem', 'conflictParentIrwinId', 'uniqueFireIdentifier', 'pooProtectingUnit', 'localIncidentIdentifier', 'dispatchCenterId', 'incidentName', 'fireCause', 'incidentTypeKind', 'incidentTypeCategory', 'pooJurisdictionalUnit', 'pooState', 'pooCounty', 'pooFips', 'pooLandownerKind', 'pooLandownerCategory', 'initialFireStrategy', 'firecodeRequested', 'abcdMisc', 'fireCode', 'fsJobCode', 'fsOverrideCode', 'complexParentIrwinId', 'fireMgmtComplexity', 'incidentCommanderName', 'incidentManagementOrganization', 'ics209ReportStatus', 'gacc', 'adsPermissionState', 'incidentShortDescription', 'primaryFuelModel', 'pooCity', 'pooIncidentJurisdictionalAgency', 'pooLegalDescQtrQtr', 'pooLegalDescQtr', 'pooLegalDescRange', 'pooLegalDescTownship', 'pooLegalDescPrincipalMeridian', 'fireClassId', 'fireCauseGeneral', 'fireCauseSpecific', 'fireCauseInvestigatedIndicator', 'pooJurisdictionalUnitParentUnit', 'initialFireStrategyMetIndicator', 'predominantFuelModel', 'finalFireReportApprovedByUnit', 'finalFireReportApprovedBy', 'finalFireReportApprovedByTitle', 'unifiedCommand', 'wfdssDecisionStatus', 'fiscallyResponsibleUnit', 'mergeParentIrwinId', 'criticalResourceNeeds', 'fireDepartmentID', 'pooDispatchCenterID', 'pooJurisdictionalAgency', 'pooPredictiveServiceAreaID', 'pooProtectingAgency', 'predominantFuelGroup'], 'string', 'max' => 255],
             [['irwinID'], 'unique'],
         ];
     }
@@ -275,7 +273,6 @@ class FireCache extends \yii\db\ActiveRecord
             'pooLegalDescTownship' => 'Poo Legal Desc Township',
             'pooLegalDescPrincipalMeridian' => 'Poo Legal Desc Principal Meridian',
             'fireClassId' => 'Fire Class ID',
-            'fireClass' => 'Fire Class',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
             'fireIgnitionDateTime' => 'Fire Ignition Date Time',
