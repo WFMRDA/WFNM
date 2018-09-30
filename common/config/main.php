@@ -205,7 +205,7 @@ return [
                         'to' => ['rgoolsby@firenet.gov'],
                         'subject' => 'WFNM Internal ERROR!!!!!!! Internal Error Message',
                     ],
-                ],
+                ], 
             ],
         ],
     ],

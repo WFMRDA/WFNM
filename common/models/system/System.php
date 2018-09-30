@@ -540,6 +540,11 @@ class System extends Model{
         $fireDb = $this->fireDb;
         foreach ($fireDb as $irwinID => $fire) {
             if(!isset($values[$irwinID])){
+                if($fire['incidentTypeCategory'] == 'CX'){
+                    $fire['fireClassId'] = 'CX';
+                    $fire['fireClass'] = 'Complex';
+                }
+                $row['dailyAcres'] = ($fire['dailyAcres'] == null) ? 0 : (float)$fire['dailyAcres'];
                 $fire['localIncidentIdentifier'] = (string)$fire['localIncidentIdentifier'];
                 $fire['pooFips'] = (string)$fire['pooFips'];
                 $fire['fsOverrideCode'] = (string)$fire['fsOverrideCode'];

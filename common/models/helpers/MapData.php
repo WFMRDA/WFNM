@@ -16,6 +16,7 @@ use yii\base\InvalidParamException;
 use yii\helpers\VarDumper;
 use yii\data\ArrayDataProvider;
 use common\models\GACC\Gacclayer;
+use common\models\fireCache\FireCache;
 
 class MapData extends Model{
 
@@ -139,6 +140,19 @@ class MapData extends Model{
      * @return json WFNM Fire dataset
      */
     public function refreshWfnmData(){
+        try {
+            $data = FireCache::find()->asArray()->all();
+            $cache = Yii::$app->fireCache;
+            $key  = $this->wfnmCacheKey;
+            $cache->set($key, $data, $this->nextRefreshTime);
+        }catch (\yii\httpclient\Exception $e) {
+            //Log Error.
+            // $this->errorlog[] = $e->getMessage();
+            $data = [];
+        }
+        return $data;
+    }
+    public function refreshWfnmDataDEPRECATED(){
         try {
             $updatesResponse = $this->_client->createRequest()
                 ->setUrl('map-fires')
@@ -274,11 +288,18 @@ class MapData extends Model{
             $key  = $this->getFireInfoKey($fid);
             // Yii::trace($fid.' => '.$key,'dev');
             // $cache->delete($key) ;
-            if(!$cache->exists($key) || empty($data  = $cache->get($key))){
-               $refreshIds[] = $fid;
-           }else{
+
+            if(
+                (!$cache->exists($key) || 
+                empty($data  = $cache->get($key))) &&
+                ($data = FireCache::find()->where(['irwinId' => $fid])->asArray()->one()) == null 
+            ){
+                // Yii::trace('Not Found ' . $fid.' => '.$key,'dev');
+                $refreshIds[] = $fid;
+            }else{
+                // Yii::trace('Found ' . $fid.' => '.$key,'dev');
                 $dataSet[] = $data;
-           }
+            }
         }
         if(!empty($refreshIds)){
             $dataSet = array_merge($dataSet,$this->refreshFiresInfo($refreshIds));
@@ -337,32 +358,37 @@ class MapData extends Model{
      */
     public function refreshFireInfo($fid){
         try {
-            $updatesResponse = $this->_client->createRequest()
-                ->setUrl('fire-info')
-                ->setMethod('post')
-                ->addHeaders(['Authorization' => 'Basic '.$this->getAuthKey()])
-                ->setData([
-                    'fid' => $fid,
-                ])
-                ->send();
+            $data = FireCache::find()->where(['irwinId' => $fid])->asArray()->one();
+            //Check to see if this fire is in our Fire Cache. If not then pull from Vulcan Data Services
+            if($data == null){
+                // Yii::trace('Fire Not Found in Cache ' .$fid,'dev');
+                $updatesResponse = $this->_client->createRequest()
+                    ->setUrl('fire-info')
+                    ->setMethod('post')
+                    ->addHeaders(['Authorization' => 'Basic '.$this->getAuthKey()])
+                    ->setData([
+                        'fid' => $fid,
+                    ])
+                    ->send();
+                    if ($updatesResponse->isOk) {
+                        $data = $updatesResponse->data;
+                        if($data['incidentTypeCategory'] == 'CX'){
+                            $data['fireClassId'] = 'CX';
+                            $data['fireClass'] = 'Complex';
+                        }
+                    }else{
+                        //Log Error.
+                        // $this->errorlog[] = $updatesResponse->data;
+                        $data = [];
+                    }
+            }else{
+
+                // Yii::trace('Fire Found in Cache' . $fid,'dev');
+            }
             $cache = Yii::$app->fireCache;
             $key  = $this->getFireInfoKey($fid);
-            // Yii::trace(VarDumper::dumpAsString($updatesResponse,10),'dev');
-            // Yii::trace(VarDumper::dumpAsString($updatesResponse->data,10),'dev');
-            if ($updatesResponse->isOk) {
-                $data = $updatesResponse->data;
-                if($data['incidentTypeCategory'] == 'CX'){
-                    $data['fireClassId'] = 'CX';
-                    $data['fireClass'] = 'Complex';
-                }
-                // Yii::trace($data,'dev');
-                $cache->set($key, $data,$this->nextRefreshTime);
-                $data = $updatesResponse->data;
-            }else{
-                //Log Error.
-                // $this->errorlog[] = $updatesResponse->data;
-                $data = [];
-            }
+            // Yii::trace($data,'dev');
+            $cache->set($key, $data,$this->nextRefreshTime);
         }catch (\yii\httpclient\Exception $e) {
             //Log Error.
             // $this->errorlog[] = $e->getMessage();
@@ -414,7 +440,7 @@ class MapData extends Model{
             // Yii::trace(VarDumper::dumpAsString($updatesResponse,10),'dev');
             // Yii::trace(VarDumper::dumpAsString($updatesResponse->data,10),'dev');
             if ($updatesResponse->isOk) {
-                $cache->set($key, $updatesResponse->data,$this->nextRefreshTime);
+                $cache->set($key, $updatesResponse->data,$this->nextDayRefreshTime);
                 $data = $updatesResponse->data;
             }else{
                 //Log Error.

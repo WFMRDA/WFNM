@@ -52,7 +52,8 @@ class InfoController extends Controller{
     }
 
     public function actionSitRep(){
-        return WfnmHelpers::getSitReportData();
+        $mapData = Yii::createObject(Yii::$app->params['mapData']);
+        return $mapData->sitReportInfo;
     }
 
     public function actionFireInfo(){

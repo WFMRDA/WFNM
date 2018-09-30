@@ -102,6 +102,7 @@ class WfnmHelpers extends YiiHelpers
     public static function getSitReportData(){
 
         $mapData = Yii::createObject(Yii::$app->params['mapData']);
+        // return $mapData->sitReportInfo;
         // Yii::trace($mapData->wfnmData,'dev');
         return ['sitreport'=>$mapData->sitReportInfo,'fireDb'=>$mapData->wfnmData];
     }

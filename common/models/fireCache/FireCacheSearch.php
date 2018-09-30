@@ -13,6 +13,7 @@ use common\models\fireCache\FireCache;
 class FireCacheSearch extends FireCache
 {
     public $q;
+    public $fireClass;
     /**
      * {@inheritdoc}
      */
@@ -222,7 +223,45 @@ class FireCacheSearch extends FireCache
             // $query->where('0=1');
             return $dataProvider;
         }
+        
         $query->andFilterWhere(['like', 'incidentName', $this->q]);
+        return $dataProvider;
+    }
+    
+
+
+
+    public function searchInfo($params){
+        $query = FireCache::find()->select([
+            'irwinID',
+            'incidentName',
+            'fireClassId',
+            'fireClass',
+            'dailyAcres',
+            'totalIncidentPersonnel',
+            'percentContained',
+            'estimatedCostToDate',
+            'modifiedOnDateTime'
+        ]);
+        // $query = FireCache::getDb()->cache(function ($db) {
+        //     return FireCache::find()->select(['irwinID','incidentName','fireClassID']);
+        // });
+        // add conditions that should always apply here
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+        ]);
+        $this->load($params,'');
+
+        if (!$this->validate()) {
+            // uncomment the following line if you do not want to return any records when validation fails
+            // $query->where('0=1');
+            return $dataProvider;
+        }
+
+        // Yii::trace($this->fireClass == ["A"],'dev');
+        if(!empty($this->fireClass)){
+            $query->andFilterWhere(['fireClassId' => json_decode($this->fireClass)]);
+        }
         return $dataProvider;
     }
     

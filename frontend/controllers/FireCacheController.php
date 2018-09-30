@@ -1,10 +1,10 @@
 <?php
 
-namespace app\controllers;
+namespace frontend\controllers;
 
 use Yii;
-use common\models\system\FireCache;
-use common\models\system\FireCacheSearch;
+use common\models\fireCache\FireCache;
+use common\models\fireCache\FireCacheSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
