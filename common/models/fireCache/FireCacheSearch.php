@@ -14,13 +14,18 @@ class FireCacheSearch extends FireCache
 {
     public $q;
     public $fireClass;
+    public $north;
+    public $east;
+    public $south;
+    public $west;
+
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['irwinID', 'recordSource', 'createdBySystem', 'createdOnDateTime', 'modifiedBySystem', 'modifiedOnDateTime', 'conflictParentIrwinId', 'uniqueFireIdentifier', 'fireDiscoveryDateTime', 'pooProtectingUnit', 'localIncidentIdentifier', 'dispatchCenterId', 'incidentName', 'fireCause', 'incidentTypeKind', 'incidentTypeCategory', 'pooJurisdictionalUnit', 'pooState', 'pooCounty', 'pooFips', 'pooLandownerKind', 'pooLandownerCategory', 'initialFireStrategy', 'firecodeRequested', 'abcdMisc', 'fireCode', 'fsJobCode', 'fsOverrideCode', 'complexParentIrwinId', 'fireMgmtComplexity', 'incidentCommanderName', 'incidentManagementOrganization', 'estimatedContainmentDate', 'ics209ReportDateTime', 'ics209ReportStatus', 'containmentDateTime', 'controlDateTime', 'fireOutDateTime', 'gacc', 'adsPermissionState', 'incidentShortDescription', 'significantEvents', 'primaryFuelModel', 'weatherConcerns', 'projectedIncidentActivity12', 'plannedActions', 'ics209Remarks', 'ics209ReportForTimePeriodFrom', 'ics209ReportForTimePeriodTo', 'pooCity', 'pooIncidentJurisdictionalAgency', 'pooLegalDescQtrQtr', 'pooLegalDescQtr', 'pooLegalDescRange', 'pooLegalDescTownship', 'pooLegalDescPrincipalMeridian', 'fireClassId', 'fireClass', 'fireIgnitionDateTime', 'fireCauseGeneral', 'fireCauseSpecific', 'fireCauseInvestigatedIndicator', 'pooJurisdictionalUnitParentUnit', 'initialResponseDateTime', 'initialFireStrategyMetIndicator', 'finalStrategyAttainedDateTime', 'fireGrowthCessationDateTime', 'predominantFuelModel', 'finalFireReportApprovedByUnit', 'finalFireReportApprovedBy', 'finalFireReportApprovedByTitle', 'finalFireReportApprovedDate', 'finalFireReportNarrative', 'unifiedCommand', 'wfdssDecisionStatus', 'fireBehaviorGeneral', 'fireBehaviorGeneral1', 'fireBehaviorGeneral2', 'fireBehaviorGeneral3', 'fireBehaviorDescription', 'secondaryFuelModel', 'additionalFuelModel', 'summaryFuelModel', 'projectedIncidentActivity24', 'projectedIncidentActivity48', 'projectedIncidentActivity72', 'projectedIncidentActivity72Plus', 'fiscallyResponsibleUnit', 'mergeParentIrwinId', 'criticalResourceNeeds', 'fireDepartmentID', 'pooDispatchCenterID', 'pooJurisdictionalAgency', 'pooPredictiveServiceAreaID', 'pooProtectingAgency', 'predominantFuelGroup','q'], 'safe'],
+            [['irwinID', 'recordSource', 'createdBySystem', 'createdOnDateTime', 'modifiedBySystem', 'modifiedOnDateTime', 'conflictParentIrwinId', 'uniqueFireIdentifier', 'fireDiscoveryDateTime', 'pooProtectingUnit', 'localIncidentIdentifier', 'dispatchCenterId', 'incidentName', 'fireCause', 'incidentTypeKind', 'incidentTypeCategory', 'pooJurisdictionalUnit', 'pooState', 'pooCounty', 'pooFips', 'pooLandownerKind', 'pooLandownerCategory', 'initialFireStrategy', 'firecodeRequested', 'abcdMisc', 'fireCode', 'fsJobCode', 'fsOverrideCode', 'complexParentIrwinId', 'fireMgmtComplexity', 'incidentCommanderName', 'incidentManagementOrganization', 'estimatedContainmentDate', 'ics209ReportDateTime', 'ics209ReportStatus', 'containmentDateTime', 'controlDateTime', 'fireOutDateTime', 'gacc', 'adsPermissionState', 'incidentShortDescription', 'significantEvents', 'primaryFuelModel', 'weatherConcerns', 'projectedIncidentActivity12', 'plannedActions', 'ics209Remarks', 'ics209ReportForTimePeriodFrom', 'ics209ReportForTimePeriodTo', 'pooCity', 'pooIncidentJurisdictionalAgency', 'pooLegalDescQtrQtr', 'pooLegalDescQtr', 'pooLegalDescRange', 'pooLegalDescTownship', 'pooLegalDescPrincipalMeridian', 'fireClassId', 'fireClass', 'fireIgnitionDateTime', 'fireCauseGeneral', 'fireCauseSpecific', 'fireCauseInvestigatedIndicator', 'pooJurisdictionalUnitParentUnit', 'initialResponseDateTime', 'initialFireStrategyMetIndicator', 'finalStrategyAttainedDateTime', 'fireGrowthCessationDateTime', 'predominantFuelModel', 'finalFireReportApprovedByUnit', 'finalFireReportApprovedBy', 'finalFireReportApprovedByTitle', 'finalFireReportApprovedDate', 'finalFireReportNarrative', 'unifiedCommand', 'wfdssDecisionStatus', 'fireBehaviorGeneral', 'fireBehaviorGeneral1', 'fireBehaviorGeneral2', 'fireBehaviorGeneral3', 'fireBehaviorDescription', 'secondaryFuelModel', 'additionalFuelModel', 'summaryFuelModel', 'projectedIncidentActivity24', 'projectedIncidentActivity48', 'projectedIncidentActivity72', 'projectedIncidentActivity72Plus', 'fiscallyResponsibleUnit', 'mergeParentIrwinId', 'criticalResourceNeeds', 'fireDepartmentID', 'pooDispatchCenterID', 'pooJurisdictionalAgency', 'pooPredictiveServiceAreaID', 'pooProtectingAgency', 'predominantFuelGroup','q','north','east','south','west'], 'safe'],
             [['inConflict', 'isComplex', 'isFSAssisted', 'isMultiJurisdictional', 'isTrespass', 'isReimbursable', 'totalIncidentPersonnel', 'fatalities', 'injuries', 'residencesDestroyed', 'residencesThreatened', 'otherStructuresDestroyed', 'otherStructuresThreatened', 'percentContained', 'percentPerimeterToBeContained', 'isValid', 'unitIDValidation', 'pooLegalDescSection', 'created_at', 'updated_at', 'fireStrategyMonitorPercent', 'fireStrategyConfinePercent', 'fireStrategyPointZonePercent', 'fireStrategyFullSuppPercent', 'hasFatalities', 'hasInjuries', 'inFuelTreatment', 'inNFPORS', 'isFireCauseInvestigated', 'isFireCodeRequested', 'isInitialFireStrategyMet', 'isQuarantined', 'isUnifiedCommand'], 'integer'],
             [['initialLatitude', 'initialLongitude', 'discoveryAcres', 'pooLatitude', 'pooLongitude', 'initialResponseAcres', 'dailyAcres', 'calculatedAcres', 'estimatedCostToDate', 'finalAcres'], 'number'],
         ];
@@ -228,24 +233,54 @@ class FireCacheSearch extends FireCache
         return $dataProvider;
     }
     
+    public function searchMap($params){
 
+        $query = FireCache::getDb()->cache(function ($db) {
+            return FireCache::find()->select([
+                'irwinID',
+                'incidentName',
+            ]);
+        });
+
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+            'pagination' => [
+                'pageSizeLimit' => [0, 10000],
+            ]
+        ]);
+
+        $this->load($params,'');
+
+        if (!$this->validate()) {
+            // uncomment the following line if you do not want to return any records when validation fails
+            // $query->where('0=1');
+            return $dataProvider;
+        }
+
+        $query->andFilterWhere(['<=', 'pooLongitude', $this->east ]);
+        $query->andFilterWhere(['>=', 'pooLongitude', $this->west ]);
+        $query->andFilterWhere(['<=', 'pooLatitude', $this->north ]);
+        $query->andFilterWhere(['>=', 'pooLatitude', $this->south ]);
+
+        return $dataProvider;
+
+    }
 
 
     public function searchInfo($params){
-        $query = FireCache::find()->select([
-            'irwinID',
-            'incidentName',
-            'fireClassId',
-            'fireClass',
-            'dailyAcres',
-            'totalIncidentPersonnel',
-            'percentContained',
-            'estimatedCostToDate',
-            'modifiedOnDateTime'
-        ]);
-        // $query = FireCache::getDb()->cache(function ($db) {
-        //     return FireCache::find()->select(['irwinID','incidentName','fireClassID']);
-        // });
+        $query = FireCache::getDb()->cache(function ($db) {
+            return FireCache::find()->select([
+                'irwinID',
+                'incidentName',
+                'fireClassId',
+                'fireClass',
+                'dailyAcres',
+                'totalIncidentPersonnel',
+                'percentContained',
+                'estimatedCostToDate',
+                'modifiedOnDateTime'
+            ]);
+        });
         // add conditions that should always apply here
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

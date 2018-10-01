@@ -72,6 +72,7 @@ return [
                 'POST,GET generate-token' => 'generate-token/index',
                 'GET firesearch' => 'v0/fire-search/index',
                 'POST fire-info-search' => 'v0/fire-search/fire-info',
+                'POST map-fires' => 'v0/fire-search/map-fires',
                 [
                     'class' => 'yii\rest\UrlRule',
                     'controller' => [

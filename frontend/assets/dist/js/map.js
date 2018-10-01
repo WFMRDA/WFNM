@@ -1326,6 +1326,7 @@ var vueModel = new Vue({
             }, "json" );
         },
         initMap() {
+            var vm = this;
             var endDate = new Date();
             endDate.setUTCSeconds(0, 0);
             var minutes = endDate.getUTCMinutes();
@@ -1354,13 +1355,26 @@ var vueModel = new Vue({
                     currentTime: endDate
                 },
             });
+            
+            
+            this.map.on('moveend', function onDragEnd(){
+                var bounds = vm.map.getBounds();
+                console.log (
+                    bounds,
+                    'north:' + bounds.getNorth() +'\n'+
+                    'east:' + bounds.getEast() +'\n'+
+                    'south:' + bounds.getSouth() +'\n'+
+                    'west:' + bounds.getWest()
+                );
+            });
+
+
 
             var baseLayer =  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}');
             baseLayer.addTo(this.map);
-            self = this;
             this.map.timeDimension.on('timeload', function(data) {
                 var tz = moment.tz.guess();
-                self.radarTime = moment.tz(data.time,tz).format("MM/DD/YYYY HH:mm:z");
+                vm.radarTime = moment.tz(data.time,tz).format("MM/DD/YYYY HH:mm:z");
                 // console.log(data.time,self.radarTime);
             });
 

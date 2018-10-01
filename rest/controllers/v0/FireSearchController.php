@@ -49,4 +49,25 @@ class FireSearchController extends Controller{
         return $searchModel->searchInfo($requestParams);
     }
 
+    public function actionMapFires(){
+        $requestParams = ArrayHelper::merge(Yii::$app->request->queryParams,Yii::$app->request->bodyParams);
+
+        if(!isset($requestParams['north'])){
+			throw new BadRequestHttpException('North must be set using the variable \'north\'');
+        }
+        if(!isset($requestParams['south'])){
+			throw new BadRequestHttpException('South must be set using the variable \'south\'');
+        }
+        if(!isset($requestParams['east'])){
+			throw new BadRequestHttpException('East must be set using the variable \'east\'');
+        }
+        if(!isset($requestParams['west'])){
+			throw new BadRequestHttpException('West must be set using the variable \'west\'');
+        }
+        
+        
+        $searchModel = new FireCacheSearch();
+        return $searchModel->searchMap($requestParams);
+    }
+
 }
