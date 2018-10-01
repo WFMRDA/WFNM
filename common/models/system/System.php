@@ -264,7 +264,7 @@ class System extends Model{
 
 
     public function setFireDb(){
-        $this->_fireDb =  ArrayHelper::index($this->mapData->getWfnmData(), 'irwinID');
+        $this->_fireDb =  ArrayHelper::index($this->mapData->getWfnmData(true), 'irwinID');
     }
 
     public function getFireDb(){
@@ -532,19 +532,21 @@ class System extends Model{
     */
 
     public function setFireCache(){
-        $allModels = FireCache::find()->select('irwinID')->limit(10)->column();
+        $allModels = FireCache::find()->select('irwinID')->column();
         $values = array_flip($allModels);
         // return $values;
         //Clean up DB by delete all that aren't in this query. 
         FireCache::deleteAll(['NOT IN', 'irwinID', $allModels]);
         $fireDb = $this->fireDb;
+
+        // return count($fireDb);
         foreach ($fireDb as $irwinID => $fire) {
             if(!isset($values[$irwinID])){
-                if($fire['incidentTypeCategory'] == 'CX'){
-                    $fire['fireClassId'] = 'CX';
-                    $fire['fireClass'] = 'Complex';
-                }
-                $row['dailyAcres'] = ($fire['dailyAcres'] == null) ? 0 : (float)$fire['dailyAcres'];
+                // if($fire['incidentTypeCategory'] == 'CX'){
+                //     $fire['fireClassId'] = 'CX';
+                //     $fire['fireClass'] = 'Complex';
+                // }
+                // $row['dailyAcres'] = ($fire['dailyAcres'] == null) ? 0 : (float)$fire['dailyAcres'];
                 $fire['localIncidentIdentifier'] = (string)$fire['localIncidentIdentifier'];
                 $fire['pooFips'] = (string)$fire['pooFips'];
                 $fire['fsOverrideCode'] = (string)$fire['fsOverrideCode'];

@@ -113,14 +113,14 @@ class MapData extends Model{
      * Gets WFNM fire dataset from cache.
      * @return json WFNM Fire dataset
      */
-    public function getWfnmData(){
+    public function getWfnmData($force = false){
         //Check Cache for WFNM GeoJson, If unavailable set Cache and return values
         $cache = Yii::$app->fireCache;
         $key  = $this->wfnmCacheKey;
         // Yii::trace($this->nextRefreshTime,'dev');
         // $cache->delete($key) ;
-        if(!$cache->exists($key) || empty($data  = $cache->get($key))){
-           $data = $this->refreshWfnmData();
+        if($force || !$cache->exists($key) || empty($data  = $cache->get($key))){
+           $data = $this->refreshWfnmData($force);
         }
         return $data;
     }
@@ -139,11 +139,33 @@ class MapData extends Model{
      * @see getWfnmData()
      * @return json WFNM Fire dataset
      */
-    public function refreshWfnmData(){
+    public function refreshWfnmData($force = false){
         try {
-            $data = FireCache::find()->asArray()->all();
+
             $cache = Yii::$app->fireCache;
             $key  = $this->wfnmCacheKey;
+            if($force){
+                $updatesResponse = $this->_client->createRequest()
+                ->setUrl('map-fires')
+                ->setMethod('post')
+                ->addHeaders(['Authorization' => 'Basic '.$this->getAuthKey()])
+                ->send();
+                if ($updatesResponse->isOk) {
+                    $data =  $updatesResponse->data;
+                    foreach ($data as &$row) {
+                        if($row['incidentTypeCategory'] == 'CX'){
+                            $row['fireClassId'] = 'CX';
+                            $row['fireClass'] = 'Complex';
+                        }
+                        $row['dailyAcres'] = ($row['dailyAcres'] == null) ? 0 : (float)$row['dailyAcres'];
+                    }
+                }else{
+                    //Log Error.
+                    $data = [];
+                }
+            }else{
+                $data = FireCache::find()->asArray()->all();
+            }
             $cache->set($key, $data, $this->nextRefreshTime);
         }catch (\yii\httpclient\Exception $e) {
             //Log Error.
