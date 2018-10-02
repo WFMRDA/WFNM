@@ -7,6 +7,7 @@ use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use common\models\fireCache\FireCache;
 
+use common\models\helpers\GeoJson;
 /**
  * FireCacheSearch represents the model behind the search form of `common\models\fireCache\FireCache`.
  */
@@ -239,16 +240,20 @@ class FireCacheSearch extends FireCache
             return FireCache::find()->select([
                 'irwinID',
                 'incidentName',
+                'pooLatitude',
+                'pooLongitude',
+                'dailyAcres',
+                'fireClassId'
             ]);
         });
 
-        $dataProvider = new ActiveDataProvider([
+        /* $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => [
                 'pageSizeLimit' => [0, 10000],
             ]
         ]);
-
+ */
         $this->load($params,'');
 
         if (!$this->validate()) {
@@ -262,10 +267,56 @@ class FireCacheSearch extends FireCache
         $query->andFilterWhere(['<=', 'pooLatitude', $this->north ]);
         $query->andFilterWhere(['>=', 'pooLatitude', $this->south ]);
 
-        return $dataProvider;
+        $firedb = $query->asArray()->all();
+        
+        // if(!empty($firedb)){
+            $json = new GeoJson;
+            foreach ($firedb as $key => $row){
+                $acres = ($row['dailyAcres'] == null) ? 0: (float)$row['dailyAcres'];
+                $fireSizeClass = $this->getFireSizeClass($acres);
+
+                $options = [
+                    'fireType' => $row['fireClassId'],
+                    'fireClass' => $fireSizeClass,
+                    'acres' => $acres,
+                ];
+                $json->addNode(
+                    $row['irwinID'],
+                    $row['incidentName'],
+                    $row['pooLatitude'],
+                    $row['pooLongitude'],
+                    $options
+                );
+            }
+            $layer  = $json->exportGeoJson();
+        // }
+        return $layer;
 
     }
 
+    protected function getFireSizeClass($acres){
+        switch (true) {
+            case $acres <= 99: # if true, enter; if false, skips;
+                $val = 1;
+            break;
+            case $acres <= 999: # if true, enter; if false, skips;
+                $val = 2;
+            break;
+            case $acres <= 9999: # if true, enter; if false, skips;
+                $val = 3;
+            break;
+            case $acres <= 99999: # if true, enter; if false, skips;
+                $val = 4;
+            break;
+            case $acres >= 100000: # if true, enter; if false, skips;
+                $val = 5;
+            break;
+            default:
+                $val = 1;
+            break;
+        }
+        return $val;
+    }
 
     public function searchInfo($params){
         $query = FireCache::getDb()->cache(function ($db) {

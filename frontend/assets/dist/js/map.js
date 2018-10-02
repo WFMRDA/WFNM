@@ -1110,7 +1110,7 @@ var vueModel = new Vue({
             });
         },
         setIncidentLayer(){
-            // console.log('incident layer');
+            console.log('incident layer');
             var vm = this;
             var layer = vm.layers[vm.incidentLayerId];
             if(vm.map.hasLayer(layer.instance) ){
