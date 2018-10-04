@@ -268,9 +268,9 @@ class FireCacheSearch extends FireCache
         $query->andFilterWhere(['>=', 'pooLatitude', $this->south ]);
 
         $firedb = $query->asArray()->all();
-        if(empty($fireDb)){
-            return [];
-        }
+        // if(empty($fireDb)){
+        //     return [];
+        // }
         
         $json = new GeoJson;
         foreach ($firedb as $key => $row){
