@@ -269,7 +269,7 @@ class FireCacheSearch extends FireCache
 
         $firedb = $query->asArray()->all();
         if(empty($fireDb)){
-            return;
+            return [];
         }
         
         $json = new GeoJson;
