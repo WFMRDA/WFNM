@@ -268,29 +268,29 @@ class FireCacheSearch extends FireCache
         $query->andFilterWhere(['>=', 'pooLatitude', $this->south ]);
 
         $firedb = $query->asArray()->all();
+        if(empty($fireDb)){
+            return;
+        }
         
-        // if(!empty($firedb)){
-            $json = new GeoJson;
-            foreach ($firedb as $key => $row){
-                $acres = ($row['dailyAcres'] == null) ? 0: (float)$row['dailyAcres'];
-                $fireSizeClass = $this->getFireSizeClass($acres);
+        $json = new GeoJson;
+        foreach ($firedb as $key => $row){
+            $acres = ($row['dailyAcres'] == null) ? 0: (float)$row['dailyAcres'];
+            $fireSizeClass = $this->getFireSizeClass($acres);
 
-                $options = [
-                    'fireType' => $row['fireClassId'],
-                    'fireClass' => $fireSizeClass,
-                    'acres' => $acres,
-                ];
-                $json->addNode(
-                    $row['irwinID'],
-                    $row['incidentName'],
-                    $row['pooLatitude'],
-                    $row['pooLongitude'],
-                    $options
-                );
-            }
-            $layer  = $json->exportGeoJson();
-        // }
-        return $layer;
+            $options = [
+                'fireType' => $row['fireClassId'],
+                'fireClass' => $fireSizeClass,
+                'acres' => $acres,
+            ];
+            $json->addNode(
+                $row['irwinID'],
+                $row['incidentName'],
+                $row['pooLatitude'],
+                $row['pooLongitude'],
+                $options
+            );
+        }
+        return $json->exportGeoJson();
 
     }
 
