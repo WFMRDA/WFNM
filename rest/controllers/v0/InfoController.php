@@ -55,7 +55,7 @@ class InfoController extends Controller{
         $mapData = Yii::createObject(Yii::$app->params['mapData']);
         $mapData = Yii::createObject(Yii::$app->params['mapData']);
         return [
-            'prepardnessLevl' => $mapData->getPrepardnessLevel('NIC'),
+            'prepardnessLevel' => $mapData->getPrepardnessLevel('NIC'),
             'report' => $mapData->sitReportInfo
         ];
     }
