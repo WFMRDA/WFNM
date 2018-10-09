@@ -53,7 +53,11 @@ class InfoController extends Controller{
 
     public function actionSitRep(){
         $mapData = Yii::createObject(Yii::$app->params['mapData']);
-        return $mapData->sitReportInfo;
+        $mapData = Yii::createObject(Yii::$app->params['mapData']);
+        return [
+            'prepardnessLevl' => $mapData->getPrepardnessLevel('NIC'),
+            'report' => $mapData->sitReportInfo
+        ];
     }
 
     public function actionFireInfo(){
