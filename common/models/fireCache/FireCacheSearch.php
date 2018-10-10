@@ -326,7 +326,9 @@ class FireCacheSearch extends FireCache
 
     public function searchInfo($params){
         $query = FireCache::getDb()->cache(function ($db) {
-            return FireCache::find()->select([
+            return FireCache::find();
+            
+            /* return FireCache::find()->select([
                 'irwinID',
                 'incidentName',
                 'fireClassId',
@@ -337,7 +339,7 @@ class FireCacheSearch extends FireCache
                 'estimatedCostToDate',
                 'modifiedOnDateTime',
                 'incidentTypeCategory',
-            ]);
+            ]); */
         });
         // add conditions that should always apply here
         $dataProvider = new ActiveDataProvider([
