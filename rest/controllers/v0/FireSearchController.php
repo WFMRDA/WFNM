@@ -41,12 +41,6 @@ class FireSearchController extends Controller{
         $requestParams = ArrayHelper::merge(Yii::$app->request->queryParams,Yii::$app->request->bodyParams);
         $searchModel = new FireCacheSearch();
         return $searchModel->searchInfo($requestParams);
-        return $requestParams;
-        if(!isset($requestParams['q'])){
-			throw new BadRequestHttpException('Query must be set using the variable \'q\'');
-		}
-        $searchModel = new FireCacheSearch();
-        return $searchModel->searchInfo($requestParams);
     }
 
     public function actionMapFires(){

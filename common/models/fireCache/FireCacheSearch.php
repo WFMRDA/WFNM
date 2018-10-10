@@ -335,7 +335,8 @@ class FireCacheSearch extends FireCache
                 'totalIncidentPersonnel',
                 'percentContained',
                 'estimatedCostToDate',
-                'modifiedOnDateTime'
+                'modifiedOnDateTime',
+                'incidentTypeCategory',
             ]);
         });
         // add conditions that should always apply here

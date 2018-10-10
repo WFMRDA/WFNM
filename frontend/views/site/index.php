@@ -406,7 +406,7 @@ $this->render('_disclaimer');
 						</div>
 					</div>
 					<div class='col-xs-12 text-center report-btn-container'>
-						<a class='btn btn-default sit-btn' href='https://www.nifc.gov/nicc/sitreprt.pdf' target='_blank'>'View Full Sit Report</a>
+						<a class='btn btn-default sit-btn' href='https://www.nifc.gov/nicc/sitreprt.pdf' target='_blank'>View Full Sit Report</a>
 					</div>
 					<div class='col-xs-12'>
 						<div class="col-xs-12">
