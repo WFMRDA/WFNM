@@ -42,7 +42,8 @@
         "ptech/yii2-pyrocms": "dev-rewrite",
         "sweelix/yii2-webpack": "^1.2",
         "lcobucci/jwt": "~3.3",
-        "minishlink/web-push": "^2.0"
+        "minishlink/web-push": "^2.0",
+        "kreait/firebase-php": "^4.17.0"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",
