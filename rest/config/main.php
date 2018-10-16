@@ -70,6 +70,7 @@ return [
             'rules' => [
                 '/' => 'site/index',
                 'POST,GET generate-token' => 'generate-token/index',
+                'POST,GET generate-token/social-validate' => 'generate-token/social-validate',
                 'GET firesearch' => 'v0/fire-search/index',
                 'POST fire-info-search' => 'v0/fire-search/fire-info',
                 'POST map-fires' => 'v0/fire-search/map-fires',

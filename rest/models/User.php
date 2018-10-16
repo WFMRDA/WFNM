@@ -37,6 +37,11 @@ class User extends BaseUser
         return static::find()->where(['access_token' => $token])->active()->one();
     }
 
+    public static function findByEmail($email)
+    {
+        return static::find()->where(['email' => $email])->active()->one();
+    }
+
     public static function restLogin($username, $password){
         // Yii::trace($username,$password,'dev');
         // username, password are mandatory fields
