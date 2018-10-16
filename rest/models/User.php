@@ -8,6 +8,9 @@ use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 use ptech\pyrocms\models\user\User as BaseUser;
+use ptech\pyrocms\models\helpers\Permissions;
+use ptech\pyrocms\models\user\SocialAccounts;
+use yii\base\InvalidParamException;
 
 class User extends BaseUser
 // class User extends ActiveRecord implements IdentityInterface
@@ -73,6 +76,87 @@ class User extends BaseUser
 
         // if user validates (both user_email, user_password are valid)
         return $user;
+    }
+
+    public function logInByEAuth($serviceProvider,$clientId,$email,$data,$token,$userInfo = []) {
+        //See If User Already Exists
+        if(($accounts = SocialAccounts::findOne(['client_id' => $clientId])) != null){
+            //Social Account Found. Log In
+            //Don't overwrite data with Firebase Yet because we don't have all the information
+           
+            Yii::trace('social found','dev');
+             $accounts->updateAttributes([
+                'data' => $data,
+                'token' => $token,
+                'secret' => null,
+            ]);
+            $user = $accounts->user;
+        }else if(($user  = Yii::createObject(User::className())::findByUsername($email)) != null) {
+            //Email Found. Connect Accounts
+            Yii::trace('email found','dev');
+            $accounts = Yii::createObject([
+                'class'=> SocialAccounts::className(),
+                'user_id' => $user->id,
+                'provider' => $serviceProvider,
+                'client_id' => $clientId,
+                'data' => $data,
+                'token' => $token,
+                'secret' => null,
+            ]);
+            if(!$accounts->save()){
+                Yii::trace($accounts->errors,'dev');
+            };
+
+        }else{
+            //No Accounts Found Anywhere
+            //Create New User
+            Yii::trace('create new user','dev');
+            $user = Yii::createObject([
+                'class'=> User::className(),
+                'email' => $email,
+                'userProfile'=>[
+                    'first_name' => $userInfo['firstName'],
+                    'last_name' => $userInfo['lastName'],
+                ],
+                'userSocialAccount' => [
+                    'provider' => $serviceProvider,
+                    'client_id' => $clientId,
+                    'data' => $data,
+                    'token' => $token,
+                    'secret' => null,
+                ]
+            ]);
+            $user->enableConfirmation = false;
+            $user->createAccount();
+        }
+        return $user;
+    }
+
+    public function connect(){
+        //Check to see if this account has been assigned to anyone else
+        $query = Yii::createObject(User::className())::find()
+            ->andWhere(
+                [
+                    'and',
+                    ['<>','id', Yii::$app->user->identity->id],
+                    ['email' => $this->service->getAttribute('email')]
+                ]
+            )
+            ->one();
+        if($query != null) {
+            //This social media account has an email address associated with an already established account that's not this users
+            throw new InvalidParamException('This social media account has an email address associated with an already established account that\'s not this users');
+        }
+        $accounts = Yii::createObject([
+            'class'=> SocialAccounts::className(),
+            'user_id'=> Yii::$app->user->identity->id,
+            'provider' => $this->service->getServiceName(),
+            'client_id' => $this->clientId,
+            'data' => $this->data,
+            'token' => $this->token,
+            'secret' => null,
+        ]);
+        return $accounts->save();
     }
 
 }

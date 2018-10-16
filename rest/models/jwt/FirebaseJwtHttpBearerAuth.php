@@ -9,6 +9,7 @@ use Kreait\Firebase\Factory;
 use Kreait\Firebase\ServiceAccount;
 use Kreait\Firebase\Auth\UserRecord;
 use rest\models\User;
+use yii\helpers\ArrayHelper;
 
 /**
  * JwtHttpBearerAuth is an action filter that supports the authentication method based on JSON Web Token.
@@ -90,10 +91,51 @@ class FirebaseJwtHttpBearerAuth extends AuthMethod
                 $verifiedIdToken = $this->firebase->getAuth()->verifyIdToken($idTokenString,true);
                 $uid = $verifiedIdToken->getClaim('sub');
                 $firebaseUser = $this->firebase->getAuth()->getUser($uid);
-                $providerData = $firebaseUser->providerData[0];
+                $providerData = $firebaseUser->providerData[0]->toArray();
                 $firebaseUser = $firebaseUser->toArray();
 
-                $identity = $user->findByEmail($firebaseUser['email']);
+                $requestParams = ArrayHelper::merge(Yii::$app->request->queryParams,Yii::$app->request->bodyParams);
+                $payloadOrigin = ArrayHelper::getValue($providerData,'providerId');
+                $userId = ArrayHelper::getValue($requestParams,'userId');
+
+                $token = json_encode([
+                    'access_token' => ArrayHelper::getValue($requestParams,'access_token'),
+                    'refresh_token' => ArrayHelper::getValue($requestParams,'refresh_token'),
+                    'expires' => ArrayHelper::getValue($requestParams,'expires'),
+                    "params" => [
+                        "token_type" => "bearer"
+                    ]
+                ]);
+                $userInfo = [
+                    'firstName' => ArrayHelper::getValue($requestParams,'firstName'),
+                    'lastName' => ArrayHelper::getValue($requestParams,'lastName')
+                ];
+
+                if($payloadOrigin == 'google.com'){
+                    $email = $providerData['email'];
+                    $serviceProvider = 'google_oauth';
+                    $clientId = $serviceProvider.'-'.$userId;
+                    $data = json_encode([
+                        'url' => null,
+                        'image' => ArrayHelper::getValue($firebaseUser,'photoUrl',''),
+                    ]);
+                }else if($payloadOrigin == 'facebook.com'){
+                    $email = $firebaseUser['email'];
+                    $serviceProvider = 'facebook';
+                    $clientId = $serviceProvider.'-'.$userId;
+                    $data = json_encode([
+                        'url' => null,
+                        'image' => ArrayHelper::getValue($firebaseUser,'photoUrl','') . '?width=500&height=500',
+                    ]);
+                }else{
+                    return null;
+                }
+
+                // Yii::trace($serviceProvider,'dev');
+                // Yii::trace($firebaseUser,'dev');
+                // Yii::trace($providerData,'dev');
+                $identity = $user->logInByEAuth($serviceProvider,$clientId,$email,$data,$token,$userInfo);
+
                 Yii::$app->user->setIdentity($identity);
                 return $identity;
             } catch (InvalidToken $e) {

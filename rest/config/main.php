@@ -63,6 +63,13 @@ return [
                 '*' => 'yii\web\JsonParser',
             ]
         ],*/
+
+        'urlManagerFrontEnd' => [
+            'class' => 'yii\web\UrlManager',
+            'baseUrl' => 'http://'.Ptech_HOST,
+            'enablePrettyUrl' => true,
+            'showScriptName' => false,
+        ],
         'urlManager' => [
             'enablePrettyUrl' => true,
             'enableStrictParsing' => true,
