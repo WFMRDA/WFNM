@@ -73,7 +73,7 @@ class DevicesController extends Controller{
         $deviceId = ArrayHelper::getValue($params,'deviceId');
         //Check to see if Device with blank token first
 
-        if (($model = DeviceList::findOne(['device_id'=>$id])) == null) {
+        if (($model = DeviceList::findOne(['device_id'=>$deviceId])) == null) {
             $model = new DeviceList([
                 'device_id'=>$id,
                 'user_id' => Yii::$app->user->identity->id,
