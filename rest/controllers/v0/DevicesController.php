@@ -80,7 +80,7 @@ class DevicesController extends Controller{
         return $model;
     }
 
-    public function actionLogout(){
+    public function actionDeviceLogout(){
         return DeviceList::deleteAll(['user_id' => Yii::$app->user->identity->id]);
     }
 
