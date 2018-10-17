@@ -81,7 +81,9 @@ class DevicesController extends Controller{
     }
 
     public function actionDeviceLogout(){
-        return DeviceList::deleteAll(['user_id' => Yii::$app->user->identity->id]);
+        $params = ArrayHelper::merge(Yii::$app->request->queryParams,Yii::$app->request->bodyParams);
+        $deviceId = ArrayHelper::getValue($params,'deviceId');
+        return DeviceList::deleteAll(['device_id' => $deviceId]);
     }
 
     /**
