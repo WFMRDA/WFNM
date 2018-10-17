@@ -79,4 +79,45 @@ class MessagesSearch extends Messages
 
         return $dataProvider;
     }
+
+    public function restSearch($params)
+    {
+        $query = Messages::find();
+
+        // add conditions that should always apply here
+
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+            'pagination' => [
+                'pageSizeLimit' => [0, 100]
+            ],
+        ]);
+
+        $this->load($params);
+
+        if (!$this->validate()) {
+            // uncomment the following line if you do not want to return any records when validation fails
+            // $query->where('0=1');
+            return $dataProvider;
+        }
+
+        // grid filtering conditions
+        $query->andFilterWhere([
+            'id' => $this->id,
+            'user_id' => Yii::$app->user->identity->id,
+            'type' => $this->type,
+            'sent_at' => $this->sent_at,
+            'seen_at' => $this->seen_at,
+            'irwinID' => $this->irwinID,
+            'send_tries' => $this->send_tries,
+            'created_at' => $this->created_at,
+        ]);
+
+        $query->andFilterWhere(['like', 'email', $this->email]);
+            // ->andFilterWhere(['like', 'subject', $this->subject])
+            // ->andFilterWhere(['like', 'body', $this->body])
+            // ->andFilterWhere(['like', 'data', $this->data]);
+
+        return $dataProvider;
+    }
 }

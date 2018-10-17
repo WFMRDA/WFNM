@@ -69,7 +69,7 @@ class MyAlertsController extends Controller{
         }
         $requestParams = ArrayHelper::merge(Yii::$app->request->queryParams,Yii::$app->request->bodyParams);
         $searchModel = new MessagesSearch();
-        $dataProvider = $searchModel->search($requestParams);
+        $dataProvider = $searchModel->restSearch($requestParams);
         return [
             'dataSet '=> $this->serializeData($dataProvider),
             // 'badge' =>  Messages::find()->where(['>','created_at',$lastViewed])->count(),
@@ -83,7 +83,7 @@ class MyAlertsController extends Controller{
     public function actionGetAlerts(){
         $requestParams = ArrayHelper::merge(Yii::$app->request->queryParams,Yii::$app->request->bodyParams);
         $searchModel = new MessagesSearch();
-        return $searchModel->search($requestParams);
+        return $searchModel->restSearch($requestParams);
     }
 
 
