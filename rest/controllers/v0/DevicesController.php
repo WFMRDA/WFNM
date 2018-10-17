@@ -75,7 +75,7 @@ class DevicesController extends Controller{
 
         if (($model = DeviceList::findOne(['device_id'=>$deviceId])) == null) {
             $model = new DeviceList([
-                'device_id'=>$id,
+                'device_id'=>$deviceId,
                 'user_id' => Yii::$app->user->identity->id,
                 'token' => '_'
             ]);
