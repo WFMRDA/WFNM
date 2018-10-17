@@ -71,6 +71,16 @@ class DevicesController extends Controller{
     public function actionLocation(){
         $params = ArrayHelper::merge(Yii::$app->request->queryParams,Yii::$app->request->bodyParams);
         $deviceId = ArrayHelper::getValue($params,'deviceId');
+        //Check to see if Device with blank token first
+
+        if (($model = DeviceList::findOne(['device_id'=>$id])) == null) {
+            $model = new DeviceList([
+                'device_id'=>$id,
+                'token' => '_'
+            ]);
+            $model->save();
+        }
+
         $model = $this->findLocationModel($deviceId);
         $model->latitude = ArrayHelper::getValue($params,'latitude');
         $model->longitude = ArrayHelper::getValue($params,'longitude');
