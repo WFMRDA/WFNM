@@ -108,6 +108,16 @@ return [
                 [
                     'class' => 'yii\rest\UrlRule',
                     'controller' => [
+                        'devices' => 'v0/devices',
+                    ],
+                    'patterns'=>[
+                        'POST store'    => 'store',
+                        'POST location'    => 'location',
+                    ],
+                ],
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => [
                         'lc' => 'v0/locations',
                         'myf' => 'v0/my-fires',
                         'fnm' => 'v0/fires-near-me',

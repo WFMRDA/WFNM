@@ -9,6 +9,7 @@ use common\models\myLocations\MyLocations;
 use common\models\user\UserSettings;
 use common\models\messages\Messages;
 use common\models\popup\PopTable;
+use common\models\devices\DeviceList;
 use ptech\pyrocms\models\user\User as BaseModel;
 
 class User extends BaseModel
@@ -80,5 +81,13 @@ class User extends BaseModel
         return $this->hasMany(Session::className(), ['user_id' => 'id']);
     }
 
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getDeviceLists()
+    {
+        return $this->hasMany(DeviceList::className(), ['user_id' => 'id']);
+    }
 
 }
