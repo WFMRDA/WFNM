@@ -88,24 +88,31 @@ class MyAlertsController extends Controller{
 
 
     public function actionGetCount(){
-       $model = PopTable::find()
+        // Yii::trace(Yii::$app->user->identity->id,'dev');
+        $model = PopTable::find()
           ->andWhere(['and',
                ['user_id' => Yii::$app->user->identity->id],
                ['type' => PopTable::NOTIFICATIONS]
            ])->one();
+
+
+        // Yii::trace($query->createCommand()->getRawSql(),'dev');
+        // $model = $query->one();
        if($model != null){
            $lastViewed = (  $model->seen_at == null)? 0: $model->seen_at;
        }else {
            $lastViewed = 0;
        }
         return [
-            'badge' =>  Messages::find()->where(['>','created_at',$lastViewed])->count(),
+            'badge' =>  Messages::find()
+                ->andWhere(['user_id'=> Yii::$app->user->identity->id])
+                ->andWhere(['>','created_at',$lastViewed])->count(),
             'unreadTotal' => Messages::find()
-            ->andWhere(['user_id'=> Yii::$app->user->identity->id])
-            ->andWhere(['or',
-                ['seen_at' => null],
-                ['seen_at' => 0],
-            ])->count(),
+                ->andWhere(['user_id'=> Yii::$app->user->identity->id])
+                ->andWhere(['or',
+                    ['seen_at' => null],
+                    ['seen_at' => 0],
+                ])->count(),
         ];
     }
 
