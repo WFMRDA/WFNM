@@ -113,6 +113,7 @@ return [
                     'patterns'=>[
                         'POST store'    => 'store',
                         'POST location'    => 'location',
+                        'POST logout'    => 'logout',
                     ],
                 ],
                 [

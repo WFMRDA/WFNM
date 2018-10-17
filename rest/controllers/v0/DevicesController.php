@@ -80,6 +80,10 @@ class DevicesController extends Controller{
         return $model;
     }
 
+    public function actionLogout(){
+        return DeviceList::deleteAll(['user_id' => Yii::$app->user->identity->id]);
+    }
+
     /**
      * Finds the DeviceList model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
