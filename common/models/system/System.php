@@ -533,12 +533,10 @@ class System extends Model{
 
     public function setFireCache(){
         $allModels = FireCache::find()->select('irwinID')->column();
+        $fireDb = $this->fireDb;
         $values = array_flip($allModels);
         //Clean up DB by delete all that aren't in this query. 
-        FireCache::deleteAll(['NOT IN', 'irwinID', $allModels]);
-        $fireDb = $this->fireDb;
-        return count($fireDb);
-
+        FireCache::deleteAll(['NOT IN', 'irwinID', array_keys($fireDb)]);
         // return count($fireDb);
         foreach ($fireDb as $irwinID => $fire) {
             if(!isset($values[$irwinID])){
