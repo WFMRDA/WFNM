@@ -15,6 +15,8 @@ else {
   $protocol = 'http://';
 }
 
+// echo $protocol; 
+// die();
 return [
     'id' => 'app-frontend',
     'basePath' => dirname(__DIR__),
@@ -61,6 +63,7 @@ return [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             // 'baseUrl' => $protocol. Ptech_HOST,
+            'hostInfo' => $protocol . Ptech_HOST,
             'rules' => [
             ],
         ],

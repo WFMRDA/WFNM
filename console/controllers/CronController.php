@@ -11,6 +11,7 @@ use yii\helpers\Console;
 use common\models\system\System;
 use yii\helpers\ArrayHelper;
 use common\models\migration\UserMigration;
+use common\models\messages\Messages;
 
 
 class CronController extends Controller {
@@ -23,6 +24,32 @@ class CronController extends Controller {
         }else{
             echo "ENV Undetermined";
         }
+    }
+
+    public function actionClearMessages(){
+
+        $this->stdout('Running Tests... StandBy'. PHP_EOL, Console::FG_GREEN);
+        $models = Messages::find()
+            ->andWhere(['sent_at' => NULL])
+            ->count();
+
+        $this->stdout('Current '.VarDumper::dumpAsString($models,10,false) . PHP_EOL, Console::FG_YELLOW);
+
+        Messages::updateAll(['sent_at' => time()], ['sent_at' => NULL]);
+
+        $models = Messages::find()
+        ->andWhere(['sent_at' => NULL])
+        ->count();
+            
+        $this->stdout('Now '.VarDumper::dumpAsString($models,10,false) . PHP_EOL, Console::FG_CYAN);
+        
+        $time = microtime(true) - $_SERVER["REQUEST_TIME_FLOAT"];
+        $this->stdout("Total Execution Time: {$time}". PHP_EOL, Console::FG_GREEN);
+        
+        //     ->distinct()
+        //     ->asArray()
+        //     ->column();
+        // return $models;
     }
 
     public function actionClearCache(){

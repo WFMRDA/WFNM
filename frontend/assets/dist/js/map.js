@@ -228,6 +228,7 @@ var vueModel = new Vue({
             }
         ],
         layers: [
+            /*
             {
                 id: '',
                 name: 'Weather',
@@ -241,7 +242,7 @@ var vueModel = new Vue({
                     opacity: 0.8,
                 },
                 instance:undefined,
-            },
+            },*/
             {
                 id: '',
                 name: 'VIIRS I-Band 375m',
@@ -259,7 +260,7 @@ var vueModel = new Vue({
                 },
                 instance:undefined,
             },
-            /*{
+            {
                 id: '',
                 name: 'VIIRS-AF 750m',
                 active: false,
@@ -275,7 +276,7 @@ var vueModel = new Vue({
                     // attribution: "Weather data © 2012 IEM Nexrad"
                 },
                 instance:undefined,
-            },*/
+            },
             {
                 id: '',
                 name: 'MODIS 1km',
@@ -293,7 +294,7 @@ var vueModel = new Vue({
                 },
                 instance:undefined,
             },
-            {
+           /* {
                 id: '',
                 name: 'Fire Perimeters',
                 active: false,
@@ -309,7 +310,7 @@ var vueModel = new Vue({
                     // attribution: "Weather data © 2012 IEM Nexrad"
                 },
                 instance:undefined,
-            },
+            },*/
             {
                 id: '',
                 name: 'ERC',
@@ -367,16 +368,16 @@ var vueModel = new Vue({
         ],
     },
     created(){
-    this.plLevel = yiiOptions.plLevel;
-    this.dataSet = yiiOptions.wfnm;
-    this.activeIncidentLayers = yiiOptions.layers.incidentLayers;
-    this.myFires = yiiOptions.myFires;
-    this.alerts = yiiOptions.alerts;
-    this.myLocations = yiiOptions.myLocations;
-    this.sitReport = yiiOptions.sitReport;
-    this.fireDb = yiiOptions.fireDb;
-    this.fid =  yiiOptions.fid;
-    console.log(yiiOptions.homeUrl);
+        this.plLevel = yiiOptions.plLevel;
+        this.dataSet = yiiOptions.wfnm;
+        this.activeIncidentLayers = yiiOptions.layers.incidentLayers;
+        this.myFires = yiiOptions.myFires;
+        this.alerts = yiiOptions.alerts;
+        this.myLocations = yiiOptions.myLocations;
+        this.sitReport = yiiOptions.sitReport;
+        this.fireDb = yiiOptions.fireDb;
+        this.fid =  yiiOptions.fid;
+        console.log(yiiOptions.homeUrl);
     },
     mounted() {
         var vm = this;
