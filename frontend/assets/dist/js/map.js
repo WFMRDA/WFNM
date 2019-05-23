@@ -260,7 +260,7 @@ var vueModel = new Vue({
                 },
                 instance:undefined,
             },
-            {
+            /*{
                 id: '',
                 name: 'VIIRS-AF 750m',
                 active: false,
@@ -276,7 +276,7 @@ var vueModel = new Vue({
                     // attribution: "Weather data © 2012 IEM Nexrad"
                 },
                 instance:undefined,
-            },
+            },*/
             {
                 id: '',
                 name: 'MODIS 1km',

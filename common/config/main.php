@@ -158,6 +158,7 @@ return [
                     'levels' => ['error', 'warning'],
                     'except' => [
                         'yii\web\HttpException:404',
+                        'yii\base\ErrorException:1'
                     ],
                 ],
                 [
@@ -173,6 +174,7 @@ return [
                     'levels' => ['error', 'warning'],
                     'except' => [
                         'yii\web\HttpException:404',
+                        'yii\base\ErrorException:1'
                     ],
                 ],
                 [
@@ -199,6 +201,7 @@ return [
                     'levels' => ['error','warning'],
                     'except' => [
                         'yii\web\HttpException:404',
+                        'yii\base\ErrorException:1'
                     ],
                     'message' => [
                         'from' => ['wildfiresnearme@gmail.com' => 'WFNM Internal Systems'],
